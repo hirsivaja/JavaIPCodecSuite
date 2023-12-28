@@ -61,7 +61,7 @@ public class TcpHeader {
         short dstPort = in.getShort();
         int sequenceNumber = in.getInt();
         int ackNumber = in.getInt();
-        byte dataOffset = (byte) (in.get() >>> DATA_OFFSET_SHIFT);
+        int dataOffset = (in.get() >>> DATA_OFFSET_SHIFT) & 0x0F;
         byte flags = in.get();
         short windowSize = in.getShort();
         short checksum = in.getShort();
