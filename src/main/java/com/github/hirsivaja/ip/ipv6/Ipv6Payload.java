@@ -9,7 +9,7 @@ import com.github.hirsivaja.ip.udp.UdpMessagePayload;
 import java.nio.ByteBuffer;
 
 public interface Ipv6Payload extends IpPayload {
-   int NEXT_HEADER_INDEX = 6;
+    int NEXT_HEADER_INDEX = 6;
 
     static boolean isExtension(IpProtocol nextHeader) {
         return nextHeader == IpProtocol.ROUTING ||

@@ -27,7 +27,7 @@ public class EchoReply implements IcmpMessage {
 
     public static IcmpMessage decode(ByteBuffer in) {
         short identifier = in.getShort();
-        short sequenceNumber = in.get();
+        short sequenceNumber = in.getShort();
         byte[] payload = new byte[in.remaining()];
         in.get(payload);
         return new EchoReply(identifier, sequenceNumber, payload);
