@@ -5,9 +5,7 @@
 
 name: Gradle Release
 
-on:
-  release:
-    types: [created]
+on: workflow_dispatch
 
 jobs:
   build:
