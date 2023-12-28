@@ -147,6 +147,11 @@ public class Ipv6Header implements IpHeader {
         return Ipv6Header.HEADER_LEN + getExtensionsLength();
     }
 
+    @Override
+    public int getPseudoHeaderLength() {
+        return HEADER_LEN;
+    }
+
     public short getExtensionsLength() {
         return getExtensionsLength(extensionHeaders);
     }

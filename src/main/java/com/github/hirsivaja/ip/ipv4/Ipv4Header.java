@@ -84,6 +84,11 @@ public class Ipv4Header implements IpHeader {
         return HEADER_LEN + options.length;
     }
 
+    @Override
+    public int getPseudoHeaderLength() {
+        return PSEUDO_HEADER_LEN;
+    }
+
     public static Ipv4Header decode(ByteBuffer in){
         byte version = in.get();
         byte ihl = (byte) (version & 0x0F);

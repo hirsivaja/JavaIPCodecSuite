@@ -6,4 +6,5 @@ public interface IpHeader {
     void encode(ByteBuffer out);
     byte[] getPseudoHeader();
     int getLength();
+    int getPseudoHeaderLength();
 }

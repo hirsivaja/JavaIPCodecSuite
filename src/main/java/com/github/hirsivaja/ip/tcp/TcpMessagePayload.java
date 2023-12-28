@@ -3,7 +3,6 @@ package com.github.hirsivaja.ip.tcp;
 import com.github.hirsivaja.ip.IpPayload;
 import com.github.hirsivaja.ip.IpHeader;
 import com.github.hirsivaja.ip.IpUtils;
-import com.github.hirsivaja.ip.ipv4.Ipv4Header;
 import com.github.hirsivaja.ip.ipv4.Ipv4Payload;
 import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
 
@@ -38,7 +37,7 @@ public class TcpMessagePayload implements Ipv4Payload, Ipv6Payload {
     }
 
     private static byte[] getChecksumData(IpHeader header, TcpHeader tcpHeader, byte[] payload) {
-        ByteBuffer checksumBuf = ByteBuffer.allocate(Ipv4Header.PSEUDO_HEADER_LEN + TcpHeader.TCP_HEADER_LEN + payload.length);
+        ByteBuffer checksumBuf = ByteBuffer.allocate(header.getPseudoHeaderLength() + TcpHeader.TCP_HEADER_LEN + payload.length);
         checksumBuf.put(header.getPseudoHeader());
         tcpHeader.encode(checksumBuf, true);
         checksumBuf.put(payload);
