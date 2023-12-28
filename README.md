@@ -7,7 +7,8 @@ Java IP codec suite. Contains the following codecs:
 * UDP header [(RFC 768)](https://datatracker.ietf.org/doc/html/rfc768)
 * ICMP (partial) [(RFC 792)](https://datatracker.ietf.org/doc/html/rfc792)
 * ICMPv6 (partial) [(RFC 4443)](https://datatracker.ietf.org/doc/html/rfc4443)
-* RPL [(RFC 6550)](https://datatracker.ietf.org/doc/html/rfc6550)
+  * NDP [(RFC 4861)](https://datatracker.ietf.org/doc/html/rfc4861)
+  * RPL [(RFC 6550)](https://datatracker.ietf.org/doc/html/rfc6550)
 
 Creating a JAR:
 * Run 'gradlew jar'
