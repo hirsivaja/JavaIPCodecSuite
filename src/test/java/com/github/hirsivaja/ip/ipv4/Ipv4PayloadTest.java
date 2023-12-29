@@ -20,10 +20,10 @@ public class Ipv4PayloadTest {
         Assert.assertTrue(payload instanceof EncapsulationPayload);
         Assert.assertEquals(60, ((EncapsulationPayload) payload).getEncapsulatedPayload().getLength());
         Assert.assertEquals(0, header.getDscp());
-        Assert.assertEquals(0, header.getEcn());
+        Assert.assertEquals(0, header.getEcn().getType());
         Assert.assertEquals((short) 0x0050, header.getDataLength());
         Assert.assertEquals((short) 0x935A, header.getIdentification());
-        Assert.assertEquals(0, header.getFlags());
+        Assert.assertEquals(0, header.getFlags().toByte());
         Assert.assertEquals(0, header.getFragmentOffset());
         Assert.assertEquals((byte) 0x80, header.getTtl());
         Assert.assertEquals(IpProtocol.ENCAPSULATION, header.getProtocol());

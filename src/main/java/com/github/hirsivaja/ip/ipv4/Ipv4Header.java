@@ -14,10 +14,10 @@ public class Ipv4Header implements IpHeader {
     private static final int DSCP_SHIFT = 2;
     private static final int FLAGS_SHIFT = 13;
     private final byte dscp;
-    private final byte ecn;
+    private final EcnCodePoint ecn;
     private final short len;
     private final short identification;
-    private final byte flags;
+    private final Ipv4Flags flags;
     private final short fragmentOffset;
     private final byte ttl;
     private final IpProtocol protocol;
@@ -26,7 +26,7 @@ public class Ipv4Header implements IpHeader {
     private final byte[] options;
 
     @SuppressWarnings("squid:S00107")
-    public Ipv4Header(byte dscp, byte ecn, short len, short identification, byte flags, short fragmentOffset, byte ttl,
+    public Ipv4Header(byte dscp, EcnCodePoint ecn, short len, short identification, Ipv4Flags flags, short fragmentOffset, byte ttl,
                       IpProtocol protocol, int srcIp, int dstIp, byte[] options) {
         this.dscp = dscp;
         this.ecn = ecn;
@@ -45,11 +45,11 @@ public class Ipv4Header implements IpHeader {
     public void encode(ByteBuffer out) {
         byte versionIhl = (byte) (VERSION << VERSION_SHIFT | ((options.length / 4) + 5));
         out.put(versionIhl);
-        byte dscpEcn = (byte) (ecn & 0xFF | (dscp << DSCP_SHIFT));
+        byte dscpEcn = (byte) (ecn.getType() & 0xFF | (dscp << DSCP_SHIFT));
         out.put(dscpEcn);
         out.putShort(len);
         out.putShort(identification);
-        short flagsFragmentOffset = (short) (fragmentOffset | (flags << FLAGS_SHIFT));
+        short flagsFragmentOffset = (short) (fragmentOffset | (flags.toByte() << FLAGS_SHIFT));
         out.putShort(flagsFragmentOffset);
         out.put(ttl);
         out.put(protocol.getType());
@@ -97,12 +97,12 @@ public class Ipv4Header implements IpHeader {
             throw new IllegalArgumentException("Unexpected version for IPv4 header! " + version);
         }
         byte dscp = in.get();
-        byte ecn = (byte) (dscp & 0b11);
+        EcnCodePoint ecn = EcnCodePoint.getType((byte) (dscp & 0b11));
         dscp = (byte) (dscp >>> DSCP_SHIFT);
         short len = in.getShort();
         short identification = in.getShort();
         short fragmentOffset = in.getShort();
-        byte flags = (byte) (fragmentOffset >>> FLAGS_SHIFT);
+        Ipv4Flags flags = Ipv4Flags.decode((byte) (fragmentOffset >>> FLAGS_SHIFT));
         fragmentOffset = (short) (fragmentOffset & 0x1FFF);
         byte ttl = in.get();
         IpProtocol protocol = IpProtocol.getType(in.get());
@@ -119,7 +119,7 @@ public class Ipv4Header implements IpHeader {
         return dscp;
     }
 
-    public byte getEcn() {
+    public EcnCodePoint getEcn() {
         return ecn;
     }
 
@@ -131,7 +131,7 @@ public class Ipv4Header implements IpHeader {
         return identification;
     }
 
-    public byte getFlags() {
+    public Ipv4Flags getFlags() {
         return flags;
     }
 

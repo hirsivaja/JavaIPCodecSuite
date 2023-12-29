@@ -11,15 +11,15 @@ import java.util.List;
 public class Ipv6Header implements IpHeader {
     public static final byte VERSION = (byte) 0x06;
     public static final int HEADER_LEN = 40;
-    public static final int NO_FLOW = 0;
-    public static final byte MAX_HOPS = (byte) 0xFF;
     private static final int VERSION_SHIFT = 28;
     private static final int TRAFFIC_CLASS_MASK = 0xFF00000;
     private static final int TRAFFIC_CLASS_SHIFT = 20;
+    private static final int DSCP_SHIFT = 2;
     private static final int FLOW_LABEL_MASK = 0xFFFFF;
     private static final int IPV6_ADDRESS_LEN = 16;
 
-    private final byte trafficClass;
+    private final byte dscp;
+    private final EcnCodePoint ecn;
     private final int flowLabel;
     private final short payloadLength;
     private final IpProtocol nextHeader;
@@ -28,15 +28,17 @@ public class Ipv6Header implements IpHeader {
     private final byte[] destinationAddress;
     private final List<ExtensionHeader> extensionHeaders;
 
-    public Ipv6Header(byte trafficClass, int flowLabel, short payloadLength, IpProtocol nextHeader, byte hopLimit,
+    @SuppressWarnings("squid:S00107")
+    public Ipv6Header(byte dscp, EcnCodePoint ecn, int flowLabel, short payloadLength, IpProtocol nextHeader, byte hopLimit,
                       byte[] sourceAddress, byte[] destinationAddress) {
-        this(trafficClass, flowLabel, payloadLength, nextHeader, hopLimit, sourceAddress, destinationAddress, new ArrayList<>());
+        this(dscp, ecn, flowLabel, payloadLength, nextHeader, hopLimit, sourceAddress, destinationAddress, new ArrayList<>());
     }
 
     @SuppressWarnings("squid:S00107")
-    public Ipv6Header(byte trafficClass, int flowLabel, short payloadLength, IpProtocol nextHeader, byte hopLimit,
+    public Ipv6Header(byte dscp, EcnCodePoint ecn, int flowLabel, short payloadLength, IpProtocol nextHeader, byte hopLimit,
                       byte[] sourceAddress, byte[] destinationAddress, List<ExtensionHeader> extensionHeaders) {
-        this.trafficClass = trafficClass;
+        this.dscp = dscp;
+        this.ecn = ecn;
         this.flowLabel = flowLabel;
         this.nextHeader = nextHeader;
         this.hopLimit = hopLimit;
@@ -62,6 +64,7 @@ public class Ipv6Header implements IpHeader {
     }
 
     public void encode(ByteBuffer out){
+        byte trafficClass = (byte) (ecn.getType() & 0xFF | (dscp << DSCP_SHIFT));
         int start = 0;
         start |= (VERSION << VERSION_SHIFT);
         start |= (trafficClass << TRAFFIC_CLASS_SHIFT) & TRAFFIC_CLASS_MASK;
@@ -83,7 +86,9 @@ public class Ipv6Header implements IpHeader {
         if(version != VERSION){
             throw new IllegalArgumentException("Unexpected version for IPv6 header! " + version);
         }
-        byte trafficClass = (byte) ((start & TRAFFIC_CLASS_MASK) >>> TRAFFIC_CLASS_SHIFT);
+        byte dscp = (byte) ((start & TRAFFIC_CLASS_MASK) >>> TRAFFIC_CLASS_SHIFT);
+        EcnCodePoint ecn = EcnCodePoint.getType((byte) (dscp & 0b11));
+        dscp = (byte) (dscp >>> DSCP_SHIFT);
         int flowLabel = start & FLOW_LABEL_MASK;
         short payloadLength = in.getShort();
         IpProtocol nextHeader = IpProtocol.getType(in.get());
@@ -99,7 +104,7 @@ public class Ipv6Header implements IpHeader {
             extensionHeaders.add(extensionHeader);
             extensionHeaderId = extensionHeader.getNextHeader();
         }
-        return new Ipv6Header(trafficClass, flowLabel, (short) (payloadLength - getExtensionsLength(extensionHeaders)),
+        return new Ipv6Header(dscp, ecn, flowLabel, (short) (payloadLength - getExtensionsLength(extensionHeaders)),
                 nextHeader, hopLimit, sourceAddress, destinationAddress, extensionHeaders);
     }
 
@@ -111,8 +116,12 @@ public class Ipv6Header implements IpHeader {
         }
     }
 
-    public byte getTrafficClass() {
-        return trafficClass;
+    public byte getDscp() {
+        return dscp;
+    }
+
+    public EcnCodePoint getEcn() {
+        return ecn;
     }
 
     public int getFlowLabel() {
