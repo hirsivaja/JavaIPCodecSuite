@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip;
 
+import com.github.hirsivaja.ip.icmpv6.ndp.option.NdpOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 import com.github.hirsivaja.ip.ipv6.extension.ExtensionHeader;
@@ -41,6 +42,10 @@ public class TestUtils {
             RplSecurity security = (RplSecurity) object;
             out = ByteBuffer.allocate(security.getLength());
             security.encode(out);
+        } else if(object instanceof NdpOption) {
+            NdpOption option = (NdpOption) object;
+            out = ByteBuffer.allocate(option.getLength());
+            option.encode(out);
         } else {
             throw new IllegalArgumentException("Unknown object " + object.getClass().getSimpleName());
         }

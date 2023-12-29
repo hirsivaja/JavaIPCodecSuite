@@ -13,6 +13,8 @@ public class RedirectedHeaderOption implements NdpOption {
     public void encode(ByteBuffer out) {
         out.put(getOptionType().getType());
         out.put((byte) ((headerAndData.length + 8) / 8));
+        out.putShort((short) 0);
+        out.putInt(0);
         out.put(headerAndData);
     }
 
