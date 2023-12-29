@@ -27,7 +27,7 @@ public class UdpHeader {
         out.putShort(checksum);
     }
 
-    public short getLength() {
+    public int getLength() {
         return UDP_HEADER_LEN;
     }
 

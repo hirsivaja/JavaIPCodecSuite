@@ -9,20 +9,20 @@ public class TcpHeader {
     private final short dstPort;
     private final int sequenceNumber;
     private final int ackNumber;
-    private final byte flags;
+    private final TcpFlags flags;
     private final short windowSize;
     private final short checksum;
     private final short urgentPointer;
     private final byte[] options;
 
     @SuppressWarnings("squid:S00107")
-    public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, byte flags, short windowSize,
+    public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, TcpFlags flags, short windowSize,
                      short urgentPointer, byte[] options) {
         this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, (short) 0, urgentPointer, options);
     }
 
     @SuppressWarnings("squid:S00107")
-    public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, byte flags, short windowSize,
+    public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, TcpFlags flags, short windowSize,
                      short checksum, short urgentPointer, byte[] options) {
         this.srcPort = srcPort;
         this.dstPort = dstPort;
@@ -45,7 +45,7 @@ public class TcpHeader {
         out.putInt(sequenceNumber);
         out.putInt(ackNumber);
         out.put((byte) (((options.length / 4) + 5) << DATA_OFFSET_SHIFT));
-        out.put(flags);
+        out.put(flags.toByte());
         out.putShort(windowSize);
         out.putShort(skipChecksum ? 0 : checksum);
         out.putShort(urgentPointer);
@@ -62,7 +62,7 @@ public class TcpHeader {
         int sequenceNumber = in.getInt();
         int ackNumber = in.getInt();
         int dataOffset = (in.get() >>> DATA_OFFSET_SHIFT) & 0x0F;
-        byte flags = in.get();
+        TcpFlags flags = TcpFlags.decode(in.get());
         short windowSize = in.getShort();
         short checksum = in.getShort();
         short urgentPointer = in.getShort();
@@ -87,7 +87,7 @@ public class TcpHeader {
         return ackNumber;
     }
 
-    public byte getFlags() {
+    public TcpFlags getFlags() {
         return flags;
     }
 
