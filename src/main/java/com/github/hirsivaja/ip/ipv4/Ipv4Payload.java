@@ -1,6 +1,7 @@
 package com.github.hirsivaja.ip.ipv4;
 
 import com.github.hirsivaja.ip.IpPayload;
+import com.github.hirsivaja.ip.igmp.IgmpPayload;
 import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
 import com.github.hirsivaja.ip.udp.UdpMessagePayload;
 import com.github.hirsivaja.ip.icmp.IcmpPayload;
@@ -12,6 +13,7 @@ public interface Ipv4Payload extends IpPayload {
         Ipv4Header header = Ipv4Header.decode(in);
         switch (header.getProtocol()) {
             case ICMP: return IcmpPayload.decode(in, header);
+            case IGMP: return IgmpPayload.decode(in, header);
             case TCP: return TcpMessagePayload.decode(in, header);
             case UDP: return UdpMessagePayload.decode(in, header);
             case ENCAPSULATION: return EncapsulationPayload.decode(in, header);

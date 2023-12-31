@@ -3,6 +3,7 @@ package com.github.hirsivaja.ip;
 import com.github.hirsivaja.ip.icmpv6.ndp.option.NdpOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
+import com.github.hirsivaja.ip.igmp.IgmpMessage;
 import com.github.hirsivaja.ip.ipv6.extension.ExtensionHeader;
 import com.github.hirsivaja.ip.tcp.TcpHeader;
 import com.github.hirsivaja.ip.udp.UdpHeader;
@@ -46,6 +47,10 @@ public class TestUtils {
             NdpOption option = (NdpOption) object;
             out = ByteBuffer.allocate(option.getLength());
             option.encode(out);
+        } else if(object instanceof IgmpMessage) {
+            IgmpMessage message = (IgmpMessage) object;
+            out = ByteBuffer.allocate(message.getLength());
+            message.encode(out);
         } else {
             throw new IllegalArgumentException("Unknown object " + object.getClass().getSimpleName());
         }
