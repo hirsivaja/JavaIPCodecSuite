@@ -43,6 +43,7 @@ public class Ipv4Header implements IpHeader {
 
     @Override
     public void encode(ByteBuffer out) {
+        out.mark();
         byte versionIhl = (byte) (VERSION << VERSION_SHIFT | ((options.length / 4) + 5));
         out.put(versionIhl);
         byte dscpEcn = (byte) (ecn.getType() & 0xFF | (dscp << DSCP_SHIFT));
@@ -60,7 +61,7 @@ public class Ipv4Header implements IpHeader {
         out.put(options);
         int position = out.position();
         byte[] headerBytes = new byte[HEADER_LEN];
-        out.rewind().get(headerBytes, 0, headerBytes.length);
+        out.reset().get(headerBytes);
         short checksum = IpUtils.calculateInternetChecksum(headerBytes);
         out.putShort(checksumPosition, checksum);
         out.position(position);
@@ -89,7 +90,8 @@ public class Ipv4Header implements IpHeader {
         return PSEUDO_HEADER_LEN;
     }
 
-    public static Ipv4Header decode(ByteBuffer in){
+    public static Ipv4Header decode(ByteBuffer in) {
+        in.mark();
         byte version = in.get();
         byte ihl = (byte) (version & 0x0F);
         version = (byte) (version >>> VERSION_SHIFT);
@@ -106,9 +108,18 @@ public class Ipv4Header implements IpHeader {
         fragmentOffset = (short) (fragmentOffset & 0x1FFF);
         byte ttl = in.get();
         IpProtocol protocol = IpProtocol.getType(in.get());
-        in.getShort(); // Checksum not checked
+        short checksum = in.getShort();
         Ipv4Address srcIp = Ipv4Address.decode(in);
         Ipv4Address dstIp = Ipv4Address.decode(in);
+        in.reset();
+        byte[] headerBytes = new byte[HEADER_LEN];
+        in.get(headerBytes);
+        headerBytes[10] = 0;
+        headerBytes[11] = 0;
+        short expectedChecksum = IpUtils.calculateInternetChecksum(headerBytes);
+        if(expectedChecksum != checksum) {
+            throw new IllegalArgumentException("Checksum does not match!");
+        }
         byte[] options = new byte[(ihl - 5) * 4];
         in.get(options);
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,

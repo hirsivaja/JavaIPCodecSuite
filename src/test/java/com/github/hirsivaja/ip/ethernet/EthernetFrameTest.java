@@ -25,7 +25,7 @@ public class EthernetFrameTest {
 
     @Test
     public void ipv4PacketTest() {
-        byte[] ethernetBytes = TestUtils.parseHexBinary("001A6CA12B99001E7A793F11810000790800450000288A2B0000FF01DF88C0A87902C0A878010D00CF5000090008044B1F530000000000000000000000000000");
+        byte[] ethernetBytes = TestUtils.parseHexBinary("001A6CA12B99001E7A793F11810000790800450000288A2B0000FF01BF54C0A87902C0A878010D00CF5000090008044B1F530000000000000000000000000000");
         EthernetFrame ethernetFrame = EthernetFrame.decode(ByteBuffer.wrap(ethernetBytes));
 
         Assert.assertEquals(6, ethernetFrame.getDestination().getLength());
