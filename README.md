@@ -8,6 +8,7 @@ Java IP codec suite. Contains the following codecs:
 * ICMP (partial) [(RFC 792)](https://datatracker.ietf.org/doc/html/rfc792)
 * IGMP (v1, v2 and v3) [(RFC 3376)](https://datatracker.ietf.org/doc/html/rfc3376)
 * ICMPv6 (partial) [(RFC 4443)](https://datatracker.ietf.org/doc/html/rfc4443)
+  * MLD [(RFC 3810)](https://datatracker.ietf.org/doc/html/rfc3810)
   * NDP [(RFC 4861)](https://datatracker.ietf.org/doc/html/rfc4861)
   * RPL [(RFC 6550)](https://datatracker.ietf.org/doc/html/rfc6550)
 
