@@ -20,8 +20,9 @@ public class Ipv6HeaderTest {
         Assert.assertEquals(0x0014, header.getPayloadLength());
         Assert.assertEquals(0x11, header.getNextHeader().getType());
         Assert.assertEquals((byte) 0x04, header.getHopLimit());
-        Assert.assertArrayEquals(TestUtils.parseHexBinary("3FFE050700000001020086FFFE0580DA"), header.getSourceAddress());
-        Assert.assertArrayEquals(TestUtils.parseHexBinary("3FFE05010410000002C0DFFFFE47033E"), header.getDestinationAddress());
+        Assert.assertEquals(0, header.getExtensionHeaders().size());
+        Assert.assertArrayEquals(TestUtils.parseHexBinary("3FFE050700000001020086FFFE0580DA"), header.getSourceAddress().getAddress());
+        Assert.assertArrayEquals(TestUtils.parseHexBinary("3FFE05010410000002C0DFFFFE47033E"), header.getDestinationAddress().getAddress());
 
         Assert.assertArrayEquals(ipv6HeaderBytes, TestUtils.toBytes(header));
     }
@@ -33,7 +34,7 @@ public class Ipv6HeaderTest {
         short len = 0x1234;
         IpProtocol nextHeader =  IpProtocol.NO_NEXT;
 
-        Ipv6Header ipv6Header = new Ipv6Header((byte) 0, IpHeader.EcnCodePoint.NO_ECN_NO_ECT, 0, len, nextHeader, (byte) 0, sourceAddress, destinationAddress);
+        Ipv6Header ipv6Header = new Ipv6Header((byte) 0, IpHeader.EcnCodePoint.NO_ECN_NO_ECT, 0, len, nextHeader, (byte) 0, new Ipv6Address(sourceAddress), new Ipv6Address(destinationAddress));
 
         byte[] headerBytes = TestUtils.parseHexBinary("1234545236234523451123421433453275242334234234234412341232342342000012340000003B");
         Assert.assertArrayEquals(headerBytes, ipv6Header.getPseudoHeader());

@@ -1,13 +1,15 @@
 package com.github.hirsivaja.ip.igmp;
 
+import com.github.hirsivaja.ip.ipv4.Ipv4Address;
+
 import java.nio.ByteBuffer;
 
 public class GenericIgmpV1Message implements IgmpMessage {
     private final IgmpType type;
     private final byte code;
-    private final int groupAddress;
+    private final Ipv4Address groupAddress;
 
-    public GenericIgmpV1Message(IgmpType type, byte code, int groupAddress) {
+    public GenericIgmpV1Message(IgmpType type, byte code, Ipv4Address groupAddress) {
         this.type = type;
         this.code = code;
         this.groupAddress = groupAddress;
@@ -15,7 +17,7 @@ public class GenericIgmpV1Message implements IgmpMessage {
 
     @Override
     public void encode(ByteBuffer out) {
-        out.putInt(groupAddress);
+        groupAddress.encode(out);
     }
 
     @Override
@@ -24,7 +26,7 @@ public class GenericIgmpV1Message implements IgmpMessage {
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {
-        int groupAddress = in.getInt();
+        Ipv4Address groupAddress = Ipv4Address.decode(in);
         return new GenericIgmpV1Message(type, code, groupAddress);
     }
 
@@ -38,7 +40,7 @@ public class GenericIgmpV1Message implements IgmpMessage {
         return code;
     }
 
-    public int getGroupAddress() {
+    public Ipv4Address getGroupAddress() {
         return groupAddress;
     }
 }

@@ -22,7 +22,7 @@ public class MldTest {
         GenericMldMessage query = (GenericMldMessage) ((Icmpv6Payload) payload).getMessage();
 
         Assert.assertEquals(1000, query.getMaximumResponseDelay());
-        Assert.assertEquals(16, query.getMulticastAddress().length);
+        Assert.assertEquals(16, query.getMulticastAddress().getLength());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));
@@ -38,7 +38,7 @@ public class MldTest {
         MulticastListenerQueryMessage query = (MulticastListenerQueryMessage) ((Icmpv6Payload) payload).getMessage();
 
         Assert.assertEquals(1000, query.getMaximumResponseCode());
-        Assert.assertEquals(16, query.getMulticastAddress().length);
+        Assert.assertEquals(16, query.getMulticastAddress().getLength());
         Assert.assertEquals(2, query.getFlags());
         Assert.assertEquals(60, query.getQqic());
         Assert.assertEquals(0, query.getSourceAddresses().length);
@@ -59,7 +59,7 @@ public class MldTest {
         Assert.assertEquals(3, report.getMulticastAccessRecords().length);
         MulticastAccessRecord record = report.getMulticastAccessRecords()[0];
         Assert.assertEquals(4, record.getRecordType());
-        Assert.assertEquals(16, record.getMulticastAddress().length);
+        Assert.assertEquals(16, record.getMulticastAddress().getLength());
         Assert.assertEquals(0, record.getSourceAddresses().length);
         Assert.assertEquals(0, record.getAuxData().length);
 

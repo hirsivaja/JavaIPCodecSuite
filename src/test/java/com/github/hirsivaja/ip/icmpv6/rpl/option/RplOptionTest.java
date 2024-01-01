@@ -99,9 +99,22 @@ public class RplOptionTest {
         Assert.assertEquals(2, castOption.getPathControl());
         Assert.assertEquals(3, castOption.getPathSequence());
         Assert.assertEquals(4, castOption.getPathLifetime());
-        Assert.assertEquals(16, castOption.getParentAddress().length);
+        Assert.assertEquals(16, castOption.getParentAddress().getLength());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
+
+        byte[] optionWithoutParentAddressBytes = TestUtils.parseHexBinary("060401020304");
+        RplOption optionWithoutParent = RplOption.decode(ByteBuffer.wrap(optionWithoutParentAddressBytes));
+
+        Assert.assertTrue(optionWithoutParent instanceof RplTransitInformationOption);
+        RplTransitInformationOption withoutParent = (RplTransitInformationOption) optionWithoutParent;
+        Assert.assertEquals(1, withoutParent.getFlags());
+        Assert.assertEquals(2, withoutParent.getPathControl());
+        Assert.assertEquals(3, withoutParent.getPathSequence());
+        Assert.assertEquals(4, withoutParent.getPathLifetime());
+        Assert.assertNull(withoutParent.getParentAddress());
+
+        Assert.assertArrayEquals(optionWithoutParentAddressBytes, TestUtils.toBytes(optionWithoutParent));
     }
 
     @Test
@@ -130,7 +143,7 @@ public class RplOptionTest {
         Assert.assertEquals(2, castOption.getFlags());
         Assert.assertEquals(0x03040506, castOption.getValidLifetime());
         Assert.assertEquals(0x0708090A, castOption.getPreferredLifetime());
-        Assert.assertEquals(16, castOption.getPrefix().length);
+        Assert.assertEquals(16, castOption.getPrefix().getLength());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }

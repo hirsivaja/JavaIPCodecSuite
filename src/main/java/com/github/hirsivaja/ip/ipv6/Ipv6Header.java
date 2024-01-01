@@ -16,7 +16,6 @@ public class Ipv6Header implements IpHeader {
     private static final int TRAFFIC_CLASS_SHIFT = 20;
     private static final int DSCP_SHIFT = 2;
     private static final int FLOW_LABEL_MASK = 0xFFFFF;
-    private static final int IPV6_ADDRESS_LEN = 16;
 
     private final byte dscp;
     private final EcnCodePoint ecn;
@@ -24,19 +23,19 @@ public class Ipv6Header implements IpHeader {
     private final short payloadLength;
     private final IpProtocol nextHeader;
     private final byte hopLimit;
-    private final byte[] sourceAddress;
-    private final byte[] destinationAddress;
+    private final Ipv6Address sourceAddress;
+    private final Ipv6Address destinationAddress;
     private final List<ExtensionHeader> extensionHeaders;
 
     @SuppressWarnings("squid:S00107")
     public Ipv6Header(byte dscp, EcnCodePoint ecn, int flowLabel, short payloadLength, IpProtocol nextHeader, byte hopLimit,
-                      byte[] sourceAddress, byte[] destinationAddress) {
+                      Ipv6Address sourceAddress, Ipv6Address destinationAddress) {
         this(dscp, ecn, flowLabel, payloadLength, nextHeader, hopLimit, sourceAddress, destinationAddress, new ArrayList<>());
     }
 
     @SuppressWarnings("squid:S00107")
     public Ipv6Header(byte dscp, EcnCodePoint ecn, int flowLabel, short payloadLength, IpProtocol nextHeader, byte hopLimit,
-                      byte[] sourceAddress, byte[] destinationAddress, List<ExtensionHeader> extensionHeaders) {
+                      Ipv6Address sourceAddress, Ipv6Address destinationAddress, List<ExtensionHeader> extensionHeaders) {
         this.dscp = dscp;
         this.ecn = ecn;
         this.flowLabel = flowLabel;
@@ -51,8 +50,8 @@ public class Ipv6Header implements IpHeader {
     @Override
     public byte[] getPseudoHeader(){
         ByteBuffer out = ByteBuffer.allocate(HEADER_LEN);
-        out.put(sourceAddress);
-        out.put(destinationAddress);
+        sourceAddress.encode(out);
+        destinationAddress.encode(out);
         out.putInt(payloadLength - getExtensionsLength());
         out.put((byte) 0);
         out.put((byte) 0);
@@ -73,8 +72,8 @@ public class Ipv6Header implements IpHeader {
         out.putShort(payloadLength);
         out.put(nextHeader.getType());
         out.put(hopLimit);
-        out.put(sourceAddress);
-        out.put(destinationAddress);
+        sourceAddress.encode(out);
+        destinationAddress.encode(out);
         for(ExtensionHeader extensionHeader : extensionHeaders) {
             extensionHeader.encode(out);
         }
@@ -93,10 +92,8 @@ public class Ipv6Header implements IpHeader {
         short payloadLength = in.getShort();
         IpProtocol nextHeader = IpProtocol.getType(in.get());
         byte hopLimit = in.get();
-        byte[] sourceAddress = new byte[IPV6_ADDRESS_LEN];
-        in.get(sourceAddress);
-        byte[] destinationAddress = new byte[IPV6_ADDRESS_LEN];
-        in.get(destinationAddress);
+        Ipv6Address sourceAddress = Ipv6Address.decode(in);
+        Ipv6Address destinationAddress = Ipv6Address.decode(in);
         List<ExtensionHeader> extensionHeaders = new ArrayList<>();
         IpProtocol extensionHeaderId = nextHeader;
         while(Ipv6Payload.isExtension(extensionHeaderId)) {
@@ -140,11 +137,11 @@ public class Ipv6Header implements IpHeader {
         return hopLimit;
     }
 
-    public byte[] getSourceAddress() {
+    public Ipv6Address getSourceAddress() {
         return sourceAddress;
     }
 
-    public byte[] getDestinationAddress() {
+    public Ipv6Address getDestinationAddress() {
         return destinationAddress;
     }
 

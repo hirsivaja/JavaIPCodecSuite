@@ -56,7 +56,7 @@ public class NdpTest {
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
         NeighborSolicitation ns = (NeighborSolicitation) ((Icmpv6Payload) payload).getMessage();
 
-        Assert.assertEquals(16, ns.getTargetAddress().length);
+        Assert.assertEquals(16, ns.getTargetAddress().getLength());
         Assert.assertEquals(1, ns.getOptions().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
@@ -72,7 +72,7 @@ public class NdpTest {
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
         NeighborAdvertisement na = (NeighborAdvertisement) ((Icmpv6Payload) payload).getMessage();
 
-        Assert.assertEquals(16, na.getTargetAddress().length);
+        Assert.assertEquals(16, na.getTargetAddress().getLength());
         Assert.assertEquals(0, na.getOptions().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
@@ -88,8 +88,8 @@ public class NdpTest {
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
         RedirectMessage rm = (RedirectMessage) ((Icmpv6Payload) payload).getMessage();
 
-        Assert.assertEquals(16, rm.getTargetAddress().length);
-        Assert.assertEquals(16, rm.getDestinationAddress().length);
+        Assert.assertEquals(16, rm.getTargetAddress().getLength());
+        Assert.assertEquals(16, rm.getDestinationAddress().getLength());
         Assert.assertEquals(0, rm.getOptions().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);

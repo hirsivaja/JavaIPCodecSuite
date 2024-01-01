@@ -17,7 +17,7 @@ public class IgmpPayloadTest {
         GenericIgmpV0Message msg = (GenericIgmpV0Message) GenericIgmpV0Message.decode(ByteBuffer.wrap(reqBytes), IgmpType.CREATE_GROUP_REQUEST, (byte) 0x01);
 
         Assert.assertEquals(0x12345678, msg.getIdentifier());
-        Assert.assertEquals(0x87654321, msg.getGroupAddress());
+        Assert.assertEquals(0x87654321, msg.getGroupAddress().toInt());
         Assert.assertEquals(0x1234567890ABCDEFL, msg.getAccessKey());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(msg));
@@ -29,7 +29,7 @@ public class IgmpPayloadTest {
 
         GenericIgmpV1Message msg = (GenericIgmpV1Message) GenericIgmpV1Message.decode(ByteBuffer.wrap(reqBytes), IgmpType.MEMBERSHIP_REPORT_V1, (byte) 0);
 
-        Assert.assertEquals(0xEFFFFFFA, msg.getGroupAddress());
+        Assert.assertEquals(0xEFFFFFFA, msg.getGroupAddress().toInt());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(msg));
     }
@@ -43,7 +43,7 @@ public class IgmpPayloadTest {
         Assert.assertTrue(((IgmpPayload) ipv4Payload).getMessage() instanceof GenericIgmpV2Message);
         GenericIgmpV2Message query = (GenericIgmpV2Message) ((IgmpPayload) ipv4Payload).getMessage();
         Assert.assertEquals(0x64, query.getMaxRespCode());
-        Assert.assertEquals(0, query.getGroupAddress());
+        Assert.assertEquals(0, query.getGroupAddress().toInt());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv4Payload));
     }
@@ -57,7 +57,7 @@ public class IgmpPayloadTest {
         Assert.assertTrue(((IgmpPayload) ipv4Payload).getMessage() instanceof MembershipQueryMessage);
         MembershipQueryMessage query = (MembershipQueryMessage) ((IgmpPayload) ipv4Payload).getMessage();
         Assert.assertEquals(0x60, query.getMaxRespCode());
-        Assert.assertEquals(0x2100BAF1, query.getGroupAddress());
+        Assert.assertEquals(0x2100BAF1, query.getGroupAddress().toInt());
         Assert.assertEquals(0x45, query.getFlags());
         Assert.assertEquals(0x50, query.getQqic());
         Assert.assertEquals(6, query.getSourceAddresses().length);
@@ -76,7 +76,7 @@ public class IgmpPayloadTest {
         Assert.assertEquals(1, report.getGroupRecords().length);
         GroupRecord record1 = report.getGroupRecords()[0];
         Assert.assertEquals(6, record1.getRecordType());
-        Assert.assertEquals(0xF00700CB, record1.getMulticastAddress());
+        Assert.assertEquals(0xF00700CB, record1.getMulticastAddress().toInt());
         Assert.assertEquals(4, record1.getSourceAddresses().length);
         Assert.assertEquals(15, record1.getAuxData().length);
 

@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.ipv6.Ipv6Address;
+
 import java.nio.ByteBuffer;
 
 public class RplTransitInformationOption implements RplOption {
@@ -7,10 +9,14 @@ public class RplTransitInformationOption implements RplOption {
     private final byte pathControl;
     private final byte pathSequence;
     private final byte pathLifetime;
-    private final byte[] parentAddress;
+    private final Ipv6Address parentAddress;
+
+    public RplTransitInformationOption(byte flags, byte pathControl, byte pathSequence, byte pathLifetime) {
+        this(flags, pathControl, pathSequence, pathLifetime, null);
+    }
 
     public RplTransitInformationOption(byte flags, byte pathControl, byte pathSequence, byte pathLifetime,
-                                       byte[] parentAddress) {
+                                       Ipv6Address parentAddress) {
         this.flags = flags;
         this.pathControl = pathControl;
         this.pathSequence = pathSequence;
@@ -21,17 +27,19 @@ public class RplTransitInformationOption implements RplOption {
     @Override
     public void encode(ByteBuffer out) {
         out.put(getOptionType().getType());
-        out.put((byte) (4 + parentAddress.length));
+        out.put((byte) (getLength() - 2));
         out.put(flags);
         out.put(pathControl);
         out.put(pathSequence);
         out.put(pathLifetime);
-        out.put(parentAddress);
+        if(parentAddress != null) {
+            parentAddress.encode(out);
+        }
     }
 
     @Override
     public int getLength() {
-        return 6 + parentAddress.length;
+        return 6 + (parentAddress == null ? 0 : 16);
     }
 
     @Override
@@ -45,10 +53,11 @@ public class RplTransitInformationOption implements RplOption {
         byte pathControl = in.get();
         byte pathSequence = in.get();
         byte pathLifetime = in.get();
-        byte[] parentAddress = new byte[len - 4];
-        in.get(parentAddress);
-        return new RplTransitInformationOption(flags, pathControl, pathSequence, pathLifetime,
-                parentAddress);
+        if(len == 20) {
+            return new RplTransitInformationOption(flags, pathControl, pathSequence, pathLifetime, Ipv6Address.decode(in));
+        } else {
+            return new RplTransitInformationOption(flags, pathControl, pathSequence, pathLifetime);
+        }
     }
 
     public byte getFlags() {
@@ -67,7 +76,7 @@ public class RplTransitInformationOption implements RplOption {
         return pathLifetime;
     }
 
-    public byte[] getParentAddress() {
+    public Ipv6Address getParentAddress() {
         return parentAddress;
     }
 }

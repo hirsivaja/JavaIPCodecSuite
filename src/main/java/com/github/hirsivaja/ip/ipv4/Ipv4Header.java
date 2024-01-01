@@ -21,13 +21,13 @@ public class Ipv4Header implements IpHeader {
     private final short fragmentOffset;
     private final byte ttl;
     private final IpProtocol protocol;
-    private final int srcIp;
-    private final int dstIp;
+    private final Ipv4Address srcIp;
+    private final Ipv4Address dstIp;
     private final byte[] options;
 
     @SuppressWarnings("squid:S00107")
     public Ipv4Header(byte dscp, EcnCodePoint ecn, short len, short identification, Ipv4Flags flags, short fragmentOffset, byte ttl,
-                      IpProtocol protocol, int srcIp, int dstIp, byte[] options) {
+                      IpProtocol protocol, Ipv4Address srcIp, Ipv4Address dstIp, byte[] options) {
         this.dscp = dscp;
         this.ecn = ecn;
         this.len = len;
@@ -55,8 +55,8 @@ public class Ipv4Header implements IpHeader {
         out.put(protocol.getType());
         int checksumPosition = out.position();
         out.putShort((short) 0);
-        out.putInt(srcIp);
-        out.putInt(dstIp);
+        srcIp.encode(out);
+        dstIp.encode(out);
         out.put(options);
         int position = out.position();
         byte[] headerBytes = new byte[HEADER_LEN];
@@ -69,8 +69,8 @@ public class Ipv4Header implements IpHeader {
     @Override
     public byte[] getPseudoHeader() {
         ByteBuffer out = ByteBuffer.allocate(PSEUDO_HEADER_LEN);
-        out.putInt(srcIp);
-        out.putInt(dstIp);
+        srcIp.encode(out);
+        dstIp.encode(out);
         out.put((byte) 0);
         out.put(protocol.getType());
         out.putShort((short) (len - HEADER_LEN - options.length));
@@ -107,8 +107,8 @@ public class Ipv4Header implements IpHeader {
         byte ttl = in.get();
         IpProtocol protocol = IpProtocol.getType(in.get());
         in.getShort(); // Checksum not checked
-        int srcIp = in.getInt();
-        int dstIp = in.getInt();
+        Ipv4Address srcIp = Ipv4Address.decode(in);
+        Ipv4Address dstIp = Ipv4Address.decode(in);
         byte[] options = new byte[(ihl - 5) * 4];
         in.get(options);
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,
@@ -147,11 +147,11 @@ public class Ipv4Header implements IpHeader {
         return protocol;
     }
 
-    public int getSrcIp() {
+    public Ipv4Address getSrcIp() {
         return srcIp;
     }
 
-    public int getDstIp() {
+    public Ipv4Address getDstIp() {
         return dstIp;
     }
 

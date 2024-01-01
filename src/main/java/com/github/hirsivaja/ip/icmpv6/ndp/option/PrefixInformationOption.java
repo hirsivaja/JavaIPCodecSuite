@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.icmpv6.ndp.option;
 
+import com.github.hirsivaja.ip.ipv6.Ipv6Address;
+
 import java.nio.ByteBuffer;
 
 public class PrefixInformationOption implements NdpOption {
@@ -7,9 +9,9 @@ public class PrefixInformationOption implements NdpOption {
     private final byte flags;
     private final int validLifetime;
     private final int preferredLifetime;
-    private final byte[] prefix;
+    private final Ipv6Address prefix;
 
-    public PrefixInformationOption(byte prefixLen, byte flags, int validLifetime, int preferredLifetime, byte[] prefix) {
+    public PrefixInformationOption(byte prefixLen, byte flags, int validLifetime, int preferredLifetime, Ipv6Address prefix) {
         this.prefixLen = prefixLen;
         this.flags = flags;
         this.validLifetime = validLifetime;
@@ -26,7 +28,7 @@ public class PrefixInformationOption implements NdpOption {
         out.putInt(validLifetime);
         out.putInt(preferredLifetime);
         out.putInt(0); // RESERVED
-        out.put(prefix);
+        prefix.encode(out);
     }
 
     @Override
@@ -46,8 +48,7 @@ public class PrefixInformationOption implements NdpOption {
         int validLifetime = in.getInt();
         int preferredLifetime = in.getInt();
         in.getInt(); // RESERVED
-        byte[] prefix = new byte[16];
-        in.get(prefix);
+        Ipv6Address prefix = Ipv6Address.decode(in);
         return new PrefixInformationOption(prefixLen, flags, validLifetime, preferredLifetime, prefix);
     }
 
@@ -67,7 +68,7 @@ public class PrefixInformationOption implements NdpOption {
         return preferredLifetime;
     }
 
-    public byte[] getPrefix() {
+    public Ipv6Address getPrefix() {
         return prefix;
     }
 }

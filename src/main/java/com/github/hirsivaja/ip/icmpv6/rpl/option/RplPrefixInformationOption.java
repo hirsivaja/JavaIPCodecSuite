@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.ipv6.Ipv6Address;
+
 import java.nio.ByteBuffer;
 
 public class RplPrefixInformationOption implements RplOption {
@@ -8,9 +10,9 @@ public class RplPrefixInformationOption implements RplOption {
     private final byte flags;
     private final int validLifetime;
     private final int preferredLifetime;
-    private final byte[] prefix;
+    private final Ipv6Address prefix;
 
-    public RplPrefixInformationOption(byte prefixLen, byte flags, int validLifetime, int preferredLifetime, byte[] prefix) {
+    public RplPrefixInformationOption(byte prefixLen, byte flags, int validLifetime, int preferredLifetime, Ipv6Address prefix) {
         this.prefixLen = prefixLen;
         this.flags = flags;
         this.validLifetime = validLifetime;
@@ -27,12 +29,12 @@ public class RplPrefixInformationOption implements RplOption {
         out.putInt(validLifetime);
         out.putInt(preferredLifetime);
         out.putInt(0); // RESERVED
-        out.put(prefix);
+        prefix.encode(out);
     }
 
     @Override
     public int getLength() {
-        return 16 + prefix.length;
+        return 32;
     }
 
     @Override
@@ -50,8 +52,7 @@ public class RplPrefixInformationOption implements RplOption {
         int validLifetime = in.getInt();
         int preferredLifetime = in.getInt();
         in.getInt(); // RESERVED
-        byte[] prefix = new byte[len - 14];
-        in.get(prefix);
+        Ipv6Address prefix = Ipv6Address.decode(in);
         return new RplPrefixInformationOption(prefixLen, flags, validLifetime, preferredLifetime, prefix);
     }
 
@@ -71,7 +72,7 @@ public class RplPrefixInformationOption implements RplOption {
         return preferredLifetime;
     }
 
-    public byte[] getPrefix() {
+    public Ipv6Address getPrefix() {
         return prefix;
     }
 }

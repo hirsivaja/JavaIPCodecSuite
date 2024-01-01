@@ -1,17 +1,19 @@
 package com.github.hirsivaja.ip.igmp;
 
+import com.github.hirsivaja.ip.ipv4.Ipv4Address;
+
 import java.nio.ByteBuffer;
 
 public class MembershipQueryMessage implements IgmpMessage {
     private final IgmpType type;
     private final byte code;
-    private final int groupAddress;
+    private final Ipv4Address groupAddress;
     private final byte flags;
     private final byte qqic;
-    private final int[] sourceAddresses;
+    private final Ipv4Address[] sourceAddresses;
 
-    public MembershipQueryMessage(IgmpType type, byte code, int groupAddress, byte flags, byte qqic,
-                                  int[] sourceAddresses) {
+    public MembershipQueryMessage(IgmpType type, byte code, Ipv4Address groupAddress, byte flags, byte qqic,
+                                  Ipv4Address[] sourceAddresses) {
         this.type = type;
         this.code = code;
         this.groupAddress = groupAddress;
@@ -22,12 +24,12 @@ public class MembershipQueryMessage implements IgmpMessage {
 
     @Override
     public void encode(ByteBuffer out) {
-        out.putInt(groupAddress);
+        groupAddress.encode(out);
         out.put(flags);
         out.put(qqic);
         out.putShort((short) sourceAddresses.length);
-        for(int sourceAddress : sourceAddresses) {
-            out.putInt(sourceAddress);
+        for(Ipv4Address sourceAddress : sourceAddresses) {
+            sourceAddress.encode(out);
         }
     }
 
@@ -37,14 +39,14 @@ public class MembershipQueryMessage implements IgmpMessage {
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {
-        int groupAddress = in.getInt();
+        Ipv4Address groupAddress = Ipv4Address.decode(in);
         if(in.remaining() >= 4) {
             byte flags = in.get();
             byte qqic = in.get();
             short numberOfSources = in.getShort();
-            int[] sourceAddresses = new int[numberOfSources];
+            Ipv4Address[] sourceAddresses = new Ipv4Address[numberOfSources];
             for(int i = 0; i < sourceAddresses.length; i++) {
-                sourceAddresses[i] = in.getInt();
+                sourceAddresses[i] = Ipv4Address.decode(in);
             }
             return new MembershipQueryMessage(type, code, groupAddress, flags, qqic, sourceAddresses);
         } else {
@@ -70,7 +72,7 @@ public class MembershipQueryMessage implements IgmpMessage {
         return getCode();
     }
 
-    public int getGroupAddress() {
+    public Ipv4Address getGroupAddress() {
         return groupAddress;
     }
 
@@ -82,7 +84,7 @@ public class MembershipQueryMessage implements IgmpMessage {
         return qqic;
     }
 
-    public int[] getSourceAddresses() {
+    public Ipv4Address[] getSourceAddresses() {
         return sourceAddresses;
     }
 }

@@ -31,7 +31,7 @@ public class NdpOptionTest {
         Assert.assertEquals(2, castOption.getFlags());
         Assert.assertEquals(0x03040506, castOption.getValidLifetime());
         Assert.assertEquals(0x0708090A, castOption.getPreferredLifetime());
-        Assert.assertEquals(16, castOption.getPrefix().length);
+        Assert.assertEquals(16, castOption.getPrefix().getLength());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }

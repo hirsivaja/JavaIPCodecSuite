@@ -1,14 +1,16 @@
 package com.github.hirsivaja.ip.igmp;
 
+import com.github.hirsivaja.ip.ipv4.Ipv4Address;
+
 import java.nio.ByteBuffer;
 
 public class GroupRecord {
     private final byte recordType;
-    private final int multicastAddress;
-    private final int[] sourceAddresses;
+    private final Ipv4Address multicastAddress;
+    private final Ipv4Address[] sourceAddresses;
     private final byte[] auxData;
 
-    public GroupRecord(byte recordType, int multicastAddress, int[] sourceAddresses, byte[] auxData) {
+    public GroupRecord(byte recordType, Ipv4Address multicastAddress, Ipv4Address[] sourceAddresses, byte[] auxData) {
         this.recordType = recordType;
         this.multicastAddress = multicastAddress;
         this.sourceAddresses = sourceAddresses;
@@ -19,9 +21,9 @@ public class GroupRecord {
         out.put(recordType);
         out.put((byte) auxData.length);
         out.putShort((short) sourceAddresses.length);
-        out.putInt(multicastAddress);
-        for(int sourceAddress : sourceAddresses) {
-            out.putInt(sourceAddress);
+        multicastAddress.encode(out);
+        for(Ipv4Address sourceAddress : sourceAddresses) {
+            sourceAddress.encode(out);
         }
         out.put(auxData);
     }
@@ -34,10 +36,10 @@ public class GroupRecord {
         byte recordType = in.get();
         int auxDataLen = in.get() & 0xFF;
         short numberOfSources = in.getShort();
-        int multicastAddress = in.getInt();
-        int[] sourceAddresses = new int[numberOfSources];
+        Ipv4Address multicastAddress = Ipv4Address.decode(in);
+        Ipv4Address[] sourceAddresses = new Ipv4Address[numberOfSources];
         for(int i = 0; i < sourceAddresses.length; i++) {
-            sourceAddresses[i] = in.getInt();
+            sourceAddresses[i] = Ipv4Address.decode(in);
         }
         byte[] auxData = new byte[auxDataLen];
         in.get(auxData);
@@ -48,11 +50,11 @@ public class GroupRecord {
         return recordType;
     }
 
-    public int getMulticastAddress() {
+    public Ipv4Address getMulticastAddress() {
         return multicastAddress;
     }
 
-    public int[] getSourceAddresses() {
+    public Ipv4Address[] getSourceAddresses() {
         return sourceAddresses;
     }
 

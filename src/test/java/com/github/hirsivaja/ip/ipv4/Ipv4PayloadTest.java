@@ -27,8 +27,8 @@ public class Ipv4PayloadTest {
         Assert.assertEquals(0, header.getFragmentOffset());
         Assert.assertEquals((byte) 0x80, header.getTtl());
         Assert.assertEquals(IpProtocol.ENCAPSULATION, header.getProtocol());
-        Assert.assertEquals(0x4637D5D3, header.getSrcIp());
-        Assert.assertEquals(0xC0586301, header.getDstIp());
+        Assert.assertEquals(0x4637D5D3, header.getSrcIp().toInt());
+        Assert.assertEquals(0xC0586301, header.getDstIp().toInt());
         Assert.assertEquals(0, header.getOptions().length);
         Assert.assertEquals(0x50, payload.getLength());
 

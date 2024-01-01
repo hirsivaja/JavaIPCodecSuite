@@ -2,6 +2,7 @@ package com.github.hirsivaja.ip.icmpv6.mld;
 
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Type;
+import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 
 import java.nio.ByteBuffer;
 
@@ -9,13 +10,13 @@ public class MulticastListenerQueryMessage implements Icmpv6Message {
     private final Icmpv6Type type;
     private final byte code;
     private final short maximumResponseCode;
-    private final byte[] multicastAddress;
+    private final Ipv6Address multicastAddress;
     private final byte flags;
     private final byte qqic;
-    private final byte[][] sourceAddresses;
+    private final Ipv6Address[] sourceAddresses;
 
-    public MulticastListenerQueryMessage(Icmpv6Type type, byte code, short maximumResponseCode, byte[] multicastAddress,
-                                         byte flags, byte qqic, byte[][] sourceAddresses) {
+    public MulticastListenerQueryMessage(Icmpv6Type type, byte code, short maximumResponseCode, Ipv6Address multicastAddress,
+                                         byte flags, byte qqic, Ipv6Address[] sourceAddresses) {
         this.type = type;
         this.code = code;
         this.maximumResponseCode = maximumResponseCode;
@@ -29,12 +30,12 @@ public class MulticastListenerQueryMessage implements Icmpv6Message {
     public void encode(ByteBuffer out) {
         out.putShort(maximumResponseCode);
         out.putShort((short) 0);
-        out.put(multicastAddress);
+        multicastAddress.encode(out);
         out.put(flags);
         out.put(qqic);
         out.putShort((short) sourceAddresses.length);
-        for(byte[] sourceAddress : sourceAddresses) {
-            out.put(sourceAddress);
+        for(Ipv6Address sourceAddress : sourceAddresses) {
+            sourceAddress.encode(out);
         }
     }
 
@@ -46,16 +47,14 @@ public class MulticastListenerQueryMessage implements Icmpv6Message {
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, byte code) {
         short maximumResponseCode = in.getShort();
         in.getShort(); // RESERVED
-        byte[] multicastAddress = new byte[16];
-        in.get(multicastAddress);
+        Ipv6Address multicastAddress = Ipv6Address.decode(in);
         if(in.remaining() >= 4) {
             byte flags = in.get();
             byte qqic = in.get();
             short numberOfSources = in.getShort();
-            byte[][] sourceAddresses = new byte[numberOfSources][];
+            Ipv6Address[] sourceAddresses = new Ipv6Address[numberOfSources];
             for(int i = 0; i < sourceAddresses.length; i++) {
-                sourceAddresses[i] = new byte[16];
-                in.get(sourceAddresses[i]);
+                sourceAddresses[i] = Ipv6Address.decode(in);
             }
             return new MulticastListenerQueryMessage(type, code, maximumResponseCode, multicastAddress, flags, qqic, sourceAddresses);
         } else {
@@ -77,7 +76,7 @@ public class MulticastListenerQueryMessage implements Icmpv6Message {
         return maximumResponseCode;
     }
 
-    public byte[] getMulticastAddress() {
+    public Ipv6Address getMulticastAddress() {
         return multicastAddress;
     }
 
@@ -89,7 +88,7 @@ public class MulticastListenerQueryMessage implements Icmpv6Message {
         return qqic;
     }
 
-    public byte[][] getSourceAddresses() {
+    public Ipv6Address[] getSourceAddresses() {
         return sourceAddresses;
     }
 }
