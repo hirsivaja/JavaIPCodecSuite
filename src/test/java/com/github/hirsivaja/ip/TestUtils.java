@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip;
 
+import com.github.hirsivaja.ip.ethernet.ArpPacket;
+import com.github.hirsivaja.ip.ethernet.EthernetFrame;
 import com.github.hirsivaja.ip.icmpv6.ndp.option.NdpOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
@@ -51,6 +53,14 @@ public class TestUtils {
             IgmpMessage message = (IgmpMessage) object;
             out = ByteBuffer.allocate(message.getLength());
             message.encode(out);
+        } else if(object instanceof ArpPacket) {
+            ArpPacket packet = (ArpPacket) object;
+            out = ByteBuffer.allocate(packet.getLength());
+            packet.encode(out);
+        } else if(object instanceof EthernetFrame) {
+            EthernetFrame frame = (EthernetFrame) object;
+            out = ByteBuffer.allocate(frame.getLength());
+            frame.encode(out);
         } else {
             throw new IllegalArgumentException("Unknown object " + object.getClass().getSimpleName());
         }
