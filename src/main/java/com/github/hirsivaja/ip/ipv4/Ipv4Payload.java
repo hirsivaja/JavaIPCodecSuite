@@ -11,12 +11,15 @@ import java.nio.ByteBuffer;
 public interface Ipv4Payload extends IpPayload {
     static IpPayload decode(ByteBuffer in) {
         Ipv4Header header = Ipv4Header.decode(in);
+        byte[] payload = new byte[header.getDataLength() - Ipv4Header.HEADER_LEN];
+        in.get(payload);
+        ByteBuffer payloadBuffer = ByteBuffer.wrap(payload);
         switch (header.getProtocol()) {
-            case ICMP: return IcmpPayload.decode(in, header);
-            case IGMP: return IgmpPayload.decode(in, header);
-            case TCP: return TcpMessagePayload.decode(in, header);
-            case UDP: return UdpMessagePayload.decode(in, header);
-            case ENCAPSULATION: return EncapsulationPayload.decode(in, header);
+            case ICMP: return IcmpPayload.decode(payloadBuffer, header);
+            case IGMP: return IgmpPayload.decode(payloadBuffer, header);
+            case TCP: return TcpMessagePayload.decode(payloadBuffer, header);
+            case UDP: return UdpMessagePayload.decode(payloadBuffer, header);
+            case ENCAPSULATION: return EncapsulationPayload.decode(payloadBuffer, header);
             default: throw new IllegalArgumentException("Unexpected command payload type " + header.getProtocol());
         }
     }

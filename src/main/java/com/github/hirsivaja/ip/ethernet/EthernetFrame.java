@@ -46,11 +46,13 @@ public class EthernetFrame {
         int paddingLen = MINIMUM_FRAME_SIZE - payload.getLength() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
         byte[] padding = new byte[Math.max(paddingLen, 0)];
         out.put(padding);
-        out.putInt(crc);
+        if(crc != 0) {
+            out.putInt(crc);
+        }
     }
 
     public int getLength() {
-        int len = FRAME_BASE_SIZE + payload.getLength() + (hasDot1qTag ? 4 : 0);
+        int len = FRAME_BASE_SIZE + payload.getLength() + (hasDot1qTag ? 4 : 0) + (crc == 0 ? -4 : 0);
         return Math.max(len, MINIMUM_FRAME_SIZE);
     }
 
@@ -68,7 +70,10 @@ public class EthernetFrame {
         int paddingLen = MINIMUM_FRAME_SIZE - payload.getLength() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
         byte[] padding = new byte[Math.max(paddingLen, 0)];
         in.get(padding);
-        int crc = in.getInt();
+        int crc = 0;
+        if(in.remaining() >= 4) {
+            crc = in.getInt();
+        }
         if(hasDot1qTag) {
             return new EthernetFrame(destination, source, dot1qTag, (short) len, payload, crc);
         } else {

@@ -50,7 +50,7 @@ public class IgmpPayloadTest {
 
     @Test
     public void membershipQueryV3Test() {
-        byte[] reqBytes = TestUtils.parseHexBinary("450100000000000040024DFE00FF2BFFFFFFFFFF11604DC92100BAF1455000060030000000509999999999999999999999013000B51500F7");
+        byte[] reqBytes = TestUtils.parseHexBinary("450100380000000040024DC600FF2BFFFFFFFFFF11604DC92100BAF1455000060030000000509999999999999999999999013000B51500F7");
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);
@@ -67,7 +67,7 @@ public class IgmpPayloadTest {
 
     @Test
     public void membershipReportV3Test() {
-        byte[] reqBytes = TestUtils.parseHexBinary("4562F2000D0000002E02A375E9E9000D0000002E22642AC300000001060F0004F00700CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCB");
+        byte[] reqBytes = TestUtils.parseHexBinary("456200430D0000002E029533E9E9000D0000002E22642AC300000001060F0004F00700CBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCB");
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);

@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.ethernet;
 
+import com.github.hirsivaja.ip.IpPayload;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -26,7 +28,7 @@ public interface EthernetPayload {
                 return ArpPacket.decode(in);
             case IPV4:
             case IPV6:
-                throw new IllegalArgumentException("IP payloads not yet implemented");
+                return IpPayload.decode(in);
             default: throw new IllegalArgumentException("Ethernet payload type " + len + " is not supported.");
         }
     }

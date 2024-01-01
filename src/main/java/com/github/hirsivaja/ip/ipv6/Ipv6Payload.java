@@ -20,11 +20,14 @@ public interface Ipv6Payload extends IpPayload {
 
     static IpPayload decode(ByteBuffer in) {
         Ipv6Header header = Ipv6Header.decode(in);
+        byte[] ipv6Payload = new byte[header.getPayloadLength()];
+        in.get(ipv6Payload);
+        ByteBuffer payloadBuffer = ByteBuffer.wrap(ipv6Payload);
         switch (header.getLastNextHeader()) {
-            case TCP: return TcpMessagePayload.decode(in, header);
-            case UDP: return UdpMessagePayload.decode(in, header);
-            case ICMPV6: return Icmpv6Payload.decode(in, header);
-            case ENCAPSULATION: return EncapsulationPayload.decode(in, header);
+            case TCP: return TcpMessagePayload.decode(payloadBuffer, header);
+            case UDP: return UdpMessagePayload.decode(payloadBuffer, header);
+            case ICMPV6: return Icmpv6Payload.decode(payloadBuffer, header);
+            case ENCAPSULATION: return EncapsulationPayload.decode(payloadBuffer, header);
             default: throw new IllegalArgumentException("Unexpected command payload type " + header.getNextHeader());
         }
     }
