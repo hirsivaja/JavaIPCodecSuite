@@ -1,6 +1,6 @@
-**Java IP Codecs**
+**The Java IP Codec Suite**
 
-Java IP codec suite. Contains the following codecs:
+The `jipcs` contains the following codecs:
 * IPv4 header [(Internet Protocol version 4)](https://en.wikipedia.org/wiki/Internet_Protocol_version_4) [(RFC 791)](https://datatracker.ietf.org/doc/html/rfc791#page-11)
 * IPv6 header [(Internet Protocol version 6)](https://en.wikipedia.org/wiki/Internet_Protocol_version_6) [(RFC 8200)](https://datatracker.ietf.org/doc/html/rfc8200#page-6)
 * TCP header [(Transmission Control Protocol)](https://en.wikipedia.org/wiki/Transmission_Control_Protocol) [(RFC 9293)](https://datatracker.ietf.org/doc/html/rfc9293#name-header-format)
@@ -14,9 +14,9 @@ Java IP codec suite. Contains the following codecs:
   * NDP [(Neighbor Discovery Protocol)](https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol) [(RFC 4861)](https://datatracker.ietf.org/doc/html/rfc4861)
   * RPL [(Routing Protocol for Low-Power and Lossy Networks)](https://en.wikipedia.org/wiki/IPv6_Routing_Protocol_for_Low-Power_and_Lossy_Networks) [(RFC 6550)](https://datatracker.ietf.org/doc/html/rfc6550)
 
-Creating a JAR:
-* Run 'gradlew jar'
-* This library does not have any external dependencies. Java 8 or newer is enough to use it
+Requirements:
+* Java 8 or newer
+* This library does not have any external dependencies
 
 Basic usage:
 * To decode an IPv4 or IPv6 message with headers call IpPayload.fromBytes(byte[] ipPayload) -method
