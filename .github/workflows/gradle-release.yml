@@ -40,7 +40,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ env.GITHUB_BUILDVERSION }}
-        release_name: Java IP Codec v${{ env.GITHUB_BUILDVERSION }}
+        release_name: Java IP Codec Suite v${{ env.GITHUB_BUILDVERSION }}
         draft: false
         prerelease: false
 
@@ -51,6 +51,6 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
          upload_url: ${{ steps.create_release.outputs.upload_url }}
-         asset_path: ./build/libs/JavaIpCodec-${{ env.GITHUB_BUILDVERSION }}.jar
-         asset_name: JavaIpCodec-${{ env.GITHUB_BUILDVERSION }}.jar
+         asset_path: ./build/libs/jipcs-${{ env.GITHUB_BUILDVERSION }}.jar
+         asset_name: jipcs-${{ env.GITHUB_BUILDVERSION }}.jar
          asset_content_type: application/java-archive
