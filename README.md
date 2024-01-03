@@ -19,6 +19,7 @@ Requirements:
 * This library does not have any external dependencies
 
 Basic usage:
+* Gradle `implementation 'io.github.hirsivaja:jipcs:1.0.0'`
 * To decode an IPv4 or IPv6 message with headers call IpPayload.fromBytes(byte[] ipPayload) -method
 * To encode your IPv4 or IPv6 payload call IpPayload.toBytes() -method
 

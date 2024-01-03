@@ -1,8 +1,10 @@
 plugins {
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
-group = 'com.github.hirsivaja'
+group = 'io.github.hirsivaja'
 version = '1.0.0'
 
 repositories {
@@ -15,4 +17,50 @@ dependencies {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
+}
+
+signing {
+    sign publishing.publications
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = '${project.groupId}:${project.artifactId}'
+                description = 'The Java IP Codec Suite contains codecs for various Internet Protocols like IPv4 and RPL'
+                url = 'https://github.com/hirsivaja/JavaIPCodecSuite'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/license/mit/'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'hirsivaja'
+                        name = 'Toni Lappalainen'
+                        email = 'Toni.Lappalainen@landisgyr.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/hirsivaja/JavaIPCodecSuite.git'
+                    developerConnection = 'scm:git:https://github.com/hirsivaja/JavaIPCodecSuite.git'
+                    url = 'https://github.com/hirsivaja/JavaIPCodecSuite'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+        }
+    }
 }
