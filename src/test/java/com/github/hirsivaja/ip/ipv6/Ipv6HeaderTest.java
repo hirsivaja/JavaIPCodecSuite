@@ -18,6 +18,7 @@ public class Ipv6HeaderTest {
         Assert.assertEquals((byte) 0x00, header.getEcn().getType());
         Assert.assertEquals(0x00, header.getFlowLabel());
         Assert.assertEquals(0x0014, header.getPayloadLength());
+        Assert.assertEquals(0x003C, header.getTotalLength());
         Assert.assertEquals(0x11, header.getNextHeader().getType());
         Assert.assertEquals((byte) 0x04, header.getHopLimit());
         Assert.assertEquals(0, header.getExtensionHeaders().size());

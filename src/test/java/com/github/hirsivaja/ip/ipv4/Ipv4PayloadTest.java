@@ -21,7 +21,7 @@ public class Ipv4PayloadTest {
         Assert.assertEquals(60, ((EncapsulationPayload) payload).getEncapsulatedPayload().getLength());
         Assert.assertEquals(0, header.getDscp());
         Assert.assertEquals(0, header.getEcn().getType());
-        Assert.assertEquals((short) 0x0050, header.getDataLength());
+        Assert.assertEquals((short) 0x0050, header.getTotalLength());
         Assert.assertEquals((short) 0x935A, header.getIdentification());
         Assert.assertEquals(0, header.getFlags().toByte());
         Assert.assertEquals(0, header.getFragmentOffset());
@@ -31,6 +31,20 @@ public class Ipv4PayloadTest {
         Assert.assertEquals(0xC0586301, header.getDstIp().toInt());
         Assert.assertEquals(0, header.getOptions().length);
         Assert.assertEquals(0x50, payload.getLength());
+
+        Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
+    }
+
+    @Test
+    public void optionsTest() {
+        byte[] ipv4Bytes = TestUtils.parseHexBinary("46000028000040000102D0FBC0A8071AE0000016940400002200F9020000000104000000E00000FB");
+        Assert.assertTrue(Ipv4Payload.isIpv4Payload(ByteBuffer.wrap(ipv4Bytes)));
+
+        IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
+        Ipv4Header header = (Ipv4Header) payload.getHeader();
+
+        Assert.assertEquals(4, header.getOptions().length);
+        Assert.assertEquals(0x28, payload.getLength());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
     }

@@ -125,8 +125,12 @@ public class Ipv6Header implements IpHeader {
         return flowLabel;
     }
 
+    public int getTotalLength() {
+        return Short.toUnsignedInt(payloadLength) + HEADER_LEN;
+    }
+
     public int getPayloadLength() {
-        return Short.toUnsignedInt(payloadLength);
+        return Short.toUnsignedInt(payloadLength) - getExtensionsLength();
     }
 
     public IpProtocol getNextHeader() {

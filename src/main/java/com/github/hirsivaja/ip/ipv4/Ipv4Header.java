@@ -134,8 +134,12 @@ public class Ipv4Header implements IpHeader {
         return ecn;
     }
 
-    public int getDataLength() {
+    public int getTotalLength() {
         return Short.toUnsignedInt(len);
+    }
+
+    public int getPayloadLength() {
+        return getTotalLength() - Ipv4Header.HEADER_LEN - options.length;
     }
 
     public short getIdentification() {

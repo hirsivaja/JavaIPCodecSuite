@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public interface Ipv4Payload extends IpPayload {
     static IpPayload decode(ByteBuffer in) {
         Ipv4Header header = Ipv4Header.decode(in);
-        byte[] payload = new byte[header.getDataLength() - Ipv4Header.HEADER_LEN];
+        byte[] payload = new byte[header.getPayloadLength()];
         in.get(payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(payload);
         switch (header.getProtocol()) {
