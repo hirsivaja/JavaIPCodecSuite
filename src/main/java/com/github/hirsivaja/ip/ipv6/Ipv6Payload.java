@@ -3,6 +3,7 @@ package com.github.hirsivaja.ip.ipv6;
 import com.github.hirsivaja.ip.IpPayload;
 import com.github.hirsivaja.ip.IpProtocol;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
+import com.github.hirsivaja.ip.ipsec.EspPayload;
 import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
 import com.github.hirsivaja.ip.udp.UdpMessagePayload;
 
@@ -15,6 +16,7 @@ public interface Ipv6Payload extends IpPayload {
         return nextHeader == IpProtocol.ROUTING ||
                 nextHeader == IpProtocol.HOP_BY_HOP ||
                 nextHeader == IpProtocol.FRAGMENTATION ||
+                nextHeader == IpProtocol.AUTHENTICATION ||
                 nextHeader == IpProtocol.DESTINATION;
     }
 
@@ -26,9 +28,10 @@ public interface Ipv6Payload extends IpPayload {
         switch (header.getLastNextHeader()) {
             case TCP: return TcpMessagePayload.decode(payloadBuffer, header);
             case UDP: return UdpMessagePayload.decode(payloadBuffer, header);
+            case ESP: return EspPayload.decode(payloadBuffer, header);
             case ICMPV6: return Icmpv6Payload.decode(payloadBuffer, header);
             case ENCAPSULATION: return EncapsulationPayload.decode(payloadBuffer, header);
-            default: throw new IllegalArgumentException("Unexpected command payload type " + header.getNextHeader());
+            default: throw new IllegalArgumentException("Unexpected command payload type " + header.getLastNextHeader());
         }
     }
 
@@ -42,6 +45,7 @@ public interface Ipv6Payload extends IpPayload {
                     nextHeader == IpProtocol.ENCAPSULATION ||
                     nextHeader == IpProtocol.ROUTING ||
                     nextHeader == IpProtocol.FRAGMENTATION ||
+                    nextHeader == IpProtocol.AUTHENTICATION ||
                     nextHeader == IpProtocol.HOP_BY_HOP ||
                     nextHeader == IpProtocol.DESTINATION;
         }

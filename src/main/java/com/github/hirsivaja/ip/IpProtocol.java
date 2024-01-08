@@ -9,6 +9,8 @@ public enum IpProtocol {
     ENCAPSULATION((byte) 0x29),
     ROUTING((byte) 0x2B),
     FRAGMENTATION((byte) 0x2C),
+    ESP((byte) 0x32),
+    AUTHENTICATION((byte) 0x33),
     ICMPV6((byte) 0x3A),
     NO_NEXT((byte) 0x3B),
     DESTINATION((byte) 0x3C);

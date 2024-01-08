@@ -10,6 +10,7 @@ public interface ExtensionHeader {
             case HOP_BY_HOP: return HopByHopExtension.decode(in);
             case ROUTING: return RoutingExtension.decode(in);
             case FRAGMENTATION: return FragmentationExtension.decode(in);
+            case AUTHENTICATION: return AuthenticationHeaderExtension.decode(in);
             case DESTINATION: return DestinationOptionsExtension.decode(in);
             default: throw new IllegalArgumentException("Unexpected extension header type " + nextHeader);
         }
