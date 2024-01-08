@@ -23,7 +23,7 @@ public class MulticastListenerReportV2Message implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        int length = 4;
+        int length = BASE_LEN + 4;
         for(MulticastAccessRecord multicastAccessRecord : multicastAccessRecords) {
             length += multicastAccessRecord.getLength();
         }

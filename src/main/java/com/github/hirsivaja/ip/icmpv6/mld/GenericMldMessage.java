@@ -28,7 +28,7 @@ public class GenericMldMessage implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 20;
+        return BASE_LEN + 20;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, byte code) {

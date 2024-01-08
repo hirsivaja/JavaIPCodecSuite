@@ -26,7 +26,7 @@ public class IcmpPayload implements Ipv4Payload {
     }
 
     private static byte[] getChecksumData(IcmpMessage message) {
-        ByteBuffer checksumBuf = ByteBuffer.allocate(4 + message.getLength());
+        ByteBuffer checksumBuf = ByteBuffer.allocate(message.getLength());
         checksumBuf.put(message.getType().getType());
         checksumBuf.put(message.getCode());
         checksumBuf.putShort((short) 0);
@@ -38,7 +38,7 @@ public class IcmpPayload implements Ipv4Payload {
 
     @Override
     public int getLength() {
-        return header.getLength() + 4 + message.getLength();
+        return header.getLength() + message.getLength();
     }
 
     public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header) {

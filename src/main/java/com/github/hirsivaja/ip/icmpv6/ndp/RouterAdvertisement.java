@@ -40,7 +40,7 @@ public class RouterAdvertisement implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 12 + options.stream().mapToInt(NdpOption::getLength).sum();
+        return BASE_LEN + 12 + options.stream().mapToInt(NdpOption::getLength).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

@@ -20,7 +20,7 @@ public class GenericIcmpMessage implements IcmpMessage {
 
     @Override
     public int getLength() {
-        return payload.length;
+        return BASE_LEN + payload.length;
     }
 
     public static IcmpMessage decode(ByteBuffer in, IcmpType type, byte code) {

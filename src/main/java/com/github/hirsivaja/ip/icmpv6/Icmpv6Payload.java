@@ -27,7 +27,7 @@ public class Icmpv6Payload implements Ipv6Payload {
     }
 
     private static byte[] getChecksumData(Ipv6Header header, Icmpv6Message message) {
-        ByteBuffer checksumBuf = ByteBuffer.allocate(Ipv6Header.HEADER_LEN + 4 + message.getLength());
+        ByteBuffer checksumBuf = ByteBuffer.allocate(Ipv6Header.HEADER_LEN + message.getLength());
         checksumBuf.put(header.getPseudoHeader());
         checksumBuf.put(message.getType().getType());
         checksumBuf.put(message.getCode());
@@ -40,7 +40,7 @@ public class Icmpv6Payload implements Ipv6Payload {
 
     @Override
     public int getLength() {
-        return header.getLength() + 4 + message.getLength();
+        return header.getLength() + message.getLength();
     }
 
     public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header) {

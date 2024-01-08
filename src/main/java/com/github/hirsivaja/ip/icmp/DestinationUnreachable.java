@@ -19,7 +19,7 @@ public class DestinationUnreachable implements IcmpMessage {
 
     @Override
     public int getLength() {
-        return 4 + payload.length;
+        return BASE_LEN + 4 + payload.length;
     }
 
     public static IcmpMessage decode(ByteBuffer in, byte code) {

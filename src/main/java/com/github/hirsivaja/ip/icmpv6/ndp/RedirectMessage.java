@@ -32,7 +32,7 @@ public class RedirectMessage implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 36 + options.stream().mapToInt(NdpOption::getLength).sum();
+        return BASE_LEN + 36 + options.stream().mapToInt(NdpOption::getLength).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

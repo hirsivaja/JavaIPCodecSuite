@@ -10,6 +10,7 @@ import com.github.hirsivaja.ip.icmpv6.rpl.payload.RplPayloadType;
 import java.nio.ByteBuffer;
 
 public interface Icmpv6Message {
+    int BASE_LEN = 4;
 
     Icmpv6Type getType();
     byte getCode();

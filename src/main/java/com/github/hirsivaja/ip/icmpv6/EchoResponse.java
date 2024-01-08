@@ -22,7 +22,7 @@ public class EchoResponse implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 4 + payload.length;
+        return BASE_LEN + 4 + payload.length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

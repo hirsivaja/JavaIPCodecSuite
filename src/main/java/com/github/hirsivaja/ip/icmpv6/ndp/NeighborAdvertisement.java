@@ -31,7 +31,7 @@ public class NeighborAdvertisement implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 20 + options.stream().mapToInt(NdpOption::getLength).sum();
+        return BASE_LEN + 20 + options.stream().mapToInt(NdpOption::getLength).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

@@ -21,7 +21,7 @@ public class RplControlMessage implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return payload.getLength();
+        return BASE_LEN + payload.getLength();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, RplPayloadType code) {

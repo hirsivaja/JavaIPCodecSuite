@@ -26,6 +26,8 @@ public class Icmpv6PayloadTest {
         Assert.assertTrue(((Icmpv6Payload) ipv6Payload).getMessage() instanceof EchoRequest);
         Assert.assertEquals(0x7620, ((EchoRequest) ((Icmpv6Payload) ipv6Payload).getMessage()).getIdentifier());
         Assert.assertEquals(0x0100, ((EchoRequest) ((Icmpv6Payload) ipv6Payload).getMessage()).getSequenceNumber());
+        Assert.assertEquals(16, ((Icmpv6Payload) ipv6Payload).getMessage().getLength());
+        Assert.assertEquals(56, ipv6Payload.getLength());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv6Payload));
     }

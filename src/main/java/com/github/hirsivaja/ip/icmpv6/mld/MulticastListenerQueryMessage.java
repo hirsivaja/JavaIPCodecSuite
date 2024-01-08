@@ -41,7 +41,7 @@ public class MulticastListenerQueryMessage implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 24 + (sourceAddresses.length * 16);
+        return BASE_LEN + 24 + (sourceAddresses.length * 16);
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, byte code) {

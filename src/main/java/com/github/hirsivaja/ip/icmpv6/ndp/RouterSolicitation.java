@@ -25,7 +25,7 @@ public class RouterSolicitation implements Icmpv6Message {
 
     @Override
     public int getLength() {
-        return 4 + options.stream().mapToInt(NdpOption::getLength).sum();
+        return BASE_LEN + 4 + options.stream().mapToInt(NdpOption::getLength).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
