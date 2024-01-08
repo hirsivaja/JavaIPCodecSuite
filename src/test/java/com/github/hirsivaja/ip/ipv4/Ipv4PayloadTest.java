@@ -56,4 +56,21 @@ public class Ipv4PayloadTest {
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
     }
+
+    @Test
+    public void authenticationTest() {
+        byte[] ipv4Bytes = TestUtils.parseHexBinary("45000074000040000133D17EC0A8071AE00000162902000012345678123456781234567845000050935A0000802967C64637D5D3C0586301600000000014068020024637D5D30000000000004637D5D3200148600000200100000000000000680507005022EC582E3AC018C550104248B8B30000");
+        Assert.assertTrue(Ipv4Payload.isIpv4Payload(ByteBuffer.wrap(ipv4Bytes)));
+
+        IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
+        Ipv4Header header = (Ipv4Header) payload.getHeader();
+
+        Assert.assertEquals(0, header.getOptions().length);
+        Assert.assertTrue(payload instanceof AuthenticationPayload);
+        AuthenticationPayload authenticationPayload = (AuthenticationPayload) payload;
+        Assert.assertTrue(authenticationPayload.getAuthenticatedPayload() instanceof EncapsulationPayload);
+        Assert.assertEquals(16, authenticationPayload.getAuthenticationHeader().getLength());
+
+        Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
+    }
 }

@@ -2,6 +2,7 @@ package com.github.hirsivaja.ip.ipv4;
 
 import com.github.hirsivaja.ip.IpPayload;
 import com.github.hirsivaja.ip.igmp.IgmpPayload;
+import com.github.hirsivaja.ip.ipsec.EspPayload;
 import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
 import com.github.hirsivaja.ip.udp.UdpMessagePayload;
 import com.github.hirsivaja.ip.icmp.IcmpPayload;
@@ -20,6 +21,8 @@ public interface Ipv4Payload extends IpPayload {
             case TCP: return TcpMessagePayload.decode(payloadBuffer, header);
             case UDP: return UdpMessagePayload.decode(payloadBuffer, header);
             case ENCAPSULATION: return EncapsulationPayload.decode(payloadBuffer, header);
+            case ESP: return EspPayload.decode(payloadBuffer, header);
+            case AUTHENTICATION: return AuthenticationPayload.decode(payloadBuffer, header);
             default: throw new IllegalArgumentException("Unexpected command payload type " + header.getProtocol());
         }
     }
