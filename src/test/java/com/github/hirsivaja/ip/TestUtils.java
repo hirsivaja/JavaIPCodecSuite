@@ -51,7 +51,7 @@ public class TestUtils {
             option.encode(out);
         } else if(object instanceof IgmpMessage) {
             IgmpMessage message = (IgmpMessage) object;
-            out = ByteBuffer.allocate(message.getLength());
+            out = ByteBuffer.allocate(message.getLength() - 4);
             message.encode(out);
         } else if(object instanceof ArpPacket) {
             ArpPacket packet = (ArpPacket) object;

@@ -24,7 +24,7 @@ public class MembershipReportV3Message implements IgmpMessage {
 
     @Override
     public int getLength() {
-        int length = 4;
+        int length = BASE_LEN + 4;
         for(GroupRecord groupRecord : groupRecords) {
             length += groupRecord.getLength();
         }

@@ -3,6 +3,7 @@ package com.github.hirsivaja.ip.igmp;
 import java.nio.ByteBuffer;
 
 public interface IgmpMessage {
+    int BASE_LEN = 4;
 
     IgmpType getType();
     byte getCode();

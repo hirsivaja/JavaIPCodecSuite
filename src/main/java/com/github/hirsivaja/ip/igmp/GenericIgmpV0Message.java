@@ -28,7 +28,7 @@ public class GenericIgmpV0Message implements IgmpMessage {
 
     @Override
     public int getLength() {
-        return 16;
+        return BASE_LEN + 16;
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {

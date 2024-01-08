@@ -35,7 +35,7 @@ public class MembershipQueryMessage implements IgmpMessage {
 
     @Override
     public int getLength() {
-        return 8 + (sourceAddresses.length * 4);
+        return BASE_LEN + 8 + (sourceAddresses.length * 4);
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {

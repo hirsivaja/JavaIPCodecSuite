@@ -1,37 +1,47 @@
 package com.github.hirsivaja.ip.igmp;
 
+import com.github.hirsivaja.ip.IpHeader;
 import com.github.hirsivaja.ip.IpPayload;
+import com.github.hirsivaja.ip.IpProtocol;
 import com.github.hirsivaja.ip.TestUtils;
+import com.github.hirsivaja.ip.ipv4.Ipv4Header;
 import com.github.hirsivaja.ip.ipv4.Ipv4Payload;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class IgmpPayloadTest {
 
     @Test
     public void membershipReportV0Test() {
-        byte[] reqBytes = TestUtils.parseHexBinary("12345678876543211234567890ABCDEF");
+        byte[] reqBytes = TestUtils.parseHexBinary("0101048412345678876543211234567890ABCDEF");
+        Ipv4Header header = new Ipv4Header((byte) 0, IpHeader.EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.ICMP, null, null, null);
 
-        GenericIgmpV0Message msg = (GenericIgmpV0Message) GenericIgmpV0Message.decode(ByteBuffer.wrap(reqBytes), IgmpType.CREATE_GROUP_REQUEST, (byte) 0x01);
+        IgmpPayload payload = (IgmpPayload) IgmpPayload.decode(ByteBuffer.wrap(reqBytes), header);
+        GenericIgmpV0Message msg = (GenericIgmpV0Message) payload.getMessage();
 
         Assert.assertEquals(0x12345678, msg.getIdentifier());
         Assert.assertEquals(0x87654321, msg.getGroupAddress().toInt());
         Assert.assertEquals(0x1234567890ABCDEFL, msg.getAccessKey());
+        Assert.assertEquals(20, msg.getLength());
 
-        Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(msg));
+        Assert.assertArrayEquals(Arrays.copyOfRange(reqBytes, 4, reqBytes.length), TestUtils.toBytes(msg));
     }
 
     @Test
     public void membershipReportV1Test() {
-        byte[] reqBytes = TestUtils.parseHexBinary("EFFFFFFA");
+        byte[] reqBytes = TestUtils.parseHexBinary("1200FE04EFFFFFFA");
+        Ipv4Header header = new Ipv4Header((byte) 0, IpHeader.EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.ICMP, null, null, null);
 
-        GenericIgmpV1Message msg = (GenericIgmpV1Message) GenericIgmpV1Message.decode(ByteBuffer.wrap(reqBytes), IgmpType.MEMBERSHIP_REPORT_V1, (byte) 0);
+        IgmpPayload payload = (IgmpPayload) IgmpPayload.decode(ByteBuffer.wrap(reqBytes), header);
+        GenericIgmpV1Message msg = (GenericIgmpV1Message) payload.getMessage();
 
         Assert.assertEquals(0xEFFFFFFA, msg.getGroupAddress().toInt());
+        Assert.assertEquals(8, msg.getLength());
 
-        Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(msg));
+        Assert.assertArrayEquals(Arrays.copyOfRange(reqBytes, 4, reqBytes.length), TestUtils.toBytes(msg));
     }
 
     @Test
