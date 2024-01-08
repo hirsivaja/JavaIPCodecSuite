@@ -8,7 +8,6 @@ import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
 import java.nio.ByteBuffer;
 
 public class EspPayload implements Ipv4Payload, Ipv6Payload {
-
     private final IpHeader header;
     private final int spi;
     private final int seqNumber;
@@ -62,5 +61,9 @@ public class EspPayload implements Ipv4Payload, Ipv6Payload {
 
     public byte[] getData() {
         return data;
+    }
+
+    public EspData getEspData(int icvLength) {
+        return new EspData(this, icvLength);
     }
 }

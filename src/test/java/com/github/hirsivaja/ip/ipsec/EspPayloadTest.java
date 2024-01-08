@@ -1,6 +1,7 @@
 package com.github.hirsivaja.ip.ipsec;
 
 import com.github.hirsivaja.ip.IpPayload;
+import com.github.hirsivaja.ip.IpProtocol;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,5 +21,23 @@ public class EspPayloadTest {
         Assert.assertEquals(0x00000003, esp.getSeqNumber());
         Assert.assertEquals(144, esp.getData().length);
         Assert.assertArrayEquals(espBytes, TestUtils.toBytes(payload));
+    }
+
+    @Test
+    public void espDataTest() {
+        byte[] espBytes = TestUtils.parseHexBinary("600000000098323F200300516012000000000000000000022003005160120000000000000000000488772211000001234E727EC9AFF6E017FB5D7398E24ACBCC6560E2B24AEBAA7221C2319E3B7E4BF8CA35C1DC49807F6E2ABA8D1B33E582A390DF754FDF73337E655B25C7907F91A8BF5097ADE5550B7A2D486C7A6CA66EB9B8566F362F0401433A466C59F7C189A1C8258B1EB53A34361915CCAA73EC511504D2940C947AC97A777DC081E2A91CF4F5D0EC4CD041822A2096123A12345678");
+
+        IpPayload payload = IpPayload.decode(ByteBuffer.wrap(espBytes));
+
+        EspPayload esp = (EspPayload) payload;
+        Assert.assertEquals(0x88772211, esp.getSpi());
+        Assert.assertEquals(0x00000123, esp.getSeqNumber());
+        Assert.assertEquals(144, esp.getData().length);
+        Assert.assertArrayEquals(espBytes, TestUtils.toBytes(payload));
+
+        EspData data = esp.getEspData(4);
+        Assert.assertEquals(120, data.getEncryptedData().length);
+        Assert.assertEquals(IpProtocol.ICMPV6, data.getNextHeader());
+        Assert.assertArrayEquals(TestUtils.parseHexBinary("12345678"), data.getIcv());
     }
 }
