@@ -38,7 +38,7 @@ public class IpUtils {
 
     public static void ensureInternetChecksum(short expected, short actual) {
         if(expected != actual) {
-            logger.log(Level.FINEST, "CRC mismatch! Expected checksum {0}. Actual checksum {1}", new Object[]{expected, actual});
+            logger.log(Level.FINEST, "Checksum mismatch! Expected checksum {0}. Actual checksum {1}", new Object[]{expected, actual});
             throw new IllegalArgumentException("Checksum does not match!");
         }
     }
