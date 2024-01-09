@@ -116,10 +116,7 @@ public class Ipv4Header implements IpHeader {
         in.get(headerBytes);
         headerBytes[10] = 0;
         headerBytes[11] = 0;
-        short expectedChecksum = IpUtils.calculateInternetChecksum(headerBytes);
-        if(expectedChecksum != checksum) {
-            throw new IllegalArgumentException("Checksum does not match!");
-        }
+        IpUtils.ensureInternetChecksum(headerBytes, checksum);
         byte[] options = new byte[(ihl - 5) * 4];
         in.get(options);
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,

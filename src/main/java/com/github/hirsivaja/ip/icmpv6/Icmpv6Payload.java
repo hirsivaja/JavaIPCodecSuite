@@ -48,10 +48,7 @@ public class Icmpv6Payload implements Ipv6Payload {
         byte code = in.get();
         short checksum = in.getShort();
         Icmpv6Message message = Icmpv6Message.decode(in, type, code);
-        short expectedChecksum = IpUtils.calculateInternetChecksum(getChecksumData(header, message));
-        if(expectedChecksum != checksum){
-            throw new IllegalArgumentException("Checksum does not match!");
-        }
+        IpUtils.ensureInternetChecksum(getChecksumData(header, message), checksum);
         return new Icmpv6Payload(header, message);
     }
 

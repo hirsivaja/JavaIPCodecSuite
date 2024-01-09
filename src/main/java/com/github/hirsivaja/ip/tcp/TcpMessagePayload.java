@@ -50,10 +50,7 @@ public class TcpMessagePayload implements Ipv4Payload, Ipv6Payload {
         TcpHeader tcpHeader = TcpHeader.decode(in);
         byte[] tcpPayload = new byte[in.remaining()];
         in.get(tcpPayload);
-        short expectedChecksum = IpUtils.calculateInternetChecksum(getChecksumData(header, tcpHeader, tcpPayload));
-        if(expectedChecksum != tcpHeader.getChecksum()){
-            throw new IllegalArgumentException("Checksum does not match!");
-        }
+        IpUtils.ensureInternetChecksum(getChecksumData(header, tcpHeader, tcpPayload), tcpHeader.getChecksum());
         return new TcpMessagePayload(header, tcpHeader, tcpPayload);
     }
 

@@ -46,10 +46,7 @@ public class IgmpPayload implements Ipv4Payload {
         byte code = in.get();
         short checksum = in.getShort();
         IgmpMessage message = IgmpMessage.decode(in, type, code);
-        short expectedChecksum = IpUtils.calculateInternetChecksum(getChecksumData(message));
-        if(expectedChecksum != checksum){
-            throw new IllegalArgumentException("Checksum does not match!");
-        }
+        IpUtils.ensureInternetChecksum(getChecksumData(message), checksum);
         return new IgmpPayload(header, message);
     }
 

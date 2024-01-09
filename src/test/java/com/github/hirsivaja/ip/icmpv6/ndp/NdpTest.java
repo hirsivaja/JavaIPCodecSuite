@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.ndp;
 
+import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
 import com.github.hirsivaja.ip.ipv6.Ipv6Header;
@@ -14,8 +15,8 @@ public class NdpTest {
 
     @Test
     public void routerSolicitationTest() {
-        byte[] headerBytes = TestUtils.parseHexBinary("6000000000083AFFFE80000000000000020086FFFE0580DAFF020000000000000000000000000002");
-        byte[] msg = TestUtils.parseHexBinary("8500755700000000");
+        byte[] headerBytes = IpUtils.parseHexBinary("6000000000083AFFFE80000000000000020086FFFE0580DAFF020000000000000000000000000002");
+        byte[] msg = IpUtils.parseHexBinary("8500755700000000");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
@@ -29,8 +30,8 @@ public class NdpTest {
 
     @Test
     public void routerAdvertisementTest() {
-        byte[] headerBytes = TestUtils.parseHexBinary("6000000000403AFFFE80000000000000026097FFFE0769EAFF020000000000000000000000000001");
-        byte[] msg = TestUtils.parseHexBinary("860046254000070800007530000003E801010060970769EA05010000000005DC030440C00036EE800036EE80000000003FFE0507000000010000000000000000");
+        byte[] headerBytes = IpUtils.parseHexBinary("6000000000403AFFFE80000000000000026097FFFE0769EAFF020000000000000000000000000001");
+        byte[] msg = IpUtils.parseHexBinary("860046254000070800007530000003E801010060970769EA05010000000005DC030440C00036EE800036EE80000000003FFE0507000000010000000000000000");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
@@ -49,8 +50,8 @@ public class NdpTest {
 
     @Test
     public void neighborSolicitationTest() {
-        byte[] headerBytes = TestUtils.parseHexBinary("6000000000203AFF3FFE050700000001026097FFFE0769EA3FFE050700000001020086FFFE0580DA");
-        byte[] msg = TestUtils.parseHexBinary("8700952D000000003FFE050700000001020086FFFE0580DA01010060970769EA");
+        byte[] headerBytes = IpUtils.parseHexBinary("6000000000203AFF3FFE050700000001026097FFFE0769EA3FFE050700000001020086FFFE0580DA");
+        byte[] msg = IpUtils.parseHexBinary("8700952D000000003FFE050700000001020086FFFE0580DA01010060970769EA");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
@@ -65,8 +66,8 @@ public class NdpTest {
 
     @Test
     public void neighborAdvertisementTest() {
-        byte[] headerBytes = TestUtils.parseHexBinary("6000000000183AFF3FFE050700000001020086FFFE0580DA3FFE050700000001026097FFFE0769EA");
-        byte[] msg = TestUtils.parseHexBinary("88005688400000003FFE050700000001020086FFFE0580DA");
+        byte[] headerBytes = IpUtils.parseHexBinary("6000000000183AFF3FFE050700000001020086FFFE0580DA3FFE050700000001026097FFFE0769EA");
+        byte[] msg = IpUtils.parseHexBinary("88005688400000003FFE050700000001020086FFFE0580DA");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
@@ -81,8 +82,8 @@ public class NdpTest {
 
     @Test
     public void redirectMessageTest() {
-        byte[] headerBytes = TestUtils.parseHexBinary("6000000000083AFFFE80000000000000020086FFFE0580DAFF020000000000000000000000000002");
-        byte[] msg = TestUtils.parseHexBinary("89003107000000000102030405060708010203040506070801020304050607080102030405060708");
+        byte[] headerBytes = IpUtils.parseHexBinary("6000000000083AFFFE80000000000000020086FFFE0580DAFF020000000000000000000000000002");
+        byte[] msg = IpUtils.parseHexBinary("89003107000000000102030405060708010203040506070801020304050607080102030405060708");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);

@@ -21,6 +21,10 @@ java {
     withSourcesJar()
 }
 
+test {
+    systemProperty 'java.util.logging.config.file', 'src/test/resources/logging.properties'
+}
+
 signing {
     def signingKeyId = System.getenv("SIGNING_ID")
     def signingKeyData = System.getenv("SIGNING_KEY")

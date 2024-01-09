@@ -58,10 +58,7 @@ public class UdpMessagePayload implements Ipv4Payload, Ipv6Payload {
         UdpHeader udpHeader = UdpHeader.decode(in);
         byte[] updPayload = new byte[udpHeader.getDataLength() - UDP_HEADER_LEN];
         in.get(updPayload);
-        short expectedChecksum = IpUtils.calculateInternetChecksum(getChecksumData(header, udpHeader, updPayload));
-        if(expectedChecksum != udpHeader.getChecksum()){
-            throw new IllegalArgumentException("Checksum does not match!");
-        }
+        IpUtils.ensureInternetChecksum(getChecksumData(header, udpHeader, updPayload), udpHeader.getChecksum());
         return new UdpMessagePayload(header, udpHeader, updPayload);
     }
 

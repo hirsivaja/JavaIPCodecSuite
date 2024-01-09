@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.security;
 
+import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import java.nio.ByteBuffer;
 public class RplSecurityTest {
     @Test
     public void securityTest() {
-        byte[] securityBytes = TestUtils.parseHexBinary("0000000012345678FF");
+        byte[] securityBytes = IpUtils.parseHexBinary("0000000012345678FF");
         RplSecurity security = RplSecurity.decode(ByteBuffer.wrap(securityBytes));
 
         Assert.assertFalse(security.isCounterTypeTime());
@@ -27,7 +28,7 @@ public class RplSecurityTest {
 
     @Test
     public void securityTestWithKeySource() {
-        byte[] securityBytes = TestUtils.parseHexBinary("0000C300123456781234567812345678FF");
+        byte[] securityBytes = IpUtils.parseHexBinary("0000C300123456781234567812345678FF");
         RplSecurity security = RplSecurity.decode(ByteBuffer.wrap(securityBytes));
 
         Assert.assertFalse(security.isCounterTypeTime());

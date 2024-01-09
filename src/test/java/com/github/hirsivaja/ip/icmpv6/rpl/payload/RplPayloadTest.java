@@ -1,6 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
-import com.github.hirsivaja.ip.TestUtils;
+import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurityMode;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class RplPayloadTest {
     @Test
     public void disTest() {
-        byte[] disBytes = TestUtils.parseHexBinary("000000000000");
+        byte[] disBytes = IpUtils.parseHexBinary("000000000000");
         RplPayload rplPayload = RplPayload.fromByteArray(disBytes, RplPayloadType.DIS);
 
         Assert.assertTrue(rplPayload instanceof RplDis);
@@ -26,7 +26,7 @@ public class RplPayloadTest {
 
     @Test
     public void dioTest() {
-        byte[] dioBytes = TestUtils.parseHexBinary("1EF1030008F00000FD000000000000000218001800180018020607000002030002200102011C0000011802100010001000100210001000100010020F000F000F000F040E00080C0A038000800001001E003C");
+        byte[] dioBytes = IpUtils.parseHexBinary("1EF1030008F00000FD000000000000000218001800180018020607000002030002200102011C0000011802100010001000100210001000100010020F000F000F000F040E00080C0A038000800001001E003C");
         RplDio dio = RplDio.decode(ByteBuffer.wrap(dioBytes), false);
 
         Assert.assertEquals(30, dio.getRplInstance());
@@ -42,7 +42,7 @@ public class RplPayloadTest {
 
     @Test
     public void daoTest() {
-        byte[] daoBytes = TestUtils.parseHexBinary("01C0000405060708090A0B0C0D0E0F1011121314");
+        byte[] daoBytes = IpUtils.parseHexBinary("01C0000405060708090A0B0C0D0E0F1011121314");
         RplDao dao = RplDao.decode(ByteBuffer.wrap(daoBytes), false);
 
         Assert.assertEquals(1, dao.getRplInstance());
@@ -63,7 +63,7 @@ public class RplPayloadTest {
 
     @Test
     public void daoAckTest() {
-        byte[] daoAckBytes = TestUtils.parseHexBinary("0180030405060708090A0B0C0D0E0F1011121314");
+        byte[] daoAckBytes = IpUtils.parseHexBinary("0180030405060708090A0B0C0D0E0F1011121314");
         RplDaoAck daoAck = RplDaoAck.decode(ByteBuffer.wrap(daoAckBytes), false);
 
         Assert.assertEquals(1, daoAck.getRplInstance());
@@ -78,7 +78,7 @@ public class RplPayloadTest {
 
     @Test
     public void ccTest() {
-        byte[] ccBytes = TestUtils.parseHexBinary("0000000012345678FF008044441234567812345678123456781234567812345678");
+        byte[] ccBytes = IpUtils.parseHexBinary("0000000012345678FF008044441234567812345678123456781234567812345678");
         RplConsistencyCheck cc = RplConsistencyCheck.decode(ByteBuffer.wrap(ccBytes));
 
         Assert.assertTrue(cc.hasSecurity());

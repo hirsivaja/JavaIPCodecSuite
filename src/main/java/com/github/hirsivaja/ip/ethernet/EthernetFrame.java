@@ -1,8 +1,14 @@
 package com.github.hirsivaja.ip.ethernet;
 
+import com.github.hirsivaja.ip.IpUtils;
+
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EthernetFrame {
+    private static final Logger logger = Logger.getLogger("EthernetFrame");
     private static final int TP_ID = 0x8100;
     private static final int MINIMUM_FRAME_SIZE = 64;
     private static final int FRAME_BASE_SIZE = 18;
@@ -54,6 +60,31 @@ public class EthernetFrame {
     public int getLength() {
         int len = FRAME_BASE_SIZE + payload.getLength() + (hasDot1qTag ? 4 : 0) + (crc == 0 ? -4 : 0);
         return Math.max(len, MINIMUM_FRAME_SIZE);
+    }
+
+    public byte[] toBytes() {
+        ByteBuffer out = ByteBuffer.allocate(getLength());
+        encode(out);
+        byte[] outBytes = Arrays.copyOfRange(out.array(), 0, out.rewind().remaining());
+        if(logger.isLoggable(Level.FINE)) {
+            logger.fine("Ethernet frame as byte array:\n\t" + IpUtils.printHexBinary(outBytes));
+        }
+        return outBytes;
+    }
+
+    public String toByteString() {
+        return IpUtils.printHexBinary(toBytes());
+    }
+
+    public static EthernetFrame fromBytes(byte[] ethernetFrame) {
+        if(logger.isLoggable(Level.FINE)) {
+            logger.fine("Creating an Ethernet Frame from:\n\t" + IpUtils.printHexBinary(ethernetFrame));
+        }
+        return decode(ByteBuffer.wrap(ethernetFrame));
+    }
+
+    public static EthernetFrame fromByteString(String ipPayload) {
+        return fromBytes(IpUtils.parseHexBinary(ipPayload));
     }
 
     public static EthernetFrame decode(ByteBuffer in) {

@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import java.nio.ByteBuffer;
 public class RplOptionTest {
     @Test
     public void padTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("00");
+        byte[] optionBytes = IpUtils.parseHexBinary("00");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplPadOption);
@@ -19,7 +20,7 @@ public class RplOptionTest {
 
     @Test
     public void padNTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("01020000");
+        byte[] optionBytes = IpUtils.parseHexBinary("01020000");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplPadNOption);
@@ -29,7 +30,7 @@ public class RplOptionTest {
 
     @Test
     public void dagMetricTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("02020000");
+        byte[] optionBytes = IpUtils.parseHexBinary("02020000");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplDagMetricContainerOption);
@@ -41,7 +42,7 @@ public class RplOptionTest {
 
     @Test
     public void routeInformationTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("0316010201020304000102030405060708090A0B0C0D0E0F");
+        byte[] optionBytes = IpUtils.parseHexBinary("0316010201020304000102030405060708090A0B0C0D0E0F");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplRouteInformationOption);
@@ -49,14 +50,14 @@ public class RplOptionTest {
         Assert.assertEquals(1, castOption.getPrefixLen());
         Assert.assertEquals(2, castOption.getPreference());
         Assert.assertEquals(0x01020304, castOption.getRouteLifetime());
-        Assert.assertArrayEquals(TestUtils.parseHexBinary("000102030405060708090A0B0C0D0E0F"), castOption.getPrefix());
+        Assert.assertArrayEquals(IpUtils.parseHexBinary("000102030405060708090A0B0C0D0E0F"), castOption.getPrefix());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
 
     @Test
     public void dodagConfigurationTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("040E0102030405060708090A000C0D0E");
+        byte[] optionBytes = IpUtils.parseHexBinary("040E0102030405060708090A000C0D0E");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplDodagConfigurationOption);
@@ -76,7 +77,7 @@ public class RplOptionTest {
 
     @Test
     public void rplTargetTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("05120102030405060708090A0B0C0D0E0F101112");
+        byte[] optionBytes = IpUtils.parseHexBinary("05120102030405060708090A0B0C0D0E0F101112");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplTargetOption);
@@ -90,7 +91,7 @@ public class RplOptionTest {
 
     @Test
     public void transitInformationTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("06140102030405060708090A0B0C0D0E0F1011121314");
+        byte[] optionBytes = IpUtils.parseHexBinary("06140102030405060708090A0B0C0D0E0F1011121314");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplTransitInformationOption);
@@ -103,7 +104,7 @@ public class RplOptionTest {
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
 
-        byte[] optionWithoutParentAddressBytes = TestUtils.parseHexBinary("060401020304");
+        byte[] optionWithoutParentAddressBytes = IpUtils.parseHexBinary("060401020304");
         RplOption optionWithoutParent = RplOption.decode(ByteBuffer.wrap(optionWithoutParentAddressBytes));
 
         Assert.assertTrue(optionWithoutParent instanceof RplTransitInformationOption);
@@ -119,7 +120,7 @@ public class RplOptionTest {
 
     @Test
     public void solicitedInformationTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("07130102030405060708090A0B0C0D0E0F101112FF");
+        byte[] optionBytes = IpUtils.parseHexBinary("07130102030405060708090A0B0C0D0E0F101112FF");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplSolicitedInformationOption);
@@ -134,7 +135,7 @@ public class RplOptionTest {
 
     @Test
     public void prefixInformationTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("081E0102030405060708090A000000000F101112131415161718191A1B1C1D1E");
+        byte[] optionBytes = IpUtils.parseHexBinary("081E0102030405060708090A000000000F101112131415161718191A1B1C1D1E");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplPrefixInformationOption);
@@ -150,7 +151,7 @@ public class RplOptionTest {
 
     @Test
     public void targetDescriptorTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("090412345678");
+        byte[] optionBytes = IpUtils.parseHexBinary("090412345678");
         RplOption option = RplOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RplTargetDescriptorOption);

@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.ndp.option;
 
+import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +11,7 @@ public class NdpOptionTest {
 
     @Test
     public void mtuOptionTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("0501000001020304");
+        byte[] optionBytes = IpUtils.parseHexBinary("0501000001020304");
         NdpOption option = NdpOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof MtuOption);
@@ -22,7 +23,7 @@ public class NdpOptionTest {
 
     @Test
     public void prefixInformationTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("03040102030405060708090A000000000F101112131415161718191A1B1C1D1E");
+        byte[] optionBytes = IpUtils.parseHexBinary("03040102030405060708090A000000000F101112131415161718191A1B1C1D1E");
         NdpOption option = NdpOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof PrefixInformationOption);
@@ -38,7 +39,7 @@ public class NdpOptionTest {
 
     @Test
     public void redirectedHeaderTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("04020000000000000102030405060708");
+        byte[] optionBytes = IpUtils.parseHexBinary("04020000000000000102030405060708");
         NdpOption option = NdpOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof RedirectedHeaderOption);
@@ -50,7 +51,7 @@ public class NdpOptionTest {
 
     @Test
     public void sourceLinkLayerTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("0101010203040506");
+        byte[] optionBytes = IpUtils.parseHexBinary("0101010203040506");
         NdpOption option = NdpOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof SourceLinkLayerOption);
@@ -62,7 +63,7 @@ public class NdpOptionTest {
 
     @Test
     public void targetLinkLayerTest() {
-        byte[] optionBytes = TestUtils.parseHexBinary("0201010203040506");
+        byte[] optionBytes = IpUtils.parseHexBinary("0201010203040506");
         NdpOption option = NdpOption.decode(ByteBuffer.wrap(optionBytes));
 
         Assert.assertTrue(option instanceof TargetLinkLayerOption);
