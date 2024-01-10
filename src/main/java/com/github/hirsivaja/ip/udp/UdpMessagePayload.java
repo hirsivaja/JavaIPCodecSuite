@@ -9,8 +9,6 @@ import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
 import java.nio.ByteBuffer;
 
 public class UdpMessagePayload implements Ipv4Payload, Ipv6Payload {
-    public static final int UDP_HEADER_LEN = 8;
-
     private final IpHeader header;
     private final UdpHeader udpHeader;
     private final byte[] payload;
@@ -30,24 +28,20 @@ public class UdpMessagePayload implements Ipv4Payload, Ipv6Payload {
         header.encode(out);
         out.putShort((short) udpHeader.getSrcPort());
         out.putShort((short) udpHeader.getDstPort());
-        out.putShort((short) (payload.length + UDP_HEADER_LEN));
+        out.putShort((short) (payload.length + UdpHeader.UDP_HEADER_LEN));
         out.putShort(udpHeader.getChecksum());
         out.put(payload);
     }
 
     @Override
     public int getLength() {
-        return header.getLength() + UDP_HEADER_LEN + payload.length;
+        return header.getLength() + UdpHeader.UDP_HEADER_LEN + payload.length;
     }
 
     private static byte[] getChecksumData(IpHeader header, UdpHeader udpHeader, byte[] payload) {
-        byte[] pseudoHeader = header.getPseudoHeader();
-        ByteBuffer checksumBuf = ByteBuffer.allocate(pseudoHeader.length + 8 + payload.length);
-        checksumBuf.put(pseudoHeader);
-        checksumBuf.putShort((short) udpHeader.getSrcPort());
-        checksumBuf.putShort((short) udpHeader.getDstPort());
-        checksumBuf.putShort((short) (payload.length + UDP_HEADER_LEN));
-        checksumBuf.putShort((short) 0);
+        ByteBuffer checksumBuf = ByteBuffer.allocate(header.getPseudoHeaderLength() + UdpHeader.UDP_HEADER_LEN + payload.length);
+        checksumBuf.put(header.getPseudoHeader());
+        udpHeader.encode(checksumBuf);
         checksumBuf.put(payload);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
         checksumBuf.get(checksumData);
@@ -56,9 +50,9 @@ public class UdpMessagePayload implements Ipv4Payload, Ipv6Payload {
 
     public static IpPayload decode(ByteBuffer in, IpHeader header) {
         UdpHeader udpHeader = UdpHeader.decode(in);
-        byte[] updPayload = new byte[udpHeader.getDataLength() - UDP_HEADER_LEN];
+        byte[] updPayload = new byte[udpHeader.getDataLength() - UdpHeader.UDP_HEADER_LEN];
         in.get(updPayload);
-        IpUtils.ensureInternetChecksum(getChecksumData(header, udpHeader, updPayload), udpHeader.getChecksum());
+        IpUtils.ensureInternetChecksum(getChecksumData(header, udpHeader, updPayload));
         return new UdpMessagePayload(header, udpHeader, updPayload);
     }
 

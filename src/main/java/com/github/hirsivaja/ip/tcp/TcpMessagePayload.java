@@ -39,7 +39,7 @@ public class TcpMessagePayload implements Ipv4Payload, Ipv6Payload {
     private static byte[] getChecksumData(IpHeader header, TcpHeader tcpHeader, byte[] payload) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(header.getPseudoHeaderLength() + TcpHeader.TCP_HEADER_LEN + payload.length);
         checksumBuf.put(header.getPseudoHeader());
-        tcpHeader.encode(checksumBuf, true);
+        tcpHeader.encode(checksumBuf);
         checksumBuf.put(payload);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
         checksumBuf.get(checksumData);
@@ -50,7 +50,7 @@ public class TcpMessagePayload implements Ipv4Payload, Ipv6Payload {
         TcpHeader tcpHeader = TcpHeader.decode(in);
         byte[] tcpPayload = new byte[in.remaining()];
         in.get(tcpPayload);
-        IpUtils.ensureInternetChecksum(getChecksumData(header, tcpHeader, tcpPayload), tcpHeader.getChecksum());
+        IpUtils.ensureInternetChecksum(getChecksumData(header, tcpHeader, tcpPayload));
         return new TcpMessagePayload(header, tcpHeader, tcpPayload);
     }
 

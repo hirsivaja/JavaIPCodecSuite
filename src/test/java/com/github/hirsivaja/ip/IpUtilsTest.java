@@ -8,17 +8,20 @@ public class IpUtilsTest {
     @Test
     public void checksumTest() {
         byte[] data = IpUtils.parseHexBinary("E34F2396442799F3");
+        byte[] fullData = IpUtils.parseHexBinary("E34F2396442799F31AFF");
         short expected = 0x1AFF;
         short actual = IpUtils.calculateInternetChecksum(data);
         Assert.assertEquals(expected, actual);
         Assert.assertTrue(IpUtils.verifyInternetChecksum(data, actual));
+        Assert.assertTrue(IpUtils.verifyInternetChecksum(fullData));
 
         data = IpUtils.parseHexBinary("0001F203F4F5F6F7");
+        fullData = IpUtils.parseHexBinary("0001F203F4F5F6F7220D");
         expected = 0x220D;
         actual = IpUtils.calculateInternetChecksum(data);
         Assert.assertEquals(expected, actual);
-        Assert.assertTrue(IpUtils.verifyInternetChecksum(expected, actual));
         Assert.assertFalse(IpUtils.verifyInternetChecksum(data, (short) 1));
+        Assert.assertTrue(IpUtils.verifyInternetChecksum(fullData));
     }
 
     @Test

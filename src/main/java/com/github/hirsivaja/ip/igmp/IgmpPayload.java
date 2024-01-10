@@ -21,15 +21,15 @@ public class IgmpPayload implements Ipv4Payload {
         header.encode(out);
         out.put(message.getType().getType());
         out.put(message.getCode());
-        out.putShort(IpUtils.calculateInternetChecksum(getChecksumData(message)));
+        out.putShort(IpUtils.calculateInternetChecksum(getChecksumData(message, (short) 0)));
         message.encode(out);
     }
 
-    private static byte[] getChecksumData(IgmpMessage message) {
+    private static byte[] getChecksumData(IgmpMessage message, short checksum) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(message.getLength());
         checksumBuf.put(message.getType().getType());
         checksumBuf.put(message.getCode());
-        checksumBuf.putShort((short) 0);
+        checksumBuf.putShort(checksum);
         message.encode(checksumBuf);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
         checksumBuf.get(checksumData);
@@ -46,7 +46,7 @@ public class IgmpPayload implements Ipv4Payload {
         byte code = in.get();
         short checksum = in.getShort();
         IgmpMessage message = IgmpMessage.decode(in, type, code);
-        IpUtils.ensureInternetChecksum(getChecksumData(message), checksum);
+        IpUtils.ensureInternetChecksum(getChecksumData(message, checksum));
         return new IgmpPayload(header, message);
     }
 

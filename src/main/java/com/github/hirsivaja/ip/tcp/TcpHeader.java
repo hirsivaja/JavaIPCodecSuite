@@ -36,10 +36,6 @@ public class TcpHeader {
     }
 
     public void encode(ByteBuffer out) {
-        encode(out, false);
-    }
-
-    public void encode(ByteBuffer out, boolean skipChecksum) {
         out.putShort(srcPort);
         out.putShort(dstPort);
         out.putInt(sequenceNumber);
@@ -47,7 +43,7 @@ public class TcpHeader {
         out.put((byte) (((options.length / 4) + 5) << DATA_OFFSET_SHIFT));
         out.put(flags.toByte());
         out.putShort(windowSize);
-        out.putShort(skipChecksum ? 0 : checksum);
+        out.putShort(checksum);
         out.putShort(urgentPointer);
         out.put(options);
     }

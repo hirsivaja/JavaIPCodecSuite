@@ -22,16 +22,16 @@ public class Icmpv6Payload implements Ipv6Payload {
         header.encode(out);
         out.put(message.getType().getType());
         out.put(message.getCode());
-        out.putShort(IpUtils.calculateInternetChecksum(getChecksumData(header, message)));
+        out.putShort(IpUtils.calculateInternetChecksum(getChecksumData(header, message, (short) 0)));
         message.encode(out);
     }
 
-    private static byte[] getChecksumData(Ipv6Header header, Icmpv6Message message) {
+    private static byte[] getChecksumData(Ipv6Header header, Icmpv6Message message, short checksum) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(Ipv6Header.HEADER_LEN + message.getLength());
         checksumBuf.put(header.getPseudoHeader());
         checksumBuf.put(message.getType().getType());
         checksumBuf.put(message.getCode());
-        checksumBuf.putShort((short) 0);
+        checksumBuf.putShort(checksum);
         message.encode(checksumBuf);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
         checksumBuf.get(checksumData);
@@ -48,7 +48,7 @@ public class Icmpv6Payload implements Ipv6Payload {
         byte code = in.get();
         short checksum = in.getShort();
         Icmpv6Message message = Icmpv6Message.decode(in, type, code);
-        IpUtils.ensureInternetChecksum(getChecksumData(header, message), checksum);
+        IpUtils.ensureInternetChecksum(getChecksumData(header, message, checksum));
         return new Icmpv6Payload(header, message);
     }
 

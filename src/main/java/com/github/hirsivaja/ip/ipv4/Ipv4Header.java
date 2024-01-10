@@ -108,15 +108,13 @@ public class Ipv4Header implements IpHeader {
         fragmentOffset = (short) (fragmentOffset & 0x1FFF);
         byte ttl = in.get();
         IpProtocol protocol = IpProtocol.getType(in.get());
-        short checksum = in.getShort();
+        in.getShort(); // Checksum
         Ipv4Address srcIp = Ipv4Address.decode(in);
         Ipv4Address dstIp = Ipv4Address.decode(in);
         in.reset();
         byte[] headerBytes = new byte[HEADER_LEN];
         in.get(headerBytes);
-        headerBytes[10] = 0;
-        headerBytes[11] = 0;
-        IpUtils.ensureInternetChecksum(headerBytes, checksum);
+        IpUtils.ensureInternetChecksum(headerBytes);
         byte[] options = new byte[(ihl - 5) * 4];
         in.get(options);
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,

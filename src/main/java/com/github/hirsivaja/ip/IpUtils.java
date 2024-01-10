@@ -21,22 +21,24 @@ public class IpUtils {
         return (short) ((~((sum & 0xFFFF) + (sum >> 16))) & 0xFFFF);
     }
 
-    public static boolean verifyInternetChecksum(byte[] checksumData, short actual) {
-        return verifyInternetChecksum(calculateInternetChecksum(checksumData), actual);
+    public static boolean verifyInternetChecksum(byte[] checksumData) {
+        return verifyInternetChecksum(checksumData, (short) 0);
     }
 
-    public static boolean verifyInternetChecksum(short expected, short actual) {
+    public static boolean verifyInternetChecksum(byte[] checksumData, short actual) {
+        short expected = calculateInternetChecksum(checksumData);
         if(expected != actual) {
             logger.warning("CRC mismatch!");
         }
         return expected == actual;
     }
 
-    public static void ensureInternetChecksum(byte[] checksumData, short actual) {
-        ensureInternetChecksum(calculateInternetChecksum(checksumData), actual);
+    public static void ensureInternetChecksum(byte[] checksumData) {
+        ensureInternetChecksum(checksumData, (short) 0);
     }
 
-    public static void ensureInternetChecksum(short expected, short actual) {
+    public static void ensureInternetChecksum(byte[] checksumData, short actual) {
+        short expected = calculateInternetChecksum(checksumData);
         if(expected != actual) {
             logger.log(Level.FINEST, "Checksum mismatch! Expected checksum {0}. Actual checksum {1}", new Object[]{expected, actual});
             throw new IllegalArgumentException("Checksum does not match!");
