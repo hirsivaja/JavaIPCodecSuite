@@ -35,7 +35,7 @@ public interface Icmpv6Message {
             case REDIRECT_MESSAGE: return RedirectMessage.decode(in);
             case MULTICAST_LISTENER_REPORT_V2: return MulticastListenerReportV2Message.decode(in);
             case RPL: return RplControlMessage.decode(in, RplPayloadType.getRplPayloadType(code));
-            default: throw new IllegalArgumentException("The type " + type + " is not implemented");
+            default: return GenericIcmpv6Message.decode(in, type, code);
         }
     }
 }
