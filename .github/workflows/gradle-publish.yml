@@ -24,8 +24,8 @@ jobs:
         with:
           arguments: publish
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN_PASSWORD }}
           SIGNING_ID: ${{ secrets.GPG_KEY_ID }}
           SIGNING_KEY: ${{ secrets.GPG_KEY }}
           SIGNING_PASSWORD: ${{ secrets.GPG_PASSWORD }}
