@@ -25,6 +25,26 @@ public class IgmpPayload implements Ipv4Payload {
         message.encode(out);
     }
 
+    /**
+     * Constructs the data for IGMP checksum calculation as specified in RFC 3376.
+     * 
+     * <p>IGMP checksum is calculated over the entire IGMP message:</p>
+     * <ol>
+     *   <li><b>IGMP Type</b> - 1 byte (Query, Report, etc.)</li>
+     *   <li><b>IGMP Code</b> - 1 byte (Max Response Time for queries)</li>
+     *   <li><b>IGMP Checksum</b> - 2 bytes (set to zero during calculation)</li>
+     *   <li><b>IGMP Message Data</b> - Variable length, depends on IGMP type and version</li>
+     * </ol>
+     * 
+     * <p><b>Important:</b> IGMP does NOT use a pseudo-header. The checksum covers
+     * only the IGMP header and data, similar to ICMP. This applies to all IGMP
+     * versions (v1, v2, v3).</p>
+     * 
+     * @param message the IGMP message containing type, code, and data
+     * @param checksum the checksum value (typically 0 for calculation, actual value for verification)
+     * @return byte array containing IGMP type + code + checksum + message data for checksum calculation
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc3376">RFC 3376</a>
+     */
     private static byte[] getChecksumData(IgmpMessage message, short checksum) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(message.getLength());
         checksumBuf.put(message.getType().getType());
