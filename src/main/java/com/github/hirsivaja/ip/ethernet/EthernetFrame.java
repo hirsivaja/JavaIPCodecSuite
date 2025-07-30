@@ -135,4 +135,16 @@ public class EthernetFrame {
     public int getCrc() {
         return crc;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "destination=" + destination +
+                ", source=" + source +
+                ", hasDot1qTag=" + hasDot1qTag +
+                ", dot1qTag=" + dot1qTag +
+                ", payload=" + payload +
+                ", crc=" + crc +
+                ")";
+    }
 }

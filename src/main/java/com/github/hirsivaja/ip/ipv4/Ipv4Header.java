@@ -168,4 +168,20 @@ public class Ipv4Header implements IpHeader {
     public byte[] getOptions() {
         return options;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "dscp=" + dscp +
+                ", ecn=" + ecn +
+                ", identification=" + identification +
+                ", flags=" + flags +
+                ", fragmentOffset=" + fragmentOffset +
+                ", ttl=" + ttl +
+                ", protocol=" + protocol +
+                ", srcIp=" + srcIp +
+                ", dstIp=" + dstIp +
+                ", options=" + IpUtils.printHexBinary(options) +
+                ")";
+    }
 }

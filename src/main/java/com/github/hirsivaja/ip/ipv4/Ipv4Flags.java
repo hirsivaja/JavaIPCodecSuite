@@ -46,4 +46,13 @@ public class Ipv4Flags {
     public boolean isReservedFlag() {
         return reservedFlag;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "moreFragments=" + moreFragments +
+                ", doNotFragment=" + doNotFragment +
+                ", reservedFlag=" + reservedFlag +
+                ")";
+    }
 }

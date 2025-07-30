@@ -54,4 +54,14 @@ public class UdpHeader {
     public short getChecksum() {
         return checksum;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "srcPort=" + getSrcPort() +
+                ", dstPort=" + getDstPort() +
+                ", len=" + getDataLength() +
+                ", checksum=" + checksum +
+                ")";
+    }
 }

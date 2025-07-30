@@ -109,4 +109,18 @@ public class TcpFlags {
     public boolean isExplicitCongestionNotificationCapable() {
         return synchronizeSequenceNumbers && eceFlag;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "congestionWindowReduced=" + congestionWindowReduced +
+                ", eceFlag=" + eceFlag +
+                ", urgentPointerSignificant=" + urgentPointerSignificant +
+                ", acknowledgementSignificant=" + acknowledgementSignificant +
+                ", pushFunction=" + pushFunction +
+                ", reset=" + reset +
+                ", synchronizeSequenceNumbers=" + synchronizeSequenceNumbers +
+                ", lastPacket=" + lastPacket +
+                ")";
+    }
 }

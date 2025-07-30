@@ -1,6 +1,7 @@
 package com.github.hirsivaja.ip.ipv4;
 
 import com.github.hirsivaja.ip.IpAddress;
+import com.github.hirsivaja.ip.IpUtils;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -57,5 +58,15 @@ public class Ipv4Address implements IpAddress {
         byte[] addressBytes = new byte[IPV4_ADDRESS_LEN];
         in.get(addressBytes);
         return new Ipv4Address(addressBytes);
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return this.getClass().getSimpleName() + "(" + toInetAddress().getHostAddress() + ")";
+        } catch (IllegalArgumentException ignored) {
+            // Suppressing the exception
+        }
+        return this.getClass().getSimpleName() + "(" + IpUtils.printHexBinary(addressBytes) + ")";
     }
 }

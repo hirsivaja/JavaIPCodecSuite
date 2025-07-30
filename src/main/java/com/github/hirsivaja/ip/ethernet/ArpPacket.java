@@ -85,4 +85,15 @@ public class ArpPacket implements EthernetPayload {
     public Ipv4Address getTargetProtocolAddress() {
         return targetProtocolAddress;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "operation=" + operation +
+                ", senderHwAddress=" + senderHwAddress +
+                ", senderProtocolAddress=" + senderProtocolAddress +
+                ", targetHwAddress=" + targetHwAddress +
+                ", targetProtocolAddress=" + targetProtocolAddress +
+                ")";
+    }
 }

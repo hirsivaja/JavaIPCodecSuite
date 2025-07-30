@@ -172,4 +172,18 @@ public class Ipv6Header implements IpHeader {
         }
         return (short) extensions.stream().mapToInt(ExtensionHeader::getLength).sum();
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "dscp=" + dscp +
+                ", ecn=" + ecn +
+                ", flowLabel=" + flowLabel +
+                ", nextHeader=" + nextHeader +
+                ", hopLimit=" + hopLimit +
+                ", sourceAddress=" + sourceAddress +
+                ", destinationAddress=" + destinationAddress +
+                ", extensionHeaders=" + extensionHeaders.size() +
+                ")";
+    }
 }

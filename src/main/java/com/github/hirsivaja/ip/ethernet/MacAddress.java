@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.ethernet;
 
+import com.github.hirsivaja.ip.IpUtils;
+
 import java.nio.ByteBuffer;
 
 public class MacAddress {
@@ -26,5 +28,10 @@ public class MacAddress {
 
     public byte[] getBytes() {
         return macAddressBytes;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" + IpUtils.printHexBinary(macAddressBytes) + ")";
     }
 }

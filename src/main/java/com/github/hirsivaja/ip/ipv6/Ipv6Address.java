@@ -1,6 +1,7 @@
 package com.github.hirsivaja.ip.ipv6;
 
 import com.github.hirsivaja.ip.IpAddress;
+import com.github.hirsivaja.ip.IpUtils;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -53,5 +54,15 @@ public class Ipv6Address implements IpAddress {
         byte[] addressBytes = new byte[IPV6_ADDRESS_LEN];
         in.get(addressBytes);
         return new Ipv6Address(addressBytes);
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return this.getClass().getSimpleName() + "(" + toInetAddress().getHostAddress() + ")";
+        } catch (IllegalArgumentException ignored) {
+            // Suppressing the exception
+        }
+        return this.getClass().getSimpleName() + "(" + IpUtils.printHexBinary(addressBytes) + ")";
     }
 }

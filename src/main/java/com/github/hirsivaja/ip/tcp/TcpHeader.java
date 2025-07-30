@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.tcp;
 
+import com.github.hirsivaja.ip.IpUtils;
+
 import java.nio.ByteBuffer;
 
 public class TcpHeader {
@@ -101,5 +103,20 @@ public class TcpHeader {
 
     public byte[] getOptions() {
         return options;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" +
+                "srcPort=" + getSrcPort() +
+                ", dstPort=" + getDstPort() +
+                ", sequenceNumber=" + sequenceNumber +
+                ", ackNumber=" + ackNumber +
+                ", flags=" + flags +
+                ", windowSize=" + windowSize +
+                ", checksum=" + checksum +
+                ", urgentPointer=" + urgentPointer +
+                ", options=" + IpUtils.printHexBinary(options) +
+                ")";
     }
 }

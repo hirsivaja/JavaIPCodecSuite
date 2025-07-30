@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.ethernet;
 
+import com.github.hirsivaja.ip.IpUtils;
+
 import java.nio.ByteBuffer;
 
 public class EthernetBytePayload implements EthernetPayload {
@@ -25,5 +27,10 @@ public class EthernetBytePayload implements EthernetPayload {
 
     public byte[] getPayload() {
         return payload;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" + IpUtils.printHexBinary(payload) + ")";
     }
 }
