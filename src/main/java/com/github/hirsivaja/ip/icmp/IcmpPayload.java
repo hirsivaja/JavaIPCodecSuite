@@ -25,6 +25,25 @@ public class IcmpPayload implements Ipv4Payload {
         message.encode(out);
     }
 
+    /**
+     * Constructs the data for ICMP checksum calculation as specified in RFC 792.
+     * 
+     * <p>ICMP checksum is calculated over the entire ICMP message:</p>
+     * <ol>
+     *   <li><b>ICMP Type</b> - 1 byte</li>
+     *   <li><b>ICMP Code</b> - 1 byte</li>
+     *   <li><b>ICMP Checksum</b> - 2 bytes (set to zero during calculation)</li>
+     *   <li><b>ICMP Message Data</b> - Variable length, depends on ICMP type</li>
+     * </ol>
+     * 
+     * <p><b>Important:</b> ICMP does NOT use a pseudo-header. The checksum covers
+     * only the ICMP header and data, not any IP header information.</p>
+     * 
+     * @param message the ICMP message containing type, code, and data
+     * @param checksum the checksum value (typically 0 for calculation, actual value for verification)
+     * @return byte array containing ICMP type + code + checksum + message data for checksum calculation
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc792">RFC 792</a>
+     */
     private static byte[] getChecksumData(IcmpMessage message, short checksum) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(message.getLength());
         checksumBuf.put(message.getType().getType());

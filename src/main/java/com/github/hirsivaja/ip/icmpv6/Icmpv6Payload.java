@@ -26,6 +26,35 @@ public class Icmpv6Payload implements Ipv6Payload {
         message.encode(out);
     }
 
+    /**
+     * Constructs the data for ICMPv6 checksum calculation as specified in RFC 4443.
+     * 
+     * <p>ICMPv6 checksum is calculated over the concatenation of:</p>
+     * <ol>
+     *   <li><b>IPv6 Pseudo-header</b> - 40 bytes, provides protection against misrouted packets
+     *       <ul>
+     *         <li>Source Address (16 bytes)</li>
+     *         <li>Destination Address (16 bytes)</li>
+     *         <li>ICMPv6 Length (4 bytes)</li>
+     *         <li>Zero padding (3 bytes)</li>
+     *         <li>Next Header = 58 (ICMPv6) (1 byte)</li>
+     *       </ul>
+     *   </li>
+     *   <li><b>ICMPv6 Type</b> - 1 byte</li>
+     *   <li><b>ICMPv6 Code</b> - 1 byte</li>
+     *   <li><b>ICMPv6 Checksum</b> - 2 bytes (set to zero during calculation)</li>
+     *   <li><b>ICMPv6 Message Data</b> - Variable length, depends on ICMPv6 type</li>
+     * </ol>
+     * 
+     * <p><b>Important:</b> Unlike ICMP, ICMPv6 requires a pseudo-header for checksum calculation.
+     * The checksum is mandatory for all ICMPv6 messages.</p>
+     * 
+     * @param header the IPv6 header providing the pseudo-header
+     * @param message the ICMPv6 message containing type, code, and data
+     * @param checksum the checksum value (typically 0 for calculation, actual value for verification)
+     * @return byte array containing pseudo-header + ICMPv6 type + code + checksum + message data
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4443">RFC 4443</a>
+     */
     private static byte[] getChecksumData(Ipv6Header header, Icmpv6Message message, short checksum) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(Ipv6Header.HEADER_LEN + message.getLength());
         checksumBuf.put(header.getPseudoHeader());
