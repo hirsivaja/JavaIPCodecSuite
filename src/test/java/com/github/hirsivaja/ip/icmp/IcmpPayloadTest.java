@@ -17,11 +17,11 @@ public class IcmpPayloadTest {
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);
-        Assert.assertTrue(((IcmpPayload) ipv4Payload).getMessage() instanceof EchoRequest);
-        Assert.assertEquals(0x13C2, ((EchoRequest) ((IcmpPayload) ipv4Payload).getMessage()).getIdentifier());
-        Assert.assertEquals(0x0001, ((EchoRequest) ((IcmpPayload) ipv4Payload).getMessage()).getSequenceNumber());
-        Assert.assertEquals(1408, ((IcmpPayload) ipv4Payload).getMessage().getLength());
-        Assert.assertEquals(1428, ipv4Payload.getLength());
+        Assert.assertTrue(((IcmpPayload) ipv4Payload).message() instanceof EchoRequest);
+        Assert.assertEquals(0x13C2, ((EchoRequest) ((IcmpPayload) ipv4Payload).message()).identifier());
+        Assert.assertEquals(0x0001, ((EchoRequest) ((IcmpPayload) ipv4Payload).message()).sequenceNumber());
+        Assert.assertEquals(1408, ((IcmpPayload) ipv4Payload).message().length());
+        Assert.assertEquals(1428, ipv4Payload.length());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv4Payload));
     }
@@ -32,9 +32,9 @@ public class IcmpPayloadTest {
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(rspBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);
-        Assert.assertTrue(((IcmpPayload) ipv4Payload).getMessage() instanceof EchoReply);
-        Assert.assertEquals(0x13C2, ((EchoReply) ((IcmpPayload) ipv4Payload).getMessage()).getIdentifier());
-        Assert.assertEquals(0x0001, ((EchoReply) ((IcmpPayload) ipv4Payload).getMessage()).getSequenceNumber());
+        Assert.assertTrue(((IcmpPayload) ipv4Payload).message() instanceof EchoReply);
+        Assert.assertEquals(0x13C2, ((EchoReply) ((IcmpPayload) ipv4Payload).message()).identifier());
+        Assert.assertEquals(0x0001, ((EchoReply) ((IcmpPayload) ipv4Payload).message()).sequenceNumber());
 
         Assert.assertArrayEquals(rspBytes, TestUtils.toBytes(ipv4Payload));
     }

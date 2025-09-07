@@ -7,12 +7,7 @@ import com.github.hirsivaja.ip.icmpv6.rpl.payload.RplPayloadType;
 
 import java.nio.ByteBuffer;
 
-public class RplControlMessage implements Icmpv6Message {
-    private final RplPayload payload;
-
-    public RplControlMessage(RplPayload payload){
-        this.payload = payload;
-    }
+public record RplControlMessage(RplPayload payload) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -20,8 +15,8 @@ public class RplControlMessage implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + payload.getLength();
+    public int length() {
+        return BASE_LEN + payload.length();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, RplPayloadType code) {
@@ -30,16 +25,12 @@ public class RplControlMessage implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.RPL;
     }
 
     @Override
-    public byte getCode() {
-        return payload.getType().getType();
-    }
-
-    public RplPayload getPayload() {
-        return payload;
+    public byte code() {
+        return payload.type().type();
     }
 }

@@ -16,12 +16,12 @@ public class RplPayloadTest {
 
         Assert.assertTrue(rplPayload instanceof RplDis);
         Assert.assertFalse(rplPayload.hasSecurity());
-        Assert.assertEquals(4, rplPayload.getOptions().size());
+        Assert.assertEquals(4, rplPayload.options().size());
 
         Assert.assertArrayEquals(disBytes, rplPayload.toByteArray());
 
         RplDis dis = new RplDis(new ArrayList<>());
-        Assert.assertEquals(0, dis.getOptions().size());
+        Assert.assertEquals(0, dis.options().size());
     }
 
     @Test
@@ -29,13 +29,13 @@ public class RplPayloadTest {
         byte[] dioBytes = IpUtils.parseHexBinary("1EF1030008F00000FD000000000000000218001800180018020607000002030002200102011C0000011802100010001000100210001000100010020F000F000F000F040E00080C0A038000800001001E003C");
         RplDio dio = RplDio.decode(ByteBuffer.wrap(dioBytes), false);
 
-        Assert.assertEquals(30, dio.getRplInstance());
-        Assert.assertEquals(-15, dio.getVersionNumber());
-        Assert.assertEquals(768, dio.getRank());
-        Assert.assertEquals(8, dio.getFlags());
-        Assert.assertEquals((byte) 0xF0, dio.getDtsn());
-        Assert.assertEquals(16, dio.getDodagId().length);
-        Assert.assertEquals(3, dio.getOptions().size());
+        Assert.assertEquals(30, dio.rplInstance());
+        Assert.assertEquals(-15, dio.versionNumber());
+        Assert.assertEquals(768, dio.rank());
+        Assert.assertEquals(8, dio.flags());
+        Assert.assertEquals((byte) 0xF0, dio.dtsn());
+        Assert.assertEquals(16, dio.dodagId().length());
+        Assert.assertEquals(3, dio.options().size());
 
         Assert.assertArrayEquals(dioBytes, dio.toByteArray());
     }
@@ -45,20 +45,20 @@ public class RplPayloadTest {
         byte[] daoBytes = IpUtils.parseHexBinary("01C0000405060708090A0B0C0D0E0F1011121314");
         RplDao dao = RplDao.decode(ByteBuffer.wrap(daoBytes), false);
 
-        Assert.assertEquals(1, dao.getRplInstance());
-        Assert.assertEquals((byte) 0xC0, dao.getFlags());
-        Assert.assertEquals(4, dao.getDaoSequence());
-        Assert.assertEquals(16, dao.getDodagId().length);
-        Assert.assertEquals(0, dao.getOptions().size());
+        Assert.assertEquals(1, dao.rplInstance());
+        Assert.assertEquals((byte) 0xC0, dao.flags());
+        Assert.assertEquals(4, dao.daoSequence());
+        Assert.assertEquals(16, dao.dodagId().length());
+        Assert.assertEquals(0, dao.options().size());
 
         Assert.assertArrayEquals(daoBytes, dao.toByteArray());
 
         RplDao dao2 = new RplDao((byte) 0x12, (byte) 0xC0, (byte) 0xF1, new byte[0], new ArrayList<>());
-        Assert.assertEquals(0x12, dao2.getRplInstance());
-        Assert.assertEquals((byte) 0xC0, dao2.getFlags());
-        Assert.assertEquals((byte) 0xF1, dao2.getDaoSequence());
-        Assert.assertEquals(0, dao2.getDodagId().length);
-        Assert.assertEquals(0, dao2.getOptions().size());
+        Assert.assertEquals(0x12, dao2.rplInstance());
+        Assert.assertEquals((byte) 0xC0, dao2.flags());
+        Assert.assertEquals((byte) 0xF1, dao2.daoSequence());
+        Assert.assertEquals(0, dao2.dodagId().length());
+        Assert.assertEquals(0, dao2.options().size());
     }
 
     @Test
@@ -66,12 +66,12 @@ public class RplPayloadTest {
         byte[] daoAckBytes = IpUtils.parseHexBinary("0180030405060708090A0B0C0D0E0F1011121314");
         RplDaoAck daoAck = RplDaoAck.decode(ByteBuffer.wrap(daoAckBytes), false);
 
-        Assert.assertEquals(1, daoAck.getRplInstance());
-        Assert.assertEquals((byte) 0x80, daoAck.getFlags());
-        Assert.assertEquals(3, daoAck.getDaoSequence());
-        Assert.assertEquals(4, daoAck.getStatus());
-        Assert.assertEquals(16, daoAck.getDodagId().length);
-        Assert.assertEquals(0, daoAck.getOptions().size());
+        Assert.assertEquals(1, daoAck.rplInstance());
+        Assert.assertEquals((byte) 0x80, daoAck.flags());
+        Assert.assertEquals(3, daoAck.daoSequence());
+        Assert.assertEquals(4, daoAck.status());
+        Assert.assertEquals(16, daoAck.dodagId().length());
+        Assert.assertEquals(0, daoAck.options().size());
 
         Assert.assertArrayEquals(daoAckBytes, daoAck.toByteArray());
     }
@@ -82,13 +82,13 @@ public class RplPayloadTest {
         RplConsistencyCheck cc = RplConsistencyCheck.decode(ByteBuffer.wrap(ccBytes));
 
         Assert.assertTrue(cc.hasSecurity());
-        Assert.assertEquals(RplSecurityMode.GROUP_KEY, cc.getSecurity().getSecurityMode());
-        Assert.assertEquals(0, cc.getRplInstance());
-        Assert.assertEquals((byte) 0x80, cc.getFlags());
-        Assert.assertEquals((short) 0x4444, cc.getCcNonce());
-        Assert.assertEquals(16, cc.getDodagId().length);
-        Assert.assertEquals(0x12345678, cc.getDestinationCounter());
-        Assert.assertEquals(0, cc.getOptions().size());
+        Assert.assertEquals(RplSecurityMode.GROUP_KEY, cc.security().securityMode());
+        Assert.assertEquals(0, cc.rplInstance());
+        Assert.assertEquals((byte) 0x80, cc.flags());
+        Assert.assertEquals((short) 0x4444, cc.ccNonce());
+        Assert.assertEquals(16, cc.dodagId().length);
+        Assert.assertEquals(0x12345678, cc.destinationCounter());
+        Assert.assertEquals(0, cc.options().size());
 
         Assert.assertArrayEquals(ccBytes, cc.toByteArray());
     }

@@ -9,16 +9,10 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NeighborAdvertisement implements Icmpv6Message {
-    private final int flags;
-    private final Ipv6Address targetAddress;
-    private final List<NdpOption> options;
-
-    public NeighborAdvertisement(int flags, Ipv6Address targetAddress, List<NdpOption> options) {
-        this.flags = flags;
-        this.targetAddress = targetAddress;
-        this.options = options;
-    }
+public record NeighborAdvertisement(
+        int flags,
+        Ipv6Address targetAddress,
+        List<NdpOption> options) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -30,8 +24,8 @@ public class NeighborAdvertisement implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 20 + options.stream().mapToInt(NdpOption::getLength).sum();
+    public int length() {
+        return BASE_LEN + 20 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
@@ -45,24 +39,12 @@ public class NeighborAdvertisement implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.NEIGHBOR_ADVERTISEMENT;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return 0;
-    }
-
-    public int getFlags() {
-        return flags;
-    }
-
-    public Ipv6Address getTargetAddress() {
-        return targetAddress;
-    }
-
-    public List<NdpOption> getOptions() {
-        return options;
     }
 }

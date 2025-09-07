@@ -5,17 +5,11 @@ import com.github.hirsivaja.ip.ipsec.AuthenticationHeader;
 
 import java.nio.ByteBuffer;
 
-public class AuthenticationHeaderExtension implements ExtensionHeader {
-
-    private final AuthenticationHeader authenticationHeader;
-
-    public AuthenticationHeaderExtension(AuthenticationHeader authenticationHeader) {
-        this.authenticationHeader = authenticationHeader;
-    }
+public record AuthenticationHeaderExtension(AuthenticationHeader authenticationHeader) implements ExtensionHeader {
 
     @Override
-    public IpProtocol getNextHeader() {
-        return authenticationHeader.getNextHeader();
+    public IpProtocol nextHeader() {
+        return authenticationHeader.nextHeader();
     }
 
     @Override
@@ -24,16 +18,12 @@ public class AuthenticationHeaderExtension implements ExtensionHeader {
     }
 
     @Override
-    public int getLength() {
-        return authenticationHeader.getLength();
+    public int length() {
+        return authenticationHeader.length();
     }
 
     public static ExtensionHeader decode(ByteBuffer in) {
         AuthenticationHeader authenticationHeader = AuthenticationHeader.decode(in);
         return new AuthenticationHeaderExtension(authenticationHeader);
-    }
-
-    public AuthenticationHeader getAuthenticationHeader() {
-        return authenticationHeader;
     }
 }

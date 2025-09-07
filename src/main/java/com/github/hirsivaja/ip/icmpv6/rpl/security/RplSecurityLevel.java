@@ -20,7 +20,7 @@ public enum RplSecurityLevel {
         this.signature = signature;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
@@ -32,9 +32,9 @@ public enum RplSecurityLevel {
         return signature;
     }
 
-    public static RplSecurityLevel getRplSecurityMode(byte type, boolean signature) {
+    public static RplSecurityLevel fromRplSecurityMode(byte type, boolean signature) {
         for (RplSecurityLevel identifier : RplSecurityLevel.values()) {
-            if (identifier.getType() == type && identifier.isSignature() == signature) {
+            if (identifier.type() == type && identifier.isSignature() == signature) {
                 return identifier;
             }
         }

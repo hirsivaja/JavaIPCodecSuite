@@ -6,19 +6,19 @@ import java.nio.ByteBuffer;
 
 public interface ExtensionHeader {
     static ExtensionHeader decode(ByteBuffer in, IpProtocol nextHeader) {
-        switch (nextHeader) {
-            case HOP_BY_HOP: return HopByHopExtension.decode(in);
-            case ROUTING: return RoutingExtension.decode(in);
-            case FRAGMENTATION: return FragmentationExtension.decode(in);
-            case AUTHENTICATION: return AuthenticationHeaderExtension.decode(in);
-            case DESTINATION: return DestinationOptionsExtension.decode(in);
-            default: throw new IllegalArgumentException("Unexpected extension header type " + nextHeader);
-        }
+        return switch (nextHeader) {
+            case IpProtocol.Type.HOP_BY_HOP -> HopByHopExtension.decode(in);
+            case IpProtocol.Type.ROUTING -> RoutingExtension.decode(in);
+            case IpProtocol.Type.FRAGMENTATION -> FragmentationExtension.decode(in);
+            case IpProtocol.Type.AUTHENTICATION -> AuthenticationHeaderExtension.decode(in);
+            case IpProtocol.Type.DESTINATION -> DestinationOptionsExtension.decode(in);
+            default -> throw new IllegalArgumentException("Unexpected extension header type " + nextHeader);
+        };
     }
 
-    IpProtocol getNextHeader();
+    IpProtocol nextHeader();
 
     void encode(ByteBuffer out);
 
-    int getLength();
+    int length();
 }

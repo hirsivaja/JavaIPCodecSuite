@@ -4,26 +4,18 @@ import com.github.hirsivaja.ip.ipv4.Ipv4Address;
 
 import java.nio.ByteBuffer;
 
-public class ArpPacket implements EthernetPayload {
+public record ArpPacket(
+        short operation,
+        MacAddress senderHwAddress,
+        Ipv4Address senderProtocolAddress,
+        MacAddress targetHwAddress,
+        Ipv4Address targetProtocolAddress) implements EthernetPayload {
     private static final short ETHERNET_TYPE = 1;
     private static final short IP_TYPE = 0x0800;
     private static final byte ETHERNET_ADDRESS_LEN = 6;
     private static final byte IP_ADDRESS_LEN = 4;
-    private final short operation;
-    private final MacAddress senderHwAddress;
-    private final Ipv4Address senderProtocolAddress;
-    private final MacAddress targetHwAddress;
-    private final Ipv4Address targetProtocolAddress;
 
-    public ArpPacket(short operation, MacAddress senderHwAddress, Ipv4Address senderProtocolAddress,
-                     MacAddress targetHwAddress, Ipv4Address targetProtocolAddress) {
-        this.operation = operation;
-        this.senderHwAddress = senderHwAddress;
-        this.senderProtocolAddress = senderProtocolAddress;
-        this.targetHwAddress = targetHwAddress;
-        this.targetProtocolAddress = targetProtocolAddress;
-    }
-
+    @Override
     public void encode(ByteBuffer out) {
         out.putShort(ETHERNET_TYPE);
         out.putShort(IP_TYPE);
@@ -36,9 +28,10 @@ public class ArpPacket implements EthernetPayload {
         targetProtocolAddress.encode(out);
     }
 
-    public int getLength() {
-        return 8 + senderHwAddress.getLength() + senderProtocolAddress.getLength() +
-                targetHwAddress.getLength() + targetProtocolAddress.getLength();
+    @Override
+    public int length() {
+        return 8 + senderHwAddress.length() + senderProtocolAddress.length() +
+                targetHwAddress.length() + targetProtocolAddress.length();
     }
 
     public static ArpPacket decode(ByteBuffer in) {
@@ -64,36 +57,5 @@ public class ArpPacket implements EthernetPayload {
         MacAddress targetHwAddress = MacAddress.decode(in);
         Ipv4Address targetProtocolAddress = Ipv4Address.decode(in);
         return new ArpPacket(operation, senderHwAddress, senderProtocolAddress, targetHwAddress, targetProtocolAddress);
-    }
-
-    public short getOperation() {
-        return operation;
-    }
-
-    public MacAddress getSenderHwAddress() {
-        return senderHwAddress;
-    }
-
-    public Ipv4Address getSenderProtocolAddress() {
-        return senderProtocolAddress;
-    }
-
-    public MacAddress getTargetHwAddress() {
-        return targetHwAddress;
-    }
-
-    public Ipv4Address getTargetProtocolAddress() {
-        return targetProtocolAddress;
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(" +
-                "operation=" + operation +
-                ", senderHwAddress=" + senderHwAddress +
-                ", senderProtocolAddress=" + senderProtocolAddress +
-                ", targetHwAddress=" + targetHwAddress +
-                ", targetProtocolAddress=" + targetProtocolAddress +
-                ")";
     }
 }

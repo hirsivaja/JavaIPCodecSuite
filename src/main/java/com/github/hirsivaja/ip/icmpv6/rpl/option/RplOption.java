@@ -6,24 +6,24 @@ public interface RplOption {
 
     void encode(ByteBuffer out);
 
-    int getLength();
+    int length();
 
-    RplOptionType getOptionType();
+    RplOptionType optionType();
 
     static RplOption decode(ByteBuffer in) {
-        RplOptionType rplOptionType = RplOptionType.getRplOptionType(in.get());
-        switch (rplOptionType) {
-            case PAD_1: return RplPadOption.decode();
-            case PAD_N: return RplPadNOption.decode(in);
-            case DAG_METRIC_CONTAINER: return RplDagMetricContainerOption.decode(in);
-            case ROUTE_INFORMATION: return RplRouteInformationOption.decode(in);
-            case DODAG_CONFIGURATION: return RplDodagConfigurationOption.decode(in);
-            case RPL_TARGET: return RplTargetOption.decode(in);
-            case TRANSIT_INFORMATION: return RplTransitInformationOption.decode(in);
-            case SOLICITED_INFORMATION: return RplSolicitedInformationOption.decode(in);
-            case PREFIX_INFORMATION: return RplPrefixInformationOption.decode(in);
-            case RPL_TARGET_DESCRIPTOR: return RplTargetDescriptorOption.decode(in);
-            default: throw new IllegalArgumentException("Unexpected value: " + rplOptionType);
-        }
+        RplOptionType rplOptionType = RplOptionType.fromRplOptionType(in.get());
+        return switch (rplOptionType) {
+            case PAD_1 -> RplPadOption.decode();
+            case PAD_N -> RplPadNOption.decode(in);
+            case DAG_METRIC_CONTAINER -> RplDagMetricContainerOption.decode(in);
+            case ROUTE_INFORMATION -> RplRouteInformationOption.decode(in);
+            case DODAG_CONFIGURATION -> RplDodagConfigurationOption.decode(in);
+            case RPL_TARGET -> RplTargetOption.decode(in);
+            case TRANSIT_INFORMATION -> RplTransitInformationOption.decode(in);
+            case SOLICITED_INFORMATION -> RplSolicitedInformationOption.decode(in);
+            case PREFIX_INFORMATION -> RplPrefixInformationOption.decode(in);
+            case RPL_TARGET_DESCRIPTOR -> RplTargetDescriptorOption.decode(in);
+            default -> throw new IllegalArgumentException("Unexpected value: " + rplOptionType);
+        };
     }
 }

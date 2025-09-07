@@ -1,36 +1,28 @@
 package com.github.hirsivaja.ip.ethernet;
 
-import com.github.hirsivaja.ip.IpUtils;
+import com.github.hirsivaja.ip.ByteArray;
 
 import java.nio.ByteBuffer;
 
-public class EthernetBytePayload implements EthernetPayload {
-    private final byte[] payload;
+public record EthernetBytePayload(ByteArray payload) implements EthernetPayload {
 
     public EthernetBytePayload(byte[] payload) {
-        this.payload = payload;
+        this(new ByteArray(payload));
     }
 
+    @Override
     public void encode(ByteBuffer out) {
-        out.put(payload);
+        out.put(payload.array());
     }
 
-    public int getLength() {
-        return payload.length;
+    @Override
+    public int length() {
+        return payload.array().length;
     }
 
     public static EthernetBytePayload decode(ByteBuffer in, int len) {
         byte[] payload = new byte[len];
         in.get(payload);
         return new EthernetBytePayload(payload);
-    }
-
-    public byte[] getPayload() {
-        return payload;
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(" + IpUtils.printHexBinary(payload) + ")";
     }
 }

@@ -7,27 +7,17 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RplConsistencyCheck implements RplPayload {
+public record RplConsistencyCheck(
+        RplSecurity security,
+        byte rplInstance,
+        byte flags,
+        short ccNonce,
+        byte[] dodagId,
+        int destinationCounter,
+        List<RplOption> options) implements RplPayload {
     private static final int MIN_LEN = 24;
-    private final RplSecurity security;
-    private final byte rplInstance;
-    private final byte flags;
-    private final short ccNonce;
-    private final byte[] dodagId;
-    private final int destinationCounter;
-    private final List<RplOption> options;
 
-    public RplConsistencyCheck(RplSecurity security, byte rplInstance, byte flags, short ccNonce,
-                               byte[] dodagId, int destinationCounter, List<RplOption> options) {
-        this.security = security;
-        this.rplInstance = rplInstance;
-        this.flags = flags;
-        this.ccNonce = ccNonce;
-        this.dodagId = dodagId;
-        this.destinationCounter = destinationCounter;
-        this.options = options;
-    }
-
+    @Override
     public void encode(ByteBuffer out){
         security.encode(out);
         out.put(rplInstance);
@@ -39,14 +29,14 @@ public class RplConsistencyCheck implements RplPayload {
     }
 
     @Override
-    public RplPayloadType getType() {
+    public RplPayloadType type() {
         return RplPayloadType.CONSISTENCY_CHECK;
     }
 
     @Override
-    public int getLength() {
-        return security.getLength() + MIN_LEN +
-                options.stream().mapToInt(RplOption::getLength).sum();
+    public int length() {
+        return security.length() + MIN_LEN +
+                options.stream().mapToInt(RplOption::length).sum();
     }
 
     public static RplConsistencyCheck decode(ByteBuffer in){
@@ -62,35 +52,5 @@ public class RplConsistencyCheck implements RplPayload {
             options.add(RplOption.decode(in));
         }
         return new RplConsistencyCheck(security, rplInstance, flags, ccNonce, dodagId, destinationCounter, options);
-    }
-
-    @Override
-    public RplSecurity getSecurity() {
-        return security;
-    }
-
-    public byte getRplInstance() {
-        return rplInstance;
-    }
-
-    public byte getFlags() {
-        return flags;
-    }
-
-    public short getCcNonce() {
-        return ccNonce;
-    }
-
-    public byte[] getDodagId() {
-        return dodagId;
-    }
-
-    public int getDestinationCounter() {
-        return destinationCounter;
-    }
-
-    @Override
-    public List<RplOption> getOptions() {
-        return options;
     }
 }

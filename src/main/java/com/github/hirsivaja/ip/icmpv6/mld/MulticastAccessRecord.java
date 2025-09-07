@@ -1,35 +1,36 @@
 package com.github.hirsivaja.ip.icmpv6.mld;
 
+import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MulticastAccessRecord {
-    private final byte recordType;
-    private final Ipv6Address multicastAddress;
-    private final Ipv6Address[] sourceAddresses;
-    private final byte[] auxData;
+public record MulticastAccessRecord(
+        byte recordType,
+        Ipv6Address multicastAddress,
+        List<Ipv6Address> sourceAddresses,
+        ByteArray auxData) {
 
-    public MulticastAccessRecord(byte recordType, Ipv6Address multicastAddress, Ipv6Address[] sourceAddresses, byte[] auxData) {
-        this.recordType = recordType;
-        this.multicastAddress = multicastAddress;
-        this.sourceAddresses = sourceAddresses;
-        this.auxData = auxData;
+    public MulticastAccessRecord(byte recordType, Ipv6Address multicastAddress,
+            List<Ipv6Address> sourceAddresses, byte[] auxData) {
+        this(recordType, multicastAddress, sourceAddresses, new ByteArray(auxData));
     }
 
     public void encode(ByteBuffer out) {
         out.put(recordType);
-        out.put((byte) auxData.length);
-        out.putShort((short) sourceAddresses.length);
+        out.put((byte) auxData.array().length);
+        out.putShort((short) sourceAddresses.size());
         multicastAddress.encode(out);
         for(Ipv6Address sourceAddress : sourceAddresses) {
             sourceAddress.encode(out);
         }
-        out.put(auxData);
+        out.put(auxData.array());
     }
 
     public int getLength() {
-        return 20 + (sourceAddresses.length * 16) + auxData.length ;
+        return 20 + (sourceAddresses.size() * 16) + auxData.array().length ;
     }
 
     public static MulticastAccessRecord decode(ByteBuffer in) {
@@ -37,28 +38,16 @@ public class MulticastAccessRecord {
         int auxDataLen = in.get() & 0xFF;
         short numberOfSources = in.getShort();
         Ipv6Address multicastAddress = Ipv6Address.decode(in);
-        Ipv6Address[] sourceAddresses = new Ipv6Address[numberOfSources];
-        for(int i = 0; i < sourceAddresses.length; i++) {
-            sourceAddresses[i] = Ipv6Address.decode(in);
+        List<Ipv6Address> sourceAddresses = new ArrayList<>();
+        for(int i = 0; i < numberOfSources; i++) {
+            sourceAddresses.add(Ipv6Address.decode(in));
         }
         byte[] auxData = new byte[auxDataLen];
         in.get(auxData);
         return new MulticastAccessRecord(recordType, multicastAddress, sourceAddresses, auxData);
     }
 
-    public byte getRecordType() {
-        return recordType;
-    }
-
-    public Ipv6Address getMulticastAddress() {
-        return multicastAddress;
-    }
-
-    public Ipv6Address[] getSourceAddresses() {
-        return sourceAddresses;
-    }
-
-    public byte[] getAuxData() {
-        return auxData;
+    public byte[] rawAuxData() {
+        return auxData.array();
     }
 }

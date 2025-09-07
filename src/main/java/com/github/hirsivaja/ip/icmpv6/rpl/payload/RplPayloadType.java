@@ -17,13 +17,13 @@ public enum RplPayloadType {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static RplPayloadType getRplPayloadType(byte type) {
+    public static RplPayloadType fromRplPayloadType(byte type) {
         for (RplPayloadType identifier : RplPayloadType.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

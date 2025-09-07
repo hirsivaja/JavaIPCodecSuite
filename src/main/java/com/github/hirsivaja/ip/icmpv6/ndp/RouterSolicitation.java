@@ -8,12 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouterSolicitation implements Icmpv6Message {
-    private final List<NdpOption> options;
-
-    public RouterSolicitation(List<NdpOption> options) {
-        this.options = options;
-    }
+public record RouterSolicitation(List<NdpOption> options) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -24,8 +19,8 @@ public class RouterSolicitation implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 4 + options.stream().mapToInt(NdpOption::getLength).sum();
+    public int length() {
+        return BASE_LEN + 4 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
@@ -38,16 +33,12 @@ public class RouterSolicitation implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.ROUTER_SOLICITATION;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return 0;
-    }
-
-    public List<NdpOption> getOptions() {
-        return options;
     }
 }

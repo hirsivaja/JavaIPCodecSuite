@@ -1,39 +1,37 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class RplSolicitedInformationOption implements RplOption {
+public record RplSolicitedInformationOption(
+        byte rplInstanceId,
+        byte flags,
+        ByteArray dodagId,
+        byte versionNumber) implements RplOption {
     private static final int LEN = 19;
     private static final int DODAG_ID_LEN = 16;
-    private final byte rplInstanceId;
-    private final byte flags;
-    private final byte[] dodagId;
-    private final byte versionNumber;
 
     public RplSolicitedInformationOption(byte rplInstanceId, byte flags, byte[] dodagId, byte versionNumber) {
-        this.rplInstanceId = rplInstanceId;
-        this.flags = flags;
-        this.dodagId = dodagId;
-        this.versionNumber = versionNumber;
+        this(rplInstanceId, flags, new ByteArray(dodagId), versionNumber);
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
+        out.put(optionType().type());
         out.put((byte) LEN);
         out.put(rplInstanceId);
         out.put(flags);
-        out.put(dodagId);
+        out.put(dodagId.array());
         out.put(versionNumber);
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return 21;
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.SOLICITED_INFORMATION;
     }
 
@@ -50,19 +48,7 @@ public class RplSolicitedInformationOption implements RplOption {
         return new RplSolicitedInformationOption(rplInstanceId, flags, dodagId, versionNumber);
     }
 
-    public byte getRplInstanceId() {
-        return rplInstanceId;
-    }
-
-    public byte getFlags() {
-        return flags;
-    }
-
-    public byte[] getDodagId() {
-        return dodagId;
-    }
-
-    public byte getVersionNumber() {
-        return versionNumber;
+    public byte[] rawDodagId() {
+        return dodagId.array();
     }
 }

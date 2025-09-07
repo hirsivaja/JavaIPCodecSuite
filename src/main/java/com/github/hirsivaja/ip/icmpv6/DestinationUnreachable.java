@@ -1,28 +1,24 @@
 package com.github.hirsivaja.ip.icmpv6;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class DestinationUnreachable implements Icmpv6Message {
-    private final byte code;
-    private final short nextHopMtu;
-    private final byte[] payload;
+public record DestinationUnreachable(byte code, short nextHopMtu, ByteArray payload) implements Icmpv6Message {
 
     public DestinationUnreachable(byte code, short nextHopMtu, byte[] payload) {
-        this.code = code;
-        this.nextHopMtu = nextHopMtu;
-        this.payload = payload;
+        this(code, nextHopMtu, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
         out.putShort((short) 0);
         out.putShort(nextHopMtu);
-        out.put(payload);
+        out.put(payload.array());
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 4 + payload.length;
+    public int length() {
+        return BASE_LEN + 4 + payload.length();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, byte code) {
@@ -34,20 +30,11 @@ public class DestinationUnreachable implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.DESTINATION_UNREACHABLE;
     }
 
-    @Override
-    public byte getCode() {
-        return code;
-    }
-
-    public short getNextHopMtu() {
-        return nextHopMtu;
-    }
-
-    public byte[] getPayload() {
-        return payload;
+    public byte[] rawPayload() {
+        return payload.array();
     }
 }

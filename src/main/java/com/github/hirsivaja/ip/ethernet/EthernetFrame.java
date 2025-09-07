@@ -7,37 +7,25 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EthernetFrame {
+public record EthernetFrame(
+        MacAddress destination,
+        MacAddress source,
+        boolean hasDot1qTag,
+        short dot1qTag,
+        short etherType,
+        EthernetPayload payload,
+        int crc) {
     private static final Logger logger = Logger.getLogger("EthernetFrame");
     private static final int TP_ID = 0x8100;
     private static final int MINIMUM_FRAME_SIZE = 64;
     private static final int FRAME_BASE_SIZE = 18;
-    private final MacAddress destination;
-    private final MacAddress source;
-    private final boolean hasDot1qTag;
-    private final short dot1qTag;
-    private final short etherType;
-    private final EthernetPayload payload;
-    private final int crc;
 
     public EthernetFrame(MacAddress destination, MacAddress source, short etherType, EthernetPayload payload, int crc) {
-        this.destination = destination;
-        this.source = source;
-        this.hasDot1qTag = false;
-        this.dot1qTag = 0;
-        this.etherType = etherType;
-        this.payload = payload;
-        this.crc = crc;
+        this(destination, source, false, (short) 0, etherType, payload, crc);
     }
 
     public EthernetFrame(MacAddress destination, MacAddress source, short dot1qTag, short etherType, EthernetPayload payload, int crc) {
-        this.destination = destination;
-        this.source = source;
-        this.hasDot1qTag = true;
-        this.dot1qTag = dot1qTag;
-        this.etherType = etherType;
-        this.payload = payload;
-        this.crc = crc;
+        this(destination, source, true, dot1qTag, etherType, payload, crc);
     }
 
     public void encode(ByteBuffer out) {
@@ -49,7 +37,7 @@ public class EthernetFrame {
         }
         out.putShort(etherType);
         payload.encode(out);
-        int paddingLen = MINIMUM_FRAME_SIZE - payload.getLength() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
+        int paddingLen = MINIMUM_FRAME_SIZE - payload.length() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
         byte[] padding = new byte[Math.max(paddingLen, 0)];
         out.put(padding);
         if(crc != 0) {
@@ -57,17 +45,17 @@ public class EthernetFrame {
         }
     }
 
-    public int getLength() {
-        int len = FRAME_BASE_SIZE + payload.getLength() + (hasDot1qTag ? 4 : 0) + (crc == 0 ? -4 : 0);
+    public int length() {
+        int len = FRAME_BASE_SIZE + payload.length() + (hasDot1qTag ? 4 : 0) + (crc == 0 ? -4 : 0);
         return Math.max(len, MINIMUM_FRAME_SIZE);
     }
 
     public byte[] toBytes() {
-        ByteBuffer out = ByteBuffer.allocate(getLength());
+        ByteBuffer out = ByteBuffer.allocate(length());
         encode(out);
         byte[] outBytes = Arrays.copyOfRange(out.array(), 0, out.rewind().remaining());
         if(logger.isLoggable(Level.FINE)) {
-            logger.fine("Ethernet frame as byte array:\n\t" + IpUtils.printHexBinary(outBytes));
+            logger.log(Level.FINE, "Ethernet frame as byte array:\n\t{0}", IpUtils.printHexBinary(outBytes));
         }
         return outBytes;
     }
@@ -78,7 +66,7 @@ public class EthernetFrame {
 
     public static EthernetFrame fromBytes(byte[] ethernetFrame) {
         if(logger.isLoggable(Level.FINE)) {
-            logger.fine("Creating an Ethernet Frame from:\n\t" + IpUtils.printHexBinary(ethernetFrame));
+            logger.log(Level.FINE, "Creating an Ethernet Frame from:\n\t{0}", IpUtils.printHexBinary(ethernetFrame));
         }
         return decode(ByteBuffer.wrap(ethernetFrame));
     }
@@ -98,7 +86,7 @@ public class EthernetFrame {
             len = Short.toUnsignedInt(in.getShort());
         }
         EthernetPayload payload = EthernetPayload.decode(in, len);
-        int paddingLen = MINIMUM_FRAME_SIZE - payload.getLength() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
+        int paddingLen = MINIMUM_FRAME_SIZE - payload.length() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
         byte[] padding = new byte[Math.max(paddingLen, 0)];
         in.get(padding);
         int crc = 0;
@@ -110,41 +98,5 @@ public class EthernetFrame {
         } else {
             return new EthernetFrame(destination, source, (short) len, payload, crc);
         }
-    }
-
-    public MacAddress getDestination() {
-        return destination;
-    }
-
-    public MacAddress getSource() {
-        return source;
-    }
-
-    public boolean hasDot1qTag() {
-        return hasDot1qTag;
-    }
-
-    public short getDot1qTag() {
-        return dot1qTag;
-    }
-
-    public EthernetPayload getPayload() {
-        return payload;
-    }
-
-    public int getCrc() {
-        return crc;
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(" +
-                "destination=" + destination +
-                ", source=" + source +
-                ", hasDot1qTag=" + hasDot1qTag +
-                ", dot1qTag=" + dot1qTag +
-                ", payload=" + payload +
-                ", crc=" + crc +
-                ")";
     }
 }

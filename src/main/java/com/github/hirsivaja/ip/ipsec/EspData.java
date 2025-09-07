@@ -1,41 +1,34 @@
 package com.github.hirsivaja.ip.ipsec;
 
+import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpProtocol;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-public class EspData {
-    private final EspPayload payload;
-    private final byte[] encryptedData;
-    private final IpProtocol nextHeader;
-    private final byte[] icv;
+public record EspData(EspPayload payload, IpProtocol nextHeader, ByteArray icv, ByteArray encryptedData) {
+    
+    public EspData(EspPayload payload, IpProtocol nextHeader, byte[] icv, byte[] encryptedData) {
+        this(payload, nextHeader, new ByteArray(icv), new ByteArray(encryptedData));
+    }
 
-    public EspData(EspPayload payload, int icvLength) {
-        this.payload = payload;
-        ByteBuffer in = ByteBuffer.wrap(payload.getData());
-        byte[] encryptedDataAndPadding = new byte[payload.getData().length - 2 - icvLength];
+    public static EspData fromEspPayload(EspPayload payload, int icvLength) {
+        ByteBuffer in = ByteBuffer.wrap(payload.rawData());
+        byte[] encryptedDataAndPadding = new byte[payload.data().length() - 2 - icvLength];
         in.get(encryptedDataAndPadding);
         int paddingLen = Byte.toUnsignedInt(in.get());
-        this.nextHeader = IpProtocol.getType(in.get());
-        this.icv = new byte[icvLength];
+        IpProtocol nextHeader = IpProtocol.fromType(in.get());
+        byte[] icv = new byte[icvLength];
         in.get(icv);
-        this.encryptedData = Arrays.copyOfRange(encryptedDataAndPadding, 0, encryptedDataAndPadding.length - paddingLen);
+        byte[] encryptedData = Arrays.copyOfRange(encryptedDataAndPadding, 0, encryptedDataAndPadding.length - paddingLen);
+        return new EspData(payload, nextHeader, icv, encryptedData);
     }
 
-    public EspPayload getPayload() {
-        return payload;
+    public byte[] rawEncryptedData() {
+        return encryptedData.array();
     }
 
-    public byte[] getEncryptedData() {
-        return encryptedData;
-    }
-
-    public IpProtocol getNextHeader() {
-        return nextHeader;
-    }
-
-    public byte[] getIcv() {
-        return icv;
+    public byte[] rawIcv() {
+        return icv.array();
     }
 }

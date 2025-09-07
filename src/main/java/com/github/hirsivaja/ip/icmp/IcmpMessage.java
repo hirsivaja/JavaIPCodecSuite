@@ -5,17 +5,17 @@ import java.nio.ByteBuffer;
 public interface IcmpMessage {
     int BASE_LEN = 4;
 
-    IcmpType getType();
-    byte getCode();
+    IcmpType type();
+    byte code();
     void encode(ByteBuffer out);
-    int getLength();
+    int length();
 
     static IcmpMessage decode(ByteBuffer in, IcmpType type, byte code) {
-        switch (type) {
-            case ECHO_REPLY: return EchoReply.decode(in);
-            case DESTINATION_UNREACHABLE: return DestinationUnreachable.decode(in, code);
-            case ECHO_REQUEST: return EchoRequest.decode(in);
-            default: return GenericIcmpMessage.decode(in, type, code);
-        }
+        return switch (type) {
+            case ECHO_REPLY -> EchoReply.decode(in);
+            case DESTINATION_UNREACHABLE -> DestinationUnreachable.decode(in, code);
+            case ECHO_REQUEST -> EchoRequest.decode(in);
+            default -> GenericIcmpMessage.decode(in, type, code);
+        };
     }
 }

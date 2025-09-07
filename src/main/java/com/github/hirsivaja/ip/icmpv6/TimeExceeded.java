@@ -1,25 +1,22 @@
 package com.github.hirsivaja.ip.icmpv6;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class TimeExceeded implements Icmpv6Message {
-    private final byte code;
-    private final byte[] payload;
-
+public record TimeExceeded(byte code, ByteArray payload) implements Icmpv6Message {
     public TimeExceeded(byte code, byte[] payload) {
-        this.code = code;
-        this.payload = payload;
+        this(code, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
         out.putInt(0);
-        out.put(payload);
+        out.put(payload.array());
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 4 + payload.length;
+    public int length() {
+        return BASE_LEN + 4 + payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, byte code) {
@@ -30,16 +27,11 @@ public class TimeExceeded implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.TIME_EXCEEDED;
     }
 
-    @Override
-    public byte getCode() {
-        return code;
-    }
-
-    public byte[] getPayload() {
-        return payload;
+    public byte[] rawPayload() {
+        return payload.array();
     }
 }

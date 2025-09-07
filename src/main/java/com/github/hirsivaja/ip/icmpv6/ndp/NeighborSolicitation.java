@@ -9,14 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NeighborSolicitation implements Icmpv6Message {
-    private final Ipv6Address targetAddress;
-    private final List<NdpOption> options;
-
-    public NeighborSolicitation(Ipv6Address targetAddress, List<NdpOption> options) {
-        this.targetAddress = targetAddress;
-        this.options = options;
-    }
+public record NeighborSolicitation(Ipv6Address targetAddress, List<NdpOption> options) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -28,8 +21,8 @@ public class NeighborSolicitation implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 20 + options.stream().mapToInt(NdpOption::getLength).sum();
+    public int length() {
+        return BASE_LEN + 20 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
@@ -43,20 +36,12 @@ public class NeighborSolicitation implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.NEIGHBOR_SOLICITATION;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return 0;
-    }
-
-    public Ipv6Address getTargetAddress() {
-        return targetAddress;
-    }
-
-    public List<NdpOption> getOptions() {
-        return options;
     }
 }

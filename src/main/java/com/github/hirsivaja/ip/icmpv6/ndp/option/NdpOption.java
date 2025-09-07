@@ -6,19 +6,19 @@ public interface NdpOption {
 
     void encode(ByteBuffer out);
 
-    int getLength();
+    int length();
 
-    NdpOptionType getOptionType();
+    NdpOptionType optionType();
 
     static NdpOption decode(ByteBuffer in) {
-        NdpOptionType optionType = NdpOptionType.getNdpOptionType(in.get());
-        switch (optionType) {
-            case SOURCE_LINK_LAYER: return SourceLinkLayerOption.decode(in);
-            case TARGET_LINK_LAYER: return TargetLinkLayerOption.decode(in);
-            case PREFIX_INFORMATION: return PrefixInformationOption.decode(in);
-            case REDIRECTED_HEADER: return RedirectedHeaderOption.decode(in);
-            case MTU: return MtuOption.decode(in);
-            default: throw new IllegalArgumentException("Unexpected value: " + optionType);
-        }
+        NdpOptionType optionType = NdpOptionType.fromNdpOptionType(in.get());
+        return switch (optionType) {
+            case SOURCE_LINK_LAYER -> SourceLinkLayerOption.decode(in);
+            case TARGET_LINK_LAYER -> TargetLinkLayerOption.decode(in);
+            case PREFIX_INFORMATION -> PrefixInformationOption.decode(in);
+            case REDIRECTED_HEADER -> RedirectedHeaderOption.decode(in);
+            case MTU -> MtuOption.decode(in);
+            default -> throw new IllegalArgumentException("Unexpected value: " + optionType);
+        };
     }
 }

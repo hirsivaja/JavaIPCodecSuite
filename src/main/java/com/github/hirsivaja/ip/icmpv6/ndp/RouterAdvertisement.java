@@ -8,23 +8,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouterAdvertisement implements Icmpv6Message {
-    private final byte currentHopLimit;
-    private final byte flags;
-    private final short routerLifetime;
-    private final int reachableTime;
-    private final int retransmissionTimer;
-    private final List<NdpOption> options;
-
-    public RouterAdvertisement(byte currentHopLimit, byte flags, short routerLifetime, int reachableTime,
-                               int retransmissionTimer, List<NdpOption> options) {
-        this.currentHopLimit = currentHopLimit;
-        this.flags = flags;
-        this.routerLifetime = routerLifetime;
-        this.reachableTime = reachableTime;
-        this.retransmissionTimer = retransmissionTimer;
-        this.options = options;
-    }
+public record RouterAdvertisement(
+        byte currentHopLimit,
+        byte flags,
+        short routerLifetime,
+        int reachableTime,
+        int retransmissionTimer,
+        List<NdpOption> options) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -39,8 +29,8 @@ public class RouterAdvertisement implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 12 + options.stream().mapToInt(NdpOption::getLength).sum();
+    public int length() {
+        return BASE_LEN + 12 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
@@ -57,36 +47,12 @@ public class RouterAdvertisement implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.ROUTER_ADVERTISEMENT;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return 0;
-    }
-
-    public byte getCurrentHopLimit() {
-        return currentHopLimit;
-    }
-
-    public byte getFlags() {
-        return flags;
-    }
-
-    public short getRouterLifetime() {
-        return routerLifetime;
-    }
-
-    public int getReachableTime() {
-        return reachableTime;
-    }
-
-    public int getRetransmissionTimer() {
-        return retransmissionTimer;
-    }
-
-    public List<NdpOption> getOptions() {
-        return options;
     }
 }

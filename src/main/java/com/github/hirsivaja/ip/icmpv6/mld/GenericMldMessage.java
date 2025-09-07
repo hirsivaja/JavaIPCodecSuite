@@ -6,18 +6,11 @@ import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 
 import java.nio.ByteBuffer;
 
-public class GenericMldMessage implements Icmpv6Message {
-    private final Icmpv6Type type;
-    private final byte code;
-    private final short maximumResponseDelay;
-    private final Ipv6Address multicastAddress;
-
-    public GenericMldMessage(Icmpv6Type type, byte code, short maximumResponseDelay, Ipv6Address multicastAddress) {
-        this.type = type;
-        this.code = code;
-        this.maximumResponseDelay = maximumResponseDelay;
-        this.multicastAddress = multicastAddress;
-    }
+public record GenericMldMessage(
+        Icmpv6Type type,
+        byte code,
+        short maximumResponseDelay,
+        Ipv6Address multicastAddress) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -27,7 +20,7 @@ public class GenericMldMessage implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return BASE_LEN + 20;
     }
 
@@ -36,23 +29,5 @@ public class GenericMldMessage implements Icmpv6Message {
         in.getShort(); // RESERVED
         Ipv6Address multicastAddress = Ipv6Address.decode(in);
         return new GenericMldMessage(type, code, maximumResponseDelay, multicastAddress);
-    }
-
-    @Override
-    public Icmpv6Type getType() {
-        return type;
-    }
-
-    @Override
-    public byte getCode() {
-        return code;
-    }
-
-    public short getMaximumResponseDelay() {
-        return maximumResponseDelay;
-    }
-
-    public Ipv6Address getMulticastAddress() {
-        return multicastAddress;
     }
 }

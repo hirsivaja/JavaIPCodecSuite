@@ -1,26 +1,22 @@
 package com.github.hirsivaja.ip.icmp;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class GenericIcmpMessage implements IcmpMessage {
-    private final IcmpType type;
-    private final byte code;
-    private final byte[] payload;
+public record GenericIcmpMessage(IcmpType type, byte code, ByteArray payload) implements IcmpMessage {
 
     public GenericIcmpMessage(IcmpType type, byte code, byte[] payload) {
-        this.type = type;
-        this.code = code;
-        this.payload = payload;
+        this(type, code, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(payload);
+        out.put(payload.array());
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + payload.length;
+    public int length() {
+        return BASE_LEN + payload.array().length;
     }
 
     public static IcmpMessage decode(ByteBuffer in, IcmpType type, byte code) {
@@ -30,16 +26,16 @@ public class GenericIcmpMessage implements IcmpMessage {
     }
 
     @Override
-    public IcmpType getType() {
+    public IcmpType type() {
         return type;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return code;
     }
 
-    public byte[] getPayload() {
-        return payload;
+    public byte[] rawPayload() {
+        return payload.array();
     }
 }

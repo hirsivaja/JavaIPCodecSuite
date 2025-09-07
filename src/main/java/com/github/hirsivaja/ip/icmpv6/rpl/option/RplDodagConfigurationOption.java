@@ -2,36 +2,21 @@ package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
 import java.nio.ByteBuffer;
 
-public class RplDodagConfigurationOption implements RplOption {
+public record RplDodagConfigurationOption(
+        byte pcs,
+        byte dioIntervalMax,
+        byte dioIntervalMin,
+        byte dioRedundancyConstant,
+        short maxRankIncrease,
+        short minHopRankIncrease,
+        short ocp,
+        byte defaultLifetime,
+        short lifetimeUnit) implements RplOption {
     private static final int LEN = 14;
-    private final byte pcs;
-    private final byte dioIntervalMax;
-    private final byte dioIntervalMin;
-    private final byte dioRedundancyConstant;
-    private final short maxRankIncrease;
-    private final short minHopRankIncrease;
-    private final short ocp;
-    private final byte defaultLifetime;
-    private final short lifetimeUnit;
-
-    @SuppressWarnings("squid:S00107")
-    public RplDodagConfigurationOption(byte pcs, byte dioIntervalMax, byte dioIntervalMin, byte dioRedundancyConstant,
-                                       short maxRankIncrease, short minHopRankIncrease, short ocp,
-                                       byte defaultLifetime, short lifetimeUnit) {
-        this.pcs = pcs;
-        this.dioIntervalMax = dioIntervalMax;
-        this.dioIntervalMin = dioIntervalMin;
-        this.dioRedundancyConstant = dioRedundancyConstant;
-        this.maxRankIncrease = maxRankIncrease;
-        this.minHopRankIncrease = minHopRankIncrease;
-        this.ocp = ocp;
-        this.defaultLifetime = defaultLifetime;
-        this.lifetimeUnit = lifetimeUnit;
-    }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
+        out.put(optionType().type());
         out.put((byte) LEN);
         out.put(pcs);
         out.put(dioIntervalMax);
@@ -46,12 +31,12 @@ public class RplDodagConfigurationOption implements RplOption {
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return 16;
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.DODAG_CONFIGURATION;
     }
 
@@ -72,41 +57,5 @@ public class RplDodagConfigurationOption implements RplOption {
         short lifetimeUnit = in.getShort();
         return new RplDodagConfigurationOption(pcs, dioIntervalMax, dioIntervalMin, dioRedundancyConstant,
                 maxRankIncrease, minHopRankIncrease, ocp, defaultLifetime, lifetimeUnit);
-    }
-
-    public byte getPcs() {
-        return pcs;
-    }
-
-    public byte getDioIntervalMax() {
-        return dioIntervalMax;
-    }
-
-    public byte getDioIntervalMin() {
-        return dioIntervalMin;
-    }
-
-    public byte getDioRedundancyConstant() {
-        return dioRedundancyConstant;
-    }
-
-    public short getMaxRankIncrease() {
-        return maxRankIncrease;
-    }
-
-    public short getMinHopRankIncrease() {
-        return minHopRankIncrease;
-    }
-
-    public short getOcp() {
-        return ocp;
-    }
-
-    public byte getDefaultLifetime() {
-        return defaultLifetime;
-    }
-
-    public short getLifetimeUnit() {
-        return lifetimeUnit;
     }
 }

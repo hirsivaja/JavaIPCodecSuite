@@ -4,24 +4,16 @@ import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 
 import java.nio.ByteBuffer;
 
-public class PrefixInformationOption implements NdpOption {
-    private final byte prefixLen;
-    private final byte flags;
-    private final int validLifetime;
-    private final int preferredLifetime;
-    private final Ipv6Address prefix;
-
-    public PrefixInformationOption(byte prefixLen, byte flags, int validLifetime, int preferredLifetime, Ipv6Address prefix) {
-        this.prefixLen = prefixLen;
-        this.flags = flags;
-        this.validLifetime = validLifetime;
-        this.preferredLifetime = preferredLifetime;
-        this.prefix = prefix;
-    }
+public record PrefixInformationOption(
+        byte prefixLen,
+        byte flags,
+        int validLifetime,
+        int preferredLifetime,
+        Ipv6Address prefix) implements NdpOption {
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
+        out.put(optionType().type());
         out.put((byte) 4);
         out.put(prefixLen);
         out.put(flags);
@@ -32,12 +24,12 @@ public class PrefixInformationOption implements NdpOption {
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return 32;
     }
 
     @Override
-    public NdpOptionType getOptionType() {
+    public NdpOptionType optionType() {
         return NdpOptionType.PREFIX_INFORMATION;
     }
 
@@ -50,25 +42,5 @@ public class PrefixInformationOption implements NdpOption {
         in.getInt(); // RESERVED
         Ipv6Address prefix = Ipv6Address.decode(in);
         return new PrefixInformationOption(prefixLen, flags, validLifetime, preferredLifetime, prefix);
-    }
-
-    public byte getPrefixLen() {
-        return prefixLen;
-    }
-
-    public byte getFlags() {
-        return flags;
-    }
-
-    public int getValidLifetime() {
-        return validLifetime;
-    }
-
-    public int getPreferredLifetime() {
-        return preferredLifetime;
-    }
-
-    public Ipv6Address getPrefix() {
-        return prefix;
     }
 }

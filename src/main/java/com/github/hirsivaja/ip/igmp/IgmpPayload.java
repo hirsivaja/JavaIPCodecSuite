@@ -1,34 +1,26 @@
 package com.github.hirsivaja.ip.igmp;
 
-import com.github.hirsivaja.ip.IpHeader;
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.ipv4.Ipv4Header;
 import com.github.hirsivaja.ip.ipv4.Ipv4Payload;
 
 import java.nio.ByteBuffer;
 
-public class IgmpPayload implements Ipv4Payload {
-    private final Ipv4Header header;
-    private final IgmpMessage message;
-
-    public IgmpPayload(Ipv4Header header, IgmpMessage message){
-        this.header = header;
-        this.message = message;
-    }
+public record IgmpPayload(Ipv4Header header, IgmpMessage message) implements Ipv4Payload {
 
     @Override
     public void encode(ByteBuffer out) {
         header.encode(out);
-        out.put(message.getType().getType());
-        out.put(message.getCode());
-        out.putShort(IpUtils.calculateInternetChecksum(getChecksumData(message, (short) 0)));
+        out.put(message.type().type());
+        out.put(message.code());
+        out.putShort(IpUtils.calculateInternetChecksum(generateChecksumData(message, (short) 0)));
         message.encode(out);
     }
 
-    private static byte[] getChecksumData(IgmpMessage message, short checksum) {
-        ByteBuffer checksumBuf = ByteBuffer.allocate(message.getLength());
-        checksumBuf.put(message.getType().getType());
-        checksumBuf.put(message.getCode());
+    private static byte[] generateChecksumData(IgmpMessage message, short checksum) {
+        ByteBuffer checksumBuf = ByteBuffer.allocate(message.length());
+        checksumBuf.put(message.type().type());
+        checksumBuf.put(message.code());
         checksumBuf.putShort(checksum);
         message.encode(checksumBuf);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
@@ -37,34 +29,16 @@ public class IgmpPayload implements Ipv4Payload {
     }
 
     @Override
-    public int getLength() {
-        return header.getLength() + message.getLength();
+    public int length() {
+        return header.length() + message.length();
     }
 
     public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header) {
-        IgmpType type = IgmpType.getType(in.get());
+        IgmpType type = IgmpType.fromType(in.get());
         byte code = in.get();
         short checksum = in.getShort();
         IgmpMessage message = IgmpMessage.decode(in, type, code);
-        IpUtils.ensureInternetChecksum(getChecksumData(message, checksum));
+        IpUtils.ensureInternetChecksum(generateChecksumData(message, checksum));
         return new IgmpPayload(header, message);
-    }
-
-    public IgmpMessage getMessage() {
-        return message;
-    }
-
-    @Override
-    public String toString(){
-        return "IGMP payload " + message.getType() + " with code " + message.getCode();
-    }
-
-    @Override
-    public IpHeader getHeader() {
-        return getIpv4Header();
-    }
-
-    public Ipv4Header getIpv4Header() {
-        return header;
     }
 }

@@ -16,22 +16,22 @@ public class Ipv4PayloadTest {
         Assert.assertTrue(Ipv4Payload.isIpv4Payload(ByteBuffer.wrap(ipv4Bytes)));
 
         IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
-        Ipv4Header header = (Ipv4Header) payload.getHeader();
+        Ipv4Header header = (Ipv4Header) payload.header();
 
         Assert.assertTrue(payload instanceof EncapsulationPayload);
-        Assert.assertEquals(60, ((EncapsulationPayload) payload).getEncapsulatedPayload().getLength());
-        Assert.assertEquals(0, header.getDscp());
-        Assert.assertEquals(0, header.getEcn().getType());
-        Assert.assertEquals((short) 0x0050, header.getTotalLength());
-        Assert.assertEquals((short) 0x935A, header.getIdentification());
-        Assert.assertEquals(0, header.getFlags().toByte());
-        Assert.assertEquals(0, header.getFragmentOffset());
-        Assert.assertEquals((byte) 0x80, header.getTtl());
-        Assert.assertEquals(IpProtocol.ENCAPSULATION, header.getProtocol());
-        Assert.assertEquals(0x4637D5D3, header.getSrcIp().toInt());
-        Assert.assertEquals(0xC0586301, header.getDstIp().toInt());
-        Assert.assertEquals(0, header.getOptions().length);
-        Assert.assertEquals(0x50, payload.getLength());
+        Assert.assertEquals(60, ((EncapsulationPayload) payload).encapsulatedPayload().length());
+        Assert.assertEquals(0, header.dscp());
+        Assert.assertEquals(0, header.ecn().type());
+        Assert.assertEquals((short) 0x0050, header.totalLength());
+        Assert.assertEquals((short) 0x935A, header.identification());
+        Assert.assertEquals(0, header.flags().toByte());
+        Assert.assertEquals(0, header.fragmentOffset());
+        Assert.assertEquals((byte) 0x80, header.ttl());
+        Assert.assertEquals(IpProtocol.Type.ENCAPSULATION, header.protocol());
+        Assert.assertEquals(0x4637D5D3, header.srcIp().toInt());
+        Assert.assertEquals(0xC0586301, header.dstIp().toInt());
+        Assert.assertEquals(0, header.options().length());
+        Assert.assertEquals(0x50, payload.length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
     }
@@ -42,10 +42,10 @@ public class Ipv4PayloadTest {
         Assert.assertTrue(Ipv4Payload.isIpv4Payload(ByteBuffer.wrap(ipv4Bytes)));
 
         IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
-        Ipv4Header header = (Ipv4Header) payload.getHeader();
+        Ipv4Header header = (Ipv4Header) payload.header();
 
-        Assert.assertEquals(4, header.getOptions().length);
-        Assert.assertEquals(0x28, payload.getLength());
+        Assert.assertEquals(4, header.options().length());
+        Assert.assertEquals(0x28, payload.length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
     }
@@ -64,13 +64,13 @@ public class Ipv4PayloadTest {
         Assert.assertTrue(Ipv4Payload.isIpv4Payload(ByteBuffer.wrap(ipv4Bytes)));
 
         IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
-        Ipv4Header header = (Ipv4Header) payload.getHeader();
+        Ipv4Header header = (Ipv4Header) payload.header();
 
-        Assert.assertEquals(0, header.getOptions().length);
+        Assert.assertEquals(0, header.options().length());
         Assert.assertTrue(payload instanceof AuthenticationPayload);
         AuthenticationPayload authenticationPayload = (AuthenticationPayload) payload;
-        Assert.assertTrue(authenticationPayload.getAuthenticatedPayload() instanceof EncapsulationPayload);
-        Assert.assertEquals(16, authenticationPayload.getAuthenticationHeader().getLength());
+        Assert.assertTrue(authenticationPayload.authenticatedPayload() instanceof EncapsulationPayload);
+        Assert.assertEquals(16, authenticationPayload.authenticationHeader().length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
     }

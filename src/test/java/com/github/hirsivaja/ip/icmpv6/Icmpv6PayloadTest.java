@@ -24,11 +24,11 @@ public class Icmpv6PayloadTest {
         IpPayload ipv6Payload = Ipv6Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv6Payload instanceof Icmpv6Payload);
-        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).getMessage() instanceof EchoRequest);
-        Assert.assertEquals(0x7620, ((EchoRequest) ((Icmpv6Payload) ipv6Payload).getMessage()).getIdentifier());
-        Assert.assertEquals(0x0100, ((EchoRequest) ((Icmpv6Payload) ipv6Payload).getMessage()).getSequenceNumber());
-        Assert.assertEquals(16, ((Icmpv6Payload) ipv6Payload).getMessage().getLength());
-        Assert.assertEquals(56, ipv6Payload.getLength());
+        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).message() instanceof EchoRequest);
+        Assert.assertEquals(0x7620, ((EchoRequest) ((Icmpv6Payload) ipv6Payload).message()).identifier());
+        Assert.assertEquals(0x0100, ((EchoRequest) ((Icmpv6Payload) ipv6Payload).message()).sequenceNumber());
+        Assert.assertEquals(16, ((Icmpv6Payload) ipv6Payload).message().length());
+        Assert.assertEquals(56, ipv6Payload.length());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv6Payload));
     }
@@ -39,9 +39,9 @@ public class Icmpv6PayloadTest {
         IpPayload ipv6Payload = Ipv6Payload.decode(ByteBuffer.wrap(rspBytes));
 
         Assert.assertTrue(ipv6Payload instanceof Icmpv6Payload);
-        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).getMessage() instanceof EchoResponse);
-        Assert.assertEquals(0x7620, ((EchoResponse) ((Icmpv6Payload) ipv6Payload).getMessage()).getIdentifier());
-        Assert.assertEquals(0x0100, ((EchoResponse) ((Icmpv6Payload) ipv6Payload).getMessage()).getSequenceNumber());
+        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).message() instanceof EchoResponse);
+        Assert.assertEquals(0x7620, ((EchoResponse) ((Icmpv6Payload) ipv6Payload).message()).identifier());
+        Assert.assertEquals(0x0100, ((EchoResponse) ((Icmpv6Payload) ipv6Payload).message()).sequenceNumber());
 
         Assert.assertArrayEquals(rspBytes, TestUtils.toBytes(ipv6Payload));
     }
@@ -52,8 +52,8 @@ public class Icmpv6PayloadTest {
         IpPayload ipv6Payload = Ipv6Payload.decode(ByteBuffer.wrap(duBytes));
 
         Assert.assertTrue(ipv6Payload instanceof Icmpv6Payload);
-        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).getMessage() instanceof DestinationUnreachable);
-        Assert.assertEquals(0x0000, ((DestinationUnreachable) ((Icmpv6Payload) ipv6Payload).getMessage()).getNextHopMtu());
+        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).message() instanceof DestinationUnreachable);
+        Assert.assertEquals(0x0000, ((DestinationUnreachable) ((Icmpv6Payload) ipv6Payload).message()).nextHopMtu());
 
         Assert.assertArrayEquals(duBytes, TestUtils.toBytes(ipv6Payload));
     }
@@ -64,8 +64,8 @@ public class Icmpv6PayloadTest {
         IpPayload ipv6Payload = Ipv6Payload.decode(ByteBuffer.wrap(teBytes));
 
         Assert.assertTrue(ipv6Payload instanceof Icmpv6Payload);
-        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).getMessage() instanceof TimeExceeded);
-        Assert.assertEquals(0, ((Icmpv6Payload) ipv6Payload).getMessage().getCode());
+        Assert.assertTrue(((Icmpv6Payload) ipv6Payload).message() instanceof TimeExceeded);
+        Assert.assertEquals(0, ((Icmpv6Payload) ipv6Payload).message().code());
 
         Assert.assertArrayEquals(teBytes, TestUtils.toBytes(ipv6Payload));
     }

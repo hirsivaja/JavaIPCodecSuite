@@ -12,13 +12,13 @@ public enum RplSecurityMode {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static RplSecurityMode getRplSecurityMode(byte type) {
+    public static RplSecurityMode fromRplSecurityMode(byte type) {
         for (RplSecurityMode identifier : RplSecurityMode.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

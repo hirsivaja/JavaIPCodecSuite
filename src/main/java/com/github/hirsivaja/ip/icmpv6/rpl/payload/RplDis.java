@@ -7,18 +7,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RplDis implements RplPayload {
+public record RplDis(RplSecurity security, List<RplOption> options) implements RplPayload {
     private static final int MIN_LEN = 2;
-    private final RplSecurity security;
-    private final List<RplOption> options;
 
     public RplDis(List<RplOption> options) {
         this(null, options);
-    }
-
-    public RplDis(RplSecurity security, List<RplOption> options) {
-        this.security = security;
-        this.options = options;
     }
 
     public void encode(ByteBuffer out){
@@ -31,7 +24,7 @@ public class RplDis implements RplPayload {
     }
 
     @Override
-    public RplPayloadType getType() {
+    public RplPayloadType type() {
         if(security == null) {
             return RplPayloadType.DIS;
         } else {
@@ -40,10 +33,10 @@ public class RplDis implements RplPayload {
     }
 
     @Override
-    public int getLength() {
-        int securityLen = security == null ? 0 : security.getLength();
+    public int length() {
+        int securityLen = security == null ? 0 : security.length();
         return securityLen + MIN_LEN +
-                options.stream().mapToInt(RplOption::getLength).sum();
+                options.stream().mapToInt(RplOption::length).sum();
     }
 
     public static RplDis decode(ByteBuffer in, boolean hasSecurity){
@@ -58,15 +51,5 @@ public class RplDis implements RplPayload {
             options.add(RplOption.decode(in));
         }
         return new RplDis(security, options);
-    }
-
-    @Override
-    public RplSecurity getSecurity() {
-        return security;
-    }
-
-    @Override
-    public List<RplOption> getOptions() {
-        return options;
     }
 }

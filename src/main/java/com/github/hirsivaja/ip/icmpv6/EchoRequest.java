@@ -1,28 +1,24 @@
 package com.github.hirsivaja.ip.icmpv6;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class EchoRequest implements Icmpv6Message {
-    private final short identifier;
-    private final short sequenceNumber;
-    private final byte[] payload;
+public record EchoRequest(short identifier, short sequenceNumber, ByteArray payload) implements Icmpv6Message {
 
     public EchoRequest(short identifier, short sequenceNumber, byte[] payload) {
-        this.identifier = identifier;
-        this.sequenceNumber = sequenceNumber;
-        this.payload = payload;
+        this(identifier, sequenceNumber, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
         out.putShort(identifier);
         out.putShort(sequenceNumber);
-        out.put(payload);
+        out.put(payload.array());
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 4 + payload.length;
+    public int length() {
+        return BASE_LEN + 4 + payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
@@ -34,24 +30,16 @@ public class EchoRequest implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.ECHO_REQUEST;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return 0;
     }
 
-    public short getIdentifier() {
-        return identifier;
-    }
-
-    public short getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    public byte[] getPayload() {
-        return payload;
+    public byte[] rawPayload() {
+        return payload.array();
     }
 }

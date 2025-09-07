@@ -20,10 +20,10 @@ public class MldTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        GenericMldMessage query = (GenericMldMessage) ((Icmpv6Payload) payload).getMessage();
+        GenericMldMessage query = (GenericMldMessage) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(1000, query.getMaximumResponseDelay());
-        Assert.assertEquals(16, query.getMulticastAddress().getLength());
+        Assert.assertEquals(1000, query.maximumResponseDelay());
+        Assert.assertEquals(16, query.multicastAddress().length());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));
@@ -36,13 +36,13 @@ public class MldTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        MulticastListenerQueryMessage query = (MulticastListenerQueryMessage) ((Icmpv6Payload) payload).getMessage();
+        MulticastListenerQueryMessage query = (MulticastListenerQueryMessage) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(1000, query.getMaximumResponseCode());
-        Assert.assertEquals(16, query.getMulticastAddress().getLength());
-        Assert.assertEquals(2, query.getFlags());
-        Assert.assertEquals(60, query.getQqic());
-        Assert.assertEquals(0, query.getSourceAddresses().length);
+        Assert.assertEquals(1000, query.maximumResponseCode());
+        Assert.assertEquals(16, query.multicastAddress().length());
+        Assert.assertEquals(2, query.flags());
+        Assert.assertEquals(60, query.qqic());
+        Assert.assertEquals(0, query.sourceAddresses().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));
@@ -55,14 +55,14 @@ public class MldTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        MulticastListenerReportV2Message report = (MulticastListenerReportV2Message) ((Icmpv6Payload) payload).getMessage();
+        MulticastListenerReportV2Message report = (MulticastListenerReportV2Message) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(3, report.getMulticastAccessRecords().length);
-        MulticastAccessRecord record = report.getMulticastAccessRecords()[0];
-        Assert.assertEquals(4, record.getRecordType());
-        Assert.assertEquals(16, record.getMulticastAddress().getLength());
-        Assert.assertEquals(0, record.getSourceAddresses().length);
-        Assert.assertEquals(0, record.getAuxData().length);
+        Assert.assertEquals(3, report.multicastAccessRecords().size());
+        MulticastAccessRecord record = report.multicastAccessRecords().getFirst();
+        Assert.assertEquals(4, record.recordType());
+        Assert.assertEquals(16, record.multicastAddress().length());
+        Assert.assertEquals(0, record.sourceAddresses().size());
+        Assert.assertEquals(0, record.rawAuxData().length);
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));

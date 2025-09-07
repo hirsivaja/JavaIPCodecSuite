@@ -11,19 +11,17 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public interface IpPayload extends EthernetPayload {
+public sealed interface IpPayload extends EthernetPayload permits Ipv4Payload, Ipv6Payload {
     Logger logger = Logger.getLogger("IpPayload");
-    void encode(ByteBuffer out);
-    int getLength();
-    IpHeader getHeader();
+    IpHeader header();
 
     @Override
     default byte[] toBytes() {
-        ByteBuffer out = ByteBuffer.allocate(getLength());
+        ByteBuffer out = ByteBuffer.allocate(length());
         encode(out);
         byte[] outBytes = Arrays.copyOfRange(out.array(), 0, out.rewind().remaining());
         if(logger.isLoggable(Level.FINE)) {
-            logger.fine("IP Payload as byte array:\n\t" + IpUtils.printHexBinary(outBytes));
+            logger.log(Level.FINE, "IP Payload as byte array:\n\t{0}", IpUtils.printHexBinary(outBytes));
         }
         return outBytes;
     }
@@ -34,7 +32,7 @@ public interface IpPayload extends EthernetPayload {
 
     static IpPayload fromBytes(byte[] ipPayload) {
         if(logger.isLoggable(Level.FINE)) {
-            logger.fine("Creating an IP Payload from:\n\t" + IpUtils.printHexBinary(ipPayload));
+            logger.log(Level.FINE, "Creating an IP Payload from:\n\t{0}", IpUtils.printHexBinary(ipPayload));
         }
         return decode(ByteBuffer.wrap(ipPayload));
     }

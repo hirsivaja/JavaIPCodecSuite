@@ -1,28 +1,28 @@
 package com.github.hirsivaja.ip.icmpv6.ndp.option;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class SourceLinkLayerOption implements NdpOption {
-    private final byte[] linkLayerAddress;
+public record SourceLinkLayerOption(ByteArray linkLayerAddress) implements NdpOption {
 
     public SourceLinkLayerOption(byte[] linkLayerAddress) {
-        this.linkLayerAddress = linkLayerAddress;
+        this(new ByteArray(linkLayerAddress));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
-        out.put((byte) ((linkLayerAddress.length + 2) / 8));
-        out.put(linkLayerAddress);
+        out.put(optionType().type());
+        out.put((byte) ((linkLayerAddress.length() + 2) / 8));
+        out.put(linkLayerAddress.array());
     }
 
     @Override
-    public int getLength() {
-        return linkLayerAddress.length + 2;
+    public int length() {
+        return linkLayerAddress.length() + 2;
     }
 
     @Override
-    public NdpOptionType getOptionType() {
+    public NdpOptionType optionType() {
         return NdpOptionType.SOURCE_LINK_LAYER;
     }
 
@@ -33,7 +33,7 @@ public class SourceLinkLayerOption implements NdpOption {
         return new SourceLinkLayerOption(linkLayerAddress);
     }
 
-    public byte[] getLinkLayerAddress() {
-        return linkLayerAddress;
+    public byte[] rawLinkLayerAddress() {
+        return linkLayerAddress.array();
     }
 }

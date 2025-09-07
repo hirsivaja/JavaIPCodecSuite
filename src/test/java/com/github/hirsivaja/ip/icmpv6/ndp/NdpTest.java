@@ -20,9 +20,9 @@ public class NdpTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        RouterSolicitation rs = (RouterSolicitation) ((Icmpv6Payload) payload).getMessage();
+        RouterSolicitation rs = (RouterSolicitation) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(0, rs.getOptions().size());
+        Assert.assertEquals(0, rs.options().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
@@ -35,14 +35,14 @@ public class NdpTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        RouterAdvertisement ra = (RouterAdvertisement) ((Icmpv6Payload) payload).getMessage();
+        RouterAdvertisement ra = (RouterAdvertisement) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(64, ra.getCurrentHopLimit());
-        Assert.assertEquals(0, ra.getFlags());
-        Assert.assertEquals(30000, ra.getReachableTime());
-        Assert.assertEquals(1000, ra.getRetransmissionTimer());
-        Assert.assertEquals(1800, ra.getRouterLifetime());
-        Assert.assertEquals(3, ra.getOptions().size());
+        Assert.assertEquals(64, ra.currentHopLimit());
+        Assert.assertEquals(0, ra.flags());
+        Assert.assertEquals(30000, ra.reachableTime());
+        Assert.assertEquals(1000, ra.retransmissionTimer());
+        Assert.assertEquals(1800, ra.routerLifetime());
+        Assert.assertEquals(3, ra.options().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
@@ -55,10 +55,10 @@ public class NdpTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        NeighborSolicitation ns = (NeighborSolicitation) ((Icmpv6Payload) payload).getMessage();
+        NeighborSolicitation ns = (NeighborSolicitation) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(16, ns.getTargetAddress().getLength());
-        Assert.assertEquals(1, ns.getOptions().size());
+        Assert.assertEquals(16, ns.targetAddress().length());
+        Assert.assertEquals(1, ns.options().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
@@ -71,10 +71,10 @@ public class NdpTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        NeighborAdvertisement na = (NeighborAdvertisement) ((Icmpv6Payload) payload).getMessage();
+        NeighborAdvertisement na = (NeighborAdvertisement) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(16, na.getTargetAddress().getLength());
-        Assert.assertEquals(0, na.getOptions().size());
+        Assert.assertEquals(16, na.targetAddress().length());
+        Assert.assertEquals(0, na.options().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
@@ -87,11 +87,11 @@ public class NdpTest {
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
         Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        RedirectMessage rm = (RedirectMessage) ((Icmpv6Payload) payload).getMessage();
+        RedirectMessage rm = (RedirectMessage) ((Icmpv6Payload) payload).message();
 
-        Assert.assertEquals(16, rm.getTargetAddress().getLength());
-        Assert.assertEquals(16, rm.getDestinationAddress().getLength());
-        Assert.assertEquals(0, rm.getOptions().size());
+        Assert.assertEquals(16, rm.targetAddress().length());
+        Assert.assertEquals(16, rm.destinationAddress().length());
+        Assert.assertEquals(0, rm.options().size());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));

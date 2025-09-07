@@ -2,28 +2,23 @@ package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
 import java.nio.ByteBuffer;
 
-public class RplTargetDescriptorOption implements RplOption {
+public record RplTargetDescriptorOption(int descriptor) implements RplOption {
     private static final int LEN = 4;
-    private final int descriptor;
-
-    public RplTargetDescriptorOption(int descriptor) {
-        this.descriptor = descriptor;
-    }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
+        out.put(optionType().type());
         out.put((byte) LEN);
         out.putInt(descriptor);
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return 6;
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.RPL_TARGET_DESCRIPTOR;
     }
 
@@ -34,9 +29,5 @@ public class RplTargetDescriptorOption implements RplOption {
         }
         int descriptor = in.getInt();
         return new RplTargetDescriptorOption(descriptor);
-    }
-
-    public int getDescriptor() {
-        return descriptor;
     }
 }

@@ -18,9 +18,9 @@ public class EspPayloadTest {
         IpPayload payload = IpPayload.decode(ByteBuffer.wrap(espBytes));
 
         EspPayload esp = (EspPayload) payload;
-        Assert.assertEquals(0x3D713155, esp.getSpi());
-        Assert.assertEquals(0x00000003, esp.getSeqNumber());
-        Assert.assertEquals(144, esp.getData().length);
+        Assert.assertEquals(0x3D713155, esp.spi());
+        Assert.assertEquals(0x00000003, esp.seqNumber());
+        Assert.assertEquals(144, esp.data().length());
         Assert.assertArrayEquals(espBytes, TestUtils.toBytes(payload));
     }
 
@@ -31,14 +31,14 @@ public class EspPayloadTest {
         IpPayload payload = IpPayload.decode(ByteBuffer.wrap(espBytes));
 
         EspPayload esp = (EspPayload) payload;
-        Assert.assertEquals(0x88772211, esp.getSpi());
-        Assert.assertEquals(0x00000123, esp.getSeqNumber());
-        Assert.assertEquals(144, esp.getData().length);
+        Assert.assertEquals(0x88772211, esp.spi());
+        Assert.assertEquals(0x00000123, esp.seqNumber());
+        Assert.assertEquals(144, esp.data().length());
         Assert.assertArrayEquals(espBytes, TestUtils.toBytes(payload));
 
-        EspData data = esp.getEspData(4);
-        Assert.assertEquals(120, data.getEncryptedData().length);
-        Assert.assertEquals(IpProtocol.ICMPV6, data.getNextHeader());
-        Assert.assertArrayEquals(IpUtils.parseHexBinary("12345678"), data.getIcv());
+        EspData data = esp.asEspData(4);
+        Assert.assertEquals(120, data.encryptedData().length());
+        Assert.assertEquals(IpProtocol.Type.ICMPV6, data.nextHeader());
+        Assert.assertArrayEquals(IpUtils.parseHexBinary("12345678"), data.rawIcv());
     }
 }

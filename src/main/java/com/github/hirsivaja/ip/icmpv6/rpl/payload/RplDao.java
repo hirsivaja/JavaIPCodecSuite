@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
+import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 
@@ -7,14 +8,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RplDao implements RplPayload {
+public record RplDao(
+        RplSecurity security,
+        byte rplInstance,
+        byte flags,
+        byte daoSequence,
+        ByteArray dodagId,
+        List<RplOption> options) implements RplPayload {
     private static final int MIN_LEN = 4;
-    private final RplSecurity security;
-    private final byte rplInstance;
-    private final byte flags;
-    private final byte daoSequence;
-    private final byte[] dodagId;
-    private final List<RplOption> options;
 
     public RplDao(byte rplInstance, byte flags, byte daoSequence, byte[] dodagId, List<RplOption> options) {
         this(null, rplInstance, flags, daoSequence, dodagId, options);
@@ -22,12 +23,7 @@ public class RplDao implements RplPayload {
 
     public RplDao(RplSecurity security, byte rplInstance, byte flags, byte daoSequence, byte[] dodagId,
                   List<RplOption> options) {
-        this.security = security;
-        this.rplInstance = rplInstance;
-        this.flags = flags;
-        this.daoSequence = daoSequence;
-        this.dodagId = dodagId;
-        this.options = options;
+        this(security, rplInstance, flags, daoSequence, new ByteArray(dodagId), options);
     }
 
     public void encode(ByteBuffer out){
@@ -38,12 +34,12 @@ public class RplDao implements RplPayload {
         out.put(flags);
         out.put((byte) 0); // RESERVED
         out.put(daoSequence);
-        out.put(dodagId);
+        out.put(dodagId.array());
         options.forEach(option -> option.encode(out));
     }
 
     @Override
-    public RplPayloadType getType() {
+    public RplPayloadType type() {
         if(security == null) {
             return RplPayloadType.DAO;
         } else {
@@ -52,10 +48,10 @@ public class RplDao implements RplPayload {
     }
 
     @Override
-    public int getLength() {
-        int securityLen = security == null ? 0 : security.getLength();
-        return securityLen + MIN_LEN + dodagId.length +
-                options.stream().mapToInt(RplOption::getLength).sum();
+    public int length() {
+        int securityLen = security == null ? 0 : security.length();
+        return securityLen + MIN_LEN + dodagId.length() +
+                options.stream().mapToInt(RplOption::length).sum();
     }
 
     public static RplDao decode(ByteBuffer in, boolean hasSecurity){
@@ -77,29 +73,7 @@ public class RplDao implements RplPayload {
         return new RplDao(security, rplInstance, flags, daoSequence, dodagId, options);
     }
 
-    @Override
-    public RplSecurity getSecurity() {
-        return security;
-    }
-
-    public byte getRplInstance() {
-        return rplInstance;
-    }
-
-    public byte getFlags() {
-        return flags;
-    }
-
-    public byte getDaoSequence() {
-        return daoSequence;
-    }
-
-    public byte[] getDodagId() {
-        return dodagId;
-    }
-
-    @Override
-    public List<RplOption> getOptions() {
-        return options;
+    public byte[] rawDodagId() {
+        return dodagId.array();
     }
 }

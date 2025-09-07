@@ -2,28 +2,22 @@ package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
 import java.nio.ByteBuffer;
 
-public class RplPadNOption implements RplOption {
-
-    private final byte len;
-
-    public RplPadNOption(byte len) {
-        this.len = len;
-    }
+public record RplPadNOption(byte len) implements RplOption {
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
+        out.put(optionType().type());
         out.put(len);
         out.put(new byte[len]);
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return 2 + len;
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.PAD_N;
     }
 

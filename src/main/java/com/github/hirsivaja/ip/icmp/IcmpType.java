@@ -37,13 +37,13 @@ public enum IcmpType {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static IcmpType getType(byte type) {
+    public static IcmpType fromType(byte type) {
         for (IcmpType identifier : IcmpType.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

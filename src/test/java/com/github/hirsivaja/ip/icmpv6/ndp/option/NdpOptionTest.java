@@ -16,7 +16,7 @@ public class NdpOptionTest {
 
         Assert.assertTrue(option instanceof MtuOption);
         MtuOption castOption = (MtuOption) option;
-        Assert.assertEquals(0x01020304, castOption.getMtu());
+        Assert.assertEquals(0x01020304, castOption.mtu());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -28,11 +28,11 @@ public class NdpOptionTest {
 
         Assert.assertTrue(option instanceof PrefixInformationOption);
         PrefixInformationOption castOption = (PrefixInformationOption) option;
-        Assert.assertEquals(1, castOption.getPrefixLen());
-        Assert.assertEquals(2, castOption.getFlags());
-        Assert.assertEquals(0x03040506, castOption.getValidLifetime());
-        Assert.assertEquals(0x0708090A, castOption.getPreferredLifetime());
-        Assert.assertEquals(16, castOption.getPrefix().getLength());
+        Assert.assertEquals(1, castOption.prefixLen());
+        Assert.assertEquals(2, castOption.flags());
+        Assert.assertEquals(0x03040506, castOption.validLifetime());
+        Assert.assertEquals(0x0708090A, castOption.preferredLifetime());
+        Assert.assertEquals(16, castOption.prefix().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -44,7 +44,7 @@ public class NdpOptionTest {
 
         Assert.assertTrue(option instanceof RedirectedHeaderOption);
         RedirectedHeaderOption castOption = (RedirectedHeaderOption) option;
-        Assert.assertEquals(8, castOption.getHeaderAndData().length);
+        Assert.assertEquals(8, castOption.headerAndData().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -56,7 +56,7 @@ public class NdpOptionTest {
 
         Assert.assertTrue(option instanceof SourceLinkLayerOption);
         SourceLinkLayerOption castOption = (SourceLinkLayerOption) option;
-        Assert.assertEquals(6, castOption.getLinkLayerAddress().length);
+        Assert.assertEquals(6, castOption.linkLayerAddress().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -68,7 +68,7 @@ public class NdpOptionTest {
 
         Assert.assertTrue(option instanceof TargetLinkLayerOption);
         TargetLinkLayerOption castOption = (TargetLinkLayerOption) option;
-        Assert.assertEquals(6, castOption.getLinkLayerAddress().length);
+        Assert.assertEquals(6, castOption.linkLayerAddress().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }

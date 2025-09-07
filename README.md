@@ -15,7 +15,8 @@ The `jipcs` contains the following codecs:
   * RPL [(Routing Protocol for Low-Power and Lossy Networks)](https://en.wikipedia.org/wiki/IPv6_Routing_Protocol_for_Low-Power_and_Lossy_Networks) [(RFC 6550)](https://datatracker.ietf.org/doc/html/rfc6550)
 
 Requirements:
-* Java 8 or newer
+* Java 8 or newer for 1.0.x
+* Java 21 or newer for 1.1.x
 * This library does not have any external dependencies
 
 Basic usage:

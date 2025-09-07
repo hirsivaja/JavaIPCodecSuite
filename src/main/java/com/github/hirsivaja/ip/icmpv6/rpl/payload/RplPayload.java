@@ -11,20 +11,20 @@ public interface RplPayload {
 
     void encode(ByteBuffer out);
 
-    RplPayloadType getType();
+    RplPayloadType type();
 
-    int getLength();
+    int length();
 
     default boolean hasSecurity() {
-        return getSecurity() != null;
+        return security() != null;
     }
 
-    RplSecurity getSecurity();
+    RplSecurity security();
 
-    List<RplOption> getOptions();
+    List<RplOption> options();
 
     default byte[] toByteArray(){
-        ByteBuffer out = ByteBuffer.allocate(getLength());
+        ByteBuffer out = ByteBuffer.allocate(length());
         encode(out);
         byte[] outBytes = new byte[out.rewind().remaining()];
         out.get(outBytes);
@@ -36,17 +36,17 @@ public interface RplPayload {
     }
 
     static RplPayload decode(ByteBuffer in, RplPayloadType code) {
-        switch (code) {
-            case DIS: return RplDis.decode(in, false);
-            case DIO: return RplDio.decode(in, false);
-            case DAO: return RplDao.decode(in, false);
-            case DAO_ACK: return RplDaoAck.decode(in, false);
-            case SECURE_DIS: return RplDis.decode(in, true);
-            case SECURE_DIO: return RplDio.decode(in, true);
-            case SECURE_DAO: return RplDao.decode(in, true);
-            case SECURE_DAO_ACK: return RplDaoAck.decode(in, true);
-            case CONSISTENCY_CHECK: return RplConsistencyCheck.decode(in);
-            default: throw new IllegalArgumentException("Unexpected value: " + code);
-        }
+        return switch (code) {
+            case DIS -> RplDis.decode(in, false);
+            case DIO -> RplDio.decode(in, false);
+            case DAO -> RplDao.decode(in, false);
+            case DAO_ACK -> RplDaoAck.decode(in, false);
+            case SECURE_DIS -> RplDis.decode(in, true);
+            case SECURE_DIO -> RplDio.decode(in, true);
+            case SECURE_DAO -> RplDao.decode(in, true);
+            case SECURE_DAO_ACK -> RplDaoAck.decode(in, true);
+            case CONSISTENCY_CHECK -> RplConsistencyCheck.decode(in);
+            default -> throw new IllegalArgumentException("Unexpected value: " + code);
+        };
     }
 }

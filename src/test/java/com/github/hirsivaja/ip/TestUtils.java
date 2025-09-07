@@ -15,52 +15,52 @@ import java.nio.ByteBuffer;
 public class TestUtils {
     public static byte[] toBytes(Object object) {
         ByteBuffer out;
-        if(object instanceof IpPayload) {
-            IpPayload ipPayload = (IpPayload) object;
-            out = ByteBuffer.allocate(ipPayload.getLength());
-            ipPayload.encode(out);
-        } else if(object instanceof IpHeader) {
-            IpHeader ipHeader = (IpHeader) object;
-            out = ByteBuffer.allocate(ipHeader.getLength());
-            ipHeader.encode(out);
-        } else if(object instanceof ExtensionHeader) {
-            ExtensionHeader extHeader = (ExtensionHeader) object;
-            out = ByteBuffer.allocate(extHeader.getLength());
-            extHeader.encode(out);
-        } else if(object instanceof UdpHeader) {
-            UdpHeader udpHeader = (UdpHeader) object;
-            out = ByteBuffer.allocate(udpHeader.getLength());
-            udpHeader.encode(out);
-        } else if(object instanceof TcpHeader) {
-            TcpHeader tcpHeader = (TcpHeader) object;
-            out = ByteBuffer.allocate(tcpHeader.getLength());
-            tcpHeader.encode(out);
-        } else if(object instanceof RplOption) {
-            RplOption option = (RplOption) object;
-            out = ByteBuffer.allocate(option.getLength());
-            option.encode(out);
-        } else if(object instanceof RplSecurity) {
-            RplSecurity security = (RplSecurity) object;
-            out = ByteBuffer.allocate(security.getLength());
-            security.encode(out);
-        } else if(object instanceof NdpOption) {
-            NdpOption option = (NdpOption) object;
-            out = ByteBuffer.allocate(option.getLength());
-            option.encode(out);
-        } else if(object instanceof IgmpMessage) {
-            IgmpMessage message = (IgmpMessage) object;
-            out = ByteBuffer.allocate(message.getLength() - 4);
-            message.encode(out);
-        } else if(object instanceof ArpPacket) {
-            ArpPacket packet = (ArpPacket) object;
-            out = ByteBuffer.allocate(packet.getLength());
-            packet.encode(out);
-        } else if(object instanceof EthernetFrame) {
-            EthernetFrame frame = (EthernetFrame) object;
-            out = ByteBuffer.allocate(frame.getLength());
-            frame.encode(out);
-        } else {
-            throw new IllegalArgumentException("Unknown object " + object.getClass().getSimpleName());
+        switch (object) {
+            case IpPayload ipPayload -> {
+                out = ByteBuffer.allocate(ipPayload.length());
+                ipPayload.encode(out);
+            }
+            case IpHeader ipHeader -> {
+                out = ByteBuffer.allocate(ipHeader.length());
+                ipHeader.encode(out);
+            }
+            case ExtensionHeader extHeader -> {
+                out = ByteBuffer.allocate(extHeader.length());
+                extHeader.encode(out);
+            }
+            case UdpHeader udpHeader -> {
+                out = ByteBuffer.allocate(udpHeader.length());
+                udpHeader.encode(out);
+            }
+            case TcpHeader tcpHeader -> {
+                out = ByteBuffer.allocate(tcpHeader.length());
+                tcpHeader.encode(out);
+            }
+            case RplOption option -> {
+                out = ByteBuffer.allocate(option.length());
+                option.encode(out);
+            }
+            case RplSecurity security -> {
+                out = ByteBuffer.allocate(security.length());
+                security.encode(out);
+            }
+            case NdpOption option -> {
+                out = ByteBuffer.allocate(option.length());
+                option.encode(out);
+            }
+            case IgmpMessage message -> {
+                out = ByteBuffer.allocate(message.length() - 4);
+                message.encode(out);
+            }
+            case ArpPacket packet -> {
+                out = ByteBuffer.allocate(packet.length());
+                packet.encode(out);
+            }
+            case EthernetFrame frame -> {
+                out = ByteBuffer.allocate(frame.length());
+                frame.encode(out);
+            }
+            default -> throw new IllegalArgumentException("Unknown object " + object.getClass().getSimpleName());
         }
         byte[] outBytes = new byte[out.rewind().remaining()];
         out.get(outBytes);

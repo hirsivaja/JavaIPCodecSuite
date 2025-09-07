@@ -11,22 +11,22 @@ public class Ipv4AddressTest {
     public void addressTest() {
         byte[] ipv4AddressBytes = IpUtils.parseHexBinary("01020304");
         Ipv4Address address = Ipv4Address.decode(ByteBuffer.wrap(ipv4AddressBytes));
-        Assert.assertEquals(4, address.getLength());
-        Assert.assertArrayEquals(ipv4AddressBytes, address.getAddress());
+        Assert.assertEquals(4, address.length());
+        Assert.assertArrayEquals(ipv4AddressBytes, address.rawAddress());
         Assert.assertArrayEquals(ipv4AddressBytes, address.toInetAddress().getAddress());
         Assert.assertArrayEquals(ipv4AddressBytes, address.toInet4Address().getAddress());
 
         ipv4AddressBytes = IpUtils.parseHexBinary("00000000");
         address = Ipv4Address.decode(ByteBuffer.wrap(ipv4AddressBytes));
-        Assert.assertEquals(4, address.getLength());
-        Assert.assertArrayEquals(ipv4AddressBytes, address.getAddress());
+        Assert.assertEquals(4, address.length());
+        Assert.assertArrayEquals(ipv4AddressBytes, address.rawAddress());
         Assert.assertArrayEquals(ipv4AddressBytes, address.toInetAddress().getAddress());
         Assert.assertArrayEquals(ipv4AddressBytes, address.toInet4Address().getAddress());
 
         ipv4AddressBytes = IpUtils.parseHexBinary("FFFFFFFF");
         address = Ipv4Address.decode(ByteBuffer.wrap(ipv4AddressBytes));
-        Assert.assertEquals(4, address.getLength());
-        Assert.assertArrayEquals(ipv4AddressBytes, address.getAddress());
+        Assert.assertEquals(4, address.length());
+        Assert.assertArrayEquals(ipv4AddressBytes, address.rawAddress());
         Assert.assertArrayEquals(ipv4AddressBytes, address.toInetAddress().getAddress());
         Assert.assertArrayEquals(ipv4AddressBytes, address.toInet4Address().getAddress());
     }

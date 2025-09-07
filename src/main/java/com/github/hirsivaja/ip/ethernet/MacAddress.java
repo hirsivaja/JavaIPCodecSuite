@@ -1,22 +1,22 @@
 package com.github.hirsivaja.ip.ethernet;
 
+import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpUtils;
 
 import java.nio.ByteBuffer;
 
-public class MacAddress {
+public record MacAddress(ByteArray macAddressBytes) {
     private static final byte MAC_ADDRESS_LEN = 6;
-    private final byte[] macAddressBytes;
 
     public MacAddress(byte[] macAddress) {
-        this.macAddressBytes = macAddress;
+        this(new ByteArray(macAddress));
     }
 
     public void encode(ByteBuffer out) {
-        out.put(macAddressBytes);
+        out.put(macAddressBytes.array());
     }
 
-    public int getLength() {
+    public int length() {
         return MAC_ADDRESS_LEN;
     }
 
@@ -26,12 +26,12 @@ public class MacAddress {
         return new MacAddress(macAddress);
     }
 
-    public byte[] getBytes() {
-        return macAddressBytes;
+    public byte[] toBytes() {
+        return macAddressBytes.array();
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(" + IpUtils.printHexBinary(macAddressBytes) + ")";
+        return this.getClass().getSimpleName() + "[" + IpUtils.printHexBinary(macAddressBytes.array()) + "]";
     }
 }

@@ -14,15 +14,15 @@ public class IgmpPayloadTest {
     @Test
     public void membershipReportV0Test() {
         byte[] reqBytes = IpUtils.parseHexBinary("0101048412345678876543211234567890ABCDEF");
-        Ipv4Header header = new Ipv4Header((byte) 0, IpHeader.EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.ICMP, null, null, null);
+        Ipv4Header header = new Ipv4Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.Type.ICMP, null, null, new byte[0]);
 
         IgmpPayload payload = (IgmpPayload) IgmpPayload.decode(ByteBuffer.wrap(reqBytes), header);
-        GenericIgmpV0Message msg = (GenericIgmpV0Message) payload.getMessage();
+        GenericIgmpV0Message msg = (GenericIgmpV0Message) payload.message();
 
-        Assert.assertEquals(0x12345678, msg.getIdentifier());
-        Assert.assertEquals(0x87654321, msg.getGroupAddress().toInt());
-        Assert.assertEquals(0x1234567890ABCDEFL, msg.getAccessKey());
-        Assert.assertEquals(20, msg.getLength());
+        Assert.assertEquals(0x12345678, msg.identifier());
+        Assert.assertEquals(0x87654321, msg.groupAddress().toInt());
+        Assert.assertEquals(0x1234567890ABCDEFL, msg.accessKey());
+        Assert.assertEquals(20, msg.length());
 
         Assert.assertArrayEquals(Arrays.copyOfRange(reqBytes, 4, reqBytes.length), TestUtils.toBytes(msg));
     }
@@ -30,13 +30,13 @@ public class IgmpPayloadTest {
     @Test
     public void membershipReportV1Test() {
         byte[] reqBytes = IpUtils.parseHexBinary("1200FE04EFFFFFFA");
-        Ipv4Header header = new Ipv4Header((byte) 0, IpHeader.EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.ICMP, null, null, null);
+        Ipv4Header header = new Ipv4Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.Type.ICMP, null, null, new byte[0]);
 
         IgmpPayload payload = (IgmpPayload) IgmpPayload.decode(ByteBuffer.wrap(reqBytes), header);
-        GenericIgmpV1Message msg = (GenericIgmpV1Message) payload.getMessage();
+        GenericIgmpV1Message msg = (GenericIgmpV1Message) payload.message();
 
-        Assert.assertEquals(0xEFFFFFFA, msg.getGroupAddress().toInt());
-        Assert.assertEquals(8, msg.getLength());
+        Assert.assertEquals(0xEFFFFFFA, msg.groupAddress().toInt());
+        Assert.assertEquals(8, msg.length());
 
         Assert.assertArrayEquals(Arrays.copyOfRange(reqBytes, 4, reqBytes.length), TestUtils.toBytes(msg));
     }
@@ -47,10 +47,10 @@ public class IgmpPayloadTest {
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);
-        Assert.assertTrue(((IgmpPayload) ipv4Payload).getMessage() instanceof GenericIgmpV2Message);
-        GenericIgmpV2Message query = (GenericIgmpV2Message) ((IgmpPayload) ipv4Payload).getMessage();
-        Assert.assertEquals(0x64, query.getMaxRespCode());
-        Assert.assertEquals(0, query.getGroupAddress().toInt());
+        Assert.assertTrue(((IgmpPayload) ipv4Payload).message() instanceof GenericIgmpV2Message);
+        GenericIgmpV2Message query = (GenericIgmpV2Message) ((IgmpPayload) ipv4Payload).message();
+        Assert.assertEquals(0x64, query.maxRespCode());
+        Assert.assertEquals(0, query.groupAddress().toInt());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv4Payload));
     }
@@ -61,13 +61,13 @@ public class IgmpPayloadTest {
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);
-        Assert.assertTrue(((IgmpPayload) ipv4Payload).getMessage() instanceof MembershipQueryMessage);
-        MembershipQueryMessage query = (MembershipQueryMessage) ((IgmpPayload) ipv4Payload).getMessage();
-        Assert.assertEquals(0x60, query.getMaxRespCode());
-        Assert.assertEquals(0x2100BAF1, query.getGroupAddress().toInt());
-        Assert.assertEquals(0x45, query.getFlags());
-        Assert.assertEquals(0x50, query.getQqic());
-        Assert.assertEquals(6, query.getSourceAddresses().length);
+        Assert.assertTrue(((IgmpPayload) ipv4Payload).message() instanceof MembershipQueryMessage);
+        MembershipQueryMessage query = (MembershipQueryMessage) ((IgmpPayload) ipv4Payload).message();
+        Assert.assertEquals(0x60, query.maxRespCode());
+        Assert.assertEquals(0x2100BAF1, query.groupAddress().toInt());
+        Assert.assertEquals(0x45, query.flags());
+        Assert.assertEquals(0x50, query.qqic());
+        Assert.assertEquals(6, query.sourceAddresses().size());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv4Payload));
     }
@@ -78,14 +78,14 @@ public class IgmpPayloadTest {
         IpPayload ipv4Payload = Ipv4Payload.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(ipv4Payload instanceof Ipv4Payload);
-        Assert.assertTrue(((IgmpPayload) ipv4Payload).getMessage() instanceof MembershipReportV3Message);
-        MembershipReportV3Message report = (MembershipReportV3Message) ((IgmpPayload) ipv4Payload).getMessage();
-        Assert.assertEquals(1, report.getGroupRecords().length);
-        GroupRecord record1 = report.getGroupRecords()[0];
-        Assert.assertEquals(6, record1.getRecordType());
-        Assert.assertEquals(0xF00700CB, record1.getMulticastAddress().toInt());
-        Assert.assertEquals(4, record1.getSourceAddresses().length);
-        Assert.assertEquals(15, record1.getAuxData().length);
+        Assert.assertTrue(((IgmpPayload) ipv4Payload).message() instanceof MembershipReportV3Message);
+        MembershipReportV3Message report = (MembershipReportV3Message) ((IgmpPayload) ipv4Payload).message();
+        Assert.assertEquals(1, report.groupRecords().size());
+        GroupRecord record1 = report.groupRecords().getFirst();
+        Assert.assertEquals(6, record1.recordType());
+        Assert.assertEquals(0xF00700CB, record1.multicastAddress().toInt());
+        Assert.assertEquals(4, record1.sourceAddresses().size());
+        Assert.assertEquals(15, record1.rawAuxData().length);
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv4Payload));
     }

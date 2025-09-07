@@ -21,13 +21,13 @@ public enum IgmpType {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static IgmpType getType(byte type) {
+    public static IgmpType fromType(byte type) {
         for (IgmpType identifier : IgmpType.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

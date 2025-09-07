@@ -4,16 +4,7 @@ import com.github.hirsivaja.ip.ipv4.Ipv4Address;
 
 import java.nio.ByteBuffer;
 
-public class GenericIgmpV2Message implements IgmpMessage {
-    private final IgmpType type;
-    private final byte code;
-    private final Ipv4Address groupAddress;
-
-    public GenericIgmpV2Message(IgmpType type, byte code, Ipv4Address groupAddress) {
-        this.type = type;
-        this.code = code;
-        this.groupAddress = groupAddress;
-    }
+public record GenericIgmpV2Message(IgmpType type, byte code, Ipv4Address groupAddress) implements IgmpMessage {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -21,7 +12,7 @@ public class GenericIgmpV2Message implements IgmpMessage {
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return BASE_LEN + 4;
     }
 
@@ -30,21 +21,7 @@ public class GenericIgmpV2Message implements IgmpMessage {
         return new GenericIgmpV2Message(type, code, groupAddress);
     }
 
-    @Override
-    public IgmpType getType() {
-        return type;
-    }
-
-    @Override
-    public byte getCode() {
-        return code;
-    }
-
-    public byte getMaxRespCode() {
-        return getCode();
-    }
-
-    public Ipv4Address getGroupAddress() {
-        return groupAddress;
+    public byte maxRespCode() {
+        return code();
     }
 }

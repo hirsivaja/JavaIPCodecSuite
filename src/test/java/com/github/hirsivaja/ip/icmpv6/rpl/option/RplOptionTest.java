@@ -35,7 +35,7 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplDagMetricContainerOption);
         RplDagMetricContainerOption castOption = (RplDagMetricContainerOption) option;
-        Assert.assertEquals(2, castOption.getDagMetricContainerData().length);
+        Assert.assertEquals(2, castOption.dagMetricContainerData().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -47,10 +47,10 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplRouteInformationOption);
         RplRouteInformationOption castOption = (RplRouteInformationOption) option;
-        Assert.assertEquals(1, castOption.getPrefixLen());
-        Assert.assertEquals(2, castOption.getPreference());
-        Assert.assertEquals(0x01020304, castOption.getRouteLifetime());
-        Assert.assertArrayEquals(IpUtils.parseHexBinary("000102030405060708090A0B0C0D0E0F"), castOption.getPrefix());
+        Assert.assertEquals(1, castOption.prefixLen());
+        Assert.assertEquals(2, castOption.preference());
+        Assert.assertEquals(0x01020304, castOption.routeLifetime());
+        Assert.assertArrayEquals(IpUtils.parseHexBinary("000102030405060708090A0B0C0D0E0F"), castOption.rawPrefix());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -62,15 +62,15 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplDodagConfigurationOption);
         RplDodagConfigurationOption castOption = (RplDodagConfigurationOption) option;
-        Assert.assertEquals(1, castOption.getPcs());
-        Assert.assertEquals(2, castOption.getDioIntervalMax());
-        Assert.assertEquals(3, castOption.getDioIntervalMin());
-        Assert.assertEquals(4, castOption.getDioRedundancyConstant());
-        Assert.assertEquals(0x0506, castOption.getMaxRankIncrease());
-        Assert.assertEquals(0x0708, castOption.getMinHopRankIncrease());
-        Assert.assertEquals(0x090A, castOption.getOcp());
-        Assert.assertEquals(0x0C, castOption.getDefaultLifetime());
-        Assert.assertEquals(0x0D0E, castOption.getLifetimeUnit());
+        Assert.assertEquals(1, castOption.pcs());
+        Assert.assertEquals(2, castOption.dioIntervalMax());
+        Assert.assertEquals(3, castOption.dioIntervalMin());
+        Assert.assertEquals(4, castOption.dioRedundancyConstant());
+        Assert.assertEquals(0x0506, castOption.maxRankIncrease());
+        Assert.assertEquals(0x0708, castOption.minHopRankIncrease());
+        Assert.assertEquals(0x090A, castOption.ocp());
+        Assert.assertEquals(0x0C, castOption.defaultLifetime());
+        Assert.assertEquals(0x0D0E, castOption.lifetimeUnit());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -82,9 +82,9 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplTargetOption);
         RplTargetOption castOption = (RplTargetOption) option;
-        Assert.assertEquals(1, castOption.getFlags());
-        Assert.assertEquals(2, castOption.getPrefixLen());
-        Assert.assertEquals(16, castOption.getPrefix().length);
+        Assert.assertEquals(1, castOption.flags());
+        Assert.assertEquals(2, castOption.prefixLen());
+        Assert.assertEquals(16, castOption.prefix().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -96,11 +96,11 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplTransitInformationOption);
         RplTransitInformationOption castOption = (RplTransitInformationOption) option;
-        Assert.assertEquals(1, castOption.getFlags());
-        Assert.assertEquals(2, castOption.getPathControl());
-        Assert.assertEquals(3, castOption.getPathSequence());
-        Assert.assertEquals(4, castOption.getPathLifetime());
-        Assert.assertEquals(16, castOption.getParentAddress().getLength());
+        Assert.assertEquals(1, castOption.flags());
+        Assert.assertEquals(2, castOption.pathControl());
+        Assert.assertEquals(3, castOption.pathSequence());
+        Assert.assertEquals(4, castOption.pathLifetime());
+        Assert.assertEquals(16, castOption.parentAddress().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
 
@@ -109,11 +109,11 @@ public class RplOptionTest {
 
         Assert.assertTrue(optionWithoutParent instanceof RplTransitInformationOption);
         RplTransitInformationOption withoutParent = (RplTransitInformationOption) optionWithoutParent;
-        Assert.assertEquals(1, withoutParent.getFlags());
-        Assert.assertEquals(2, withoutParent.getPathControl());
-        Assert.assertEquals(3, withoutParent.getPathSequence());
-        Assert.assertEquals(4, withoutParent.getPathLifetime());
-        Assert.assertNull(withoutParent.getParentAddress());
+        Assert.assertEquals(1, withoutParent.flags());
+        Assert.assertEquals(2, withoutParent.pathControl());
+        Assert.assertEquals(3, withoutParent.pathSequence());
+        Assert.assertEquals(4, withoutParent.pathLifetime());
+        Assert.assertNull(withoutParent.parentAddress());
 
         Assert.assertArrayEquals(optionWithoutParentAddressBytes, TestUtils.toBytes(optionWithoutParent));
     }
@@ -125,10 +125,10 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplSolicitedInformationOption);
         RplSolicitedInformationOption castOption = (RplSolicitedInformationOption) option;
-        Assert.assertEquals(1, castOption.getRplInstanceId());
-        Assert.assertEquals(2, castOption.getFlags());
-        Assert.assertEquals(16, castOption.getDodagId().length);
-        Assert.assertEquals((byte) 0xFF, castOption.getVersionNumber());
+        Assert.assertEquals(1, castOption.rplInstanceId());
+        Assert.assertEquals(2, castOption.flags());
+        Assert.assertEquals(16, castOption.dodagId().length());
+        Assert.assertEquals((byte) 0xFF, castOption.versionNumber());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -140,11 +140,11 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplPrefixInformationOption);
         RplPrefixInformationOption castOption = (RplPrefixInformationOption) option;
-        Assert.assertEquals(1, castOption.getPrefixLen());
-        Assert.assertEquals(2, castOption.getFlags());
-        Assert.assertEquals(0x03040506, castOption.getValidLifetime());
-        Assert.assertEquals(0x0708090A, castOption.getPreferredLifetime());
-        Assert.assertEquals(16, castOption.getPrefix().getLength());
+        Assert.assertEquals(1, castOption.prefixLen());
+        Assert.assertEquals(2, castOption.flags());
+        Assert.assertEquals(0x03040506, castOption.validLifetime());
+        Assert.assertEquals(0x0708090A, castOption.preferredLifetime());
+        Assert.assertEquals(16, castOption.prefix().length());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }
@@ -156,7 +156,7 @@ public class RplOptionTest {
 
         Assert.assertTrue(option instanceof RplTargetDescriptorOption);
         RplTargetDescriptorOption castOption = (RplTargetDescriptorOption) option;
-        Assert.assertEquals(0x12345678, castOption.getDescriptor());
+        Assert.assertEquals(0x12345678, castOption.descriptor());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
     }

@@ -18,10 +18,10 @@ public class UdpPayloadTest {
         byte[] udpBytes = IpUtils.parseHexBinary("02860286002A60E10001001E0AC8C8660000010000140000000004000004000F0000040100040AC8C866");
         UdpMessagePayload payload = (UdpMessagePayload) UdpMessagePayload.decode(ByteBuffer.wrap(udpBytes), ipv4Header);
 
-        UdpHeader udpHeader = payload.getUdpHeader();
-        Assert.assertEquals(646, udpHeader.getSrcPort());
-        Assert.assertEquals(646, udpHeader.getDstPort());
-        Assert.assertEquals(34, payload.getPayload().length);
+        UdpHeader udpHeader = payload.udpHeader();
+        Assert.assertEquals(646, udpHeader.srcPort());
+        Assert.assertEquals(646, udpHeader.dstPort());
+        Assert.assertEquals(34, payload.payload().length());
 
         byte[] outBytes = TestUtils.toBytes(payload);
         Assert.assertArrayEquals(udpBytes, Arrays.copyOfRange(outBytes, 20, outBytes.length));

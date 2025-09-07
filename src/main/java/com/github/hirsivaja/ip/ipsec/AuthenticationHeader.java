@@ -1,37 +1,31 @@
 package com.github.hirsivaja.ip.ipsec;
 
+import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpProtocol;
 
 import java.nio.ByteBuffer;
 
-public class AuthenticationHeader {
-    private final IpProtocol nextHeader;
-    private final int spi;
-    private final int seqNumber;
-    private final byte[] icv;
+public record AuthenticationHeader(IpProtocol nextHeader, int spi, int seqNumber, ByteArray icv) {
 
     public AuthenticationHeader(IpProtocol nextHeader, int spi, int seqNumber, byte[] icv) {
-        this.nextHeader = nextHeader;
-        this.spi = spi;
-        this.seqNumber = seqNumber;
-        this.icv = icv;
+        this(nextHeader, spi, seqNumber, new ByteArray(icv));
     }
 
     public void encode(ByteBuffer out) {
-        out.put(nextHeader.getType());
-        out.put((byte) (icv.length / 4 + 1));
+        out.put(nextHeader.type());
+        out.put((byte) (icv.length() / 4 + 1));
         out.putShort((short) 0);
         out.putInt(spi);
         out.putInt(seqNumber);
-        out.put(icv);
+        out.put(icv.array());
     }
 
-    public int getLength() {
-        return 12 + icv.length;
+    public int length() {
+        return 12 + icv.length();
     }
 
     public static AuthenticationHeader decode(ByteBuffer in) {
-        IpProtocol nextHeader = IpProtocol.getType(in.get());
+        IpProtocol nextHeader = IpProtocol.fromType(in.get());
         int payloadLen = Byte.toUnsignedInt(in.get()) * 4;
         in.getShort(); // RESERVED
         int spi = in.getInt();
@@ -41,19 +35,7 @@ public class AuthenticationHeader {
         return new AuthenticationHeader(nextHeader, spi, seqNumber, icv);
     }
 
-    public IpProtocol getNextHeader() {
-        return nextHeader;
-    }
-
-    public int getSpi() {
-        return spi;
-    }
-
-    public int getSeqNumber() {
-        return seqNumber;
-    }
-
-    public byte[] getIcv() {
-        return icv;
+    public byte[] rawIcv() {
+        return icv.array();
     }
 }

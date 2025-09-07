@@ -9,16 +9,10 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedirectMessage implements Icmpv6Message {
-    private final Ipv6Address targetAddress;
-    private final Ipv6Address destinationAddress;
-    private final List<NdpOption> options;
-
-    public RedirectMessage(Ipv6Address targetAddress, Ipv6Address destinationAddress, List<NdpOption> options) {
-        this.targetAddress = targetAddress;
-        this.destinationAddress = destinationAddress;
-        this.options = options;
-    }
+public record RedirectMessage(
+        Ipv6Address targetAddress,
+        Ipv6Address destinationAddress,
+        List<NdpOption> options) implements Icmpv6Message {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -31,8 +25,8 @@ public class RedirectMessage implements Icmpv6Message {
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 36 + options.stream().mapToInt(NdpOption::getLength).sum();
+    public int length() {
+        return BASE_LEN + 36 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {
@@ -47,24 +41,12 @@ public class RedirectMessage implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.REDIRECT_MESSAGE;
     }
 
     @Override
-    public byte getCode() {
+    public byte code() {
         return 0;
-    }
-
-    public Ipv6Address getTargetAddress() {
-        return targetAddress;
-    }
-
-    public Ipv6Address getDestinationAddress() {
-        return destinationAddress;
-    }
-
-    public List<NdpOption> getOptions() {
-        return options;
     }
 }

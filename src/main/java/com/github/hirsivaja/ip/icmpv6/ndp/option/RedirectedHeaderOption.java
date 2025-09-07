@@ -1,30 +1,30 @@
 package com.github.hirsivaja.ip.icmpv6.ndp.option;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class RedirectedHeaderOption implements NdpOption {
-    private final byte[] headerAndData;
+public record RedirectedHeaderOption(ByteArray headerAndData) implements NdpOption {
 
     public RedirectedHeaderOption(byte[] headerAndData) {
-        this.headerAndData = headerAndData;
+        this(new ByteArray(headerAndData));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
-        out.put((byte) ((headerAndData.length + 8) / 8));
+        out.put(optionType().type());
+        out.put((byte) ((headerAndData.length() + 8) / 8));
         out.putShort((short) 0);
         out.putInt(0);
-        out.put(headerAndData);
+        out.put(headerAndData.array());
     }
 
     @Override
-    public int getLength() {
-        return headerAndData.length + 8;
+    public int length() {
+        return headerAndData.length() + 8;
     }
 
     @Override
-    public NdpOptionType getOptionType() {
+    public NdpOptionType optionType() {
         return NdpOptionType.REDIRECTED_HEADER;
     }
 
@@ -37,7 +37,7 @@ public class RedirectedHeaderOption implements NdpOption {
         return new RedirectedHeaderOption(headerAndData);
     }
 
-    public byte[] getHeaderAndData() {
-        return headerAndData;
+    public byte[] rawHeaderAndData() {
+        return headerAndData.array();
     }
 }

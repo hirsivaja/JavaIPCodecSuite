@@ -46,13 +46,13 @@ public enum Icmpv6Type {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static Icmpv6Type getType(byte type) {
+    public static Icmpv6Type fromType(byte type) {
         for (Icmpv6Type identifier : Icmpv6Type.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

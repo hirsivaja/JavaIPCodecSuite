@@ -1,27 +1,23 @@
 package com.github.hirsivaja.ip.icmpv6;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class PacketTooBig implements Icmpv6Message {
-    private final byte code;
-    private final int mtu;
-    private final byte[] payload;
+public record PacketTooBig(byte code, int mtu, ByteArray payload) implements Icmpv6Message {
 
     public PacketTooBig(byte code, int mtu, byte[] payload) {
-        this.code = code;
-        this.mtu = mtu;
-        this.payload = payload;
+        this(code, mtu, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
         out.putInt(mtu);
-        out.put(payload);
+        out.put(payload.array());
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + 4 + payload.length;
+    public int length() {
+        return BASE_LEN + 4 + payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, byte code) {
@@ -32,20 +28,11 @@ public class PacketTooBig implements Icmpv6Message {
     }
 
     @Override
-    public Icmpv6Type getType() {
+    public Icmpv6Type type() {
         return Icmpv6Type.PACKET_TOO_BIG;
     }
 
-    @Override
-    public byte getCode() {
-        return code;
-    }
-
-    public int getMtu() {
-        return mtu;
-    }
-
-    public byte[] getPayload() {
-        return payload;
+    public byte[] rawPayload() {
+        return payload.array();
     }
 }

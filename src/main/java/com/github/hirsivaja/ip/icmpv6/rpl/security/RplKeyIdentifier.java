@@ -2,31 +2,22 @@ package com.github.hirsivaja.ip.icmpv6.rpl.security;
 
 import java.nio.ByteBuffer;
 
-public class RplKeyIdentifier {
-    private final boolean hasKeySource;
-    private final boolean hasKeyIndex;
-    private final long keySource;
-    private final byte keyIndex;
+public record RplKeyIdentifier(
+        boolean hasKeySource,
+        boolean hasKeyIndex,
+        long keySource,
+        byte keyIndex) {
 
     public RplKeyIdentifier() {
-        this.hasKeySource = false;
-        this.hasKeyIndex = false;
-        this.keySource = 0;
-        this.keyIndex = 0;
+        this(false, false, 0, (byte) 0);
     }
 
     public RplKeyIdentifier(byte keyIndex) {
-        this.hasKeySource = false;
-        this.hasKeyIndex = true;
-        this.keySource = 0;
-        this.keyIndex = keyIndex;
+        this(false, true, 0, keyIndex);
     }
 
     public RplKeyIdentifier(long keySource, byte keyIndex) {
-        this.hasKeySource = true;
-        this.hasKeyIndex = true;
-        this.keySource = keySource;
-        this.keyIndex = keyIndex;
+        this(true, true, keySource, keyIndex);
     }
 
     public void encode(ByteBuffer out) {
@@ -38,7 +29,7 @@ public class RplKeyIdentifier {
         }
     }
 
-    public int getLength() {
+    public int length() {
         int length = 0;
         if(hasKeySource) {
             length += 8;
@@ -77,21 +68,5 @@ public class RplKeyIdentifier {
         } else {
             return new RplKeyIdentifier();
         }
-    }
-
-    public boolean hasKeySource() {
-        return hasKeySource;
-    }
-
-    public boolean hasKeyIndex() {
-        return hasKeyIndex;
-    }
-
-    public long getKeySource() {
-        return keySource;
-    }
-
-    public byte getKeyIndex() {
-        return keyIndex;
     }
 }

@@ -1,35 +1,33 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class RplTargetOption implements RplOption {
-
-    private final byte flags;
-    private final byte prefixLen;
-    private final byte[] prefix;
+public record RplTargetOption(
+        byte flags,
+        byte prefixLen,
+        ByteArray prefix) implements RplOption {
 
     public RplTargetOption(byte flags, byte prefixLen, byte[] prefix) {
-        this.flags = flags;
-        this.prefixLen = prefixLen;
-        this.prefix = prefix;
+        this(flags, prefixLen, new ByteArray(prefix));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
-        out.put((byte) (2 + prefix.length));
+        out.put(optionType().type());
+        out.put((byte) (2 + prefix.length()));
         out.put(flags);
         out.put(prefixLen);
-        out.put(prefix);
+        out.put(prefix.array());
     }
 
     @Override
-    public int getLength() {
-        return 4 + prefix.length;
+    public int length() {
+        return 4 + prefix.length();
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.RPL_TARGET;
     }
 
@@ -42,15 +40,7 @@ public class RplTargetOption implements RplOption {
         return new RplTargetOption(flags, prefixLen, prefix);
     }
 
-    public byte getFlags() {
-        return flags;
-    }
-
-    public byte getPrefixLen() {
-        return prefixLen;
-    }
-
-    public byte[] getPrefix() {
-        return prefix;
+    public byte[] rawPrefix() {
+        return prefix.array();
     }
 }

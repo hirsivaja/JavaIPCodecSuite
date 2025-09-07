@@ -4,25 +4,17 @@ import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 
 import java.nio.ByteBuffer;
 
-public class RplPrefixInformationOption implements RplOption {
+public record RplPrefixInformationOption(
+        byte prefixLen,
+        byte flags,
+        int validLifetime,
+        int preferredLifetime,
+        Ipv6Address prefix) implements RplOption {
     private static final int LEN = 30;
-    private final byte prefixLen;
-    private final byte flags;
-    private final int validLifetime;
-    private final int preferredLifetime;
-    private final Ipv6Address prefix;
-
-    public RplPrefixInformationOption(byte prefixLen, byte flags, int validLifetime, int preferredLifetime, Ipv6Address prefix) {
-        this.prefixLen = prefixLen;
-        this.flags = flags;
-        this.validLifetime = validLifetime;
-        this.preferredLifetime = preferredLifetime;
-        this.prefix = prefix;
-    }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
+        out.put(optionType().type());
         out.put((byte) LEN);
         out.put(prefixLen);
         out.put(flags);
@@ -33,12 +25,12 @@ public class RplPrefixInformationOption implements RplOption {
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return 32;
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.PREFIX_INFORMATION;
     }
 
@@ -54,25 +46,5 @@ public class RplPrefixInformationOption implements RplOption {
         in.getInt(); // RESERVED
         Ipv6Address prefix = Ipv6Address.decode(in);
         return new RplPrefixInformationOption(prefixLen, flags, validLifetime, preferredLifetime, prefix);
-    }
-
-    public byte getPrefixLen() {
-        return prefixLen;
-    }
-
-    public byte getFlags() {
-        return flags;
-    }
-
-    public int getValidLifetime() {
-        return validLifetime;
-    }
-
-    public int getPreferredLifetime() {
-        return preferredLifetime;
-    }
-
-    public Ipv6Address getPrefix() {
-        return prefix;
     }
 }

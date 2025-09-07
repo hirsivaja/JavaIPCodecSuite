@@ -18,13 +18,13 @@ public enum RplOptionType {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static RplOptionType getRplOptionType(byte type) {
+    public static RplOptionType fromRplOptionType(byte type) {
         for (RplOptionType identifier : RplOptionType.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

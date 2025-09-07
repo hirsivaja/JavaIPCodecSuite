@@ -1,38 +1,35 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class RplRouteInformationOption implements RplOption {
-
-    private final byte prefixLen;
-    private final byte preference;
-    private final int routeLifetime;
-    private final byte[] prefix;
+public record RplRouteInformationOption(
+        byte prefixLen,
+        byte preference,
+        int routeLifetime,
+        ByteArray prefix) implements RplOption {
 
     public RplRouteInformationOption(byte prefixLen, byte preference, int routeLifetime, byte[] prefix) {
-        this.prefixLen = prefixLen;
-        this.preference = preference;
-        this.routeLifetime = routeLifetime;
-        this.prefix = prefix;
+        this(prefixLen, preference, routeLifetime, new ByteArray(prefix));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
-        out.put((byte) (6 + prefix.length));
+        out.put(optionType().type());
+        out.put((byte) (6 + prefix.length()));
         out.put(prefixLen);
         out.put(preference);
         out.putInt(routeLifetime);
-        out.put(prefix);
+        out.put(prefix.array());
     }
 
     @Override
-    public int getLength() {
-        return 8 + prefix.length;
+    public int length() {
+        return 8 + prefix.length();
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.ROUTE_INFORMATION;
     }
 
@@ -46,19 +43,7 @@ public class RplRouteInformationOption implements RplOption {
         return new RplRouteInformationOption(prefixLen, preference, routeLifetime, prefix);
     }
 
-    public byte getPrefixLen() {
-        return prefixLen;
-    }
-
-    public byte getPreference() {
-        return preference;
-    }
-
-    public int getRouteLifetime() {
-        return routeLifetime;
-    }
-
-    public byte[] getPrefix() {
-        return prefix;
+    public byte[] rawPrefix() {
+        return prefix.array();
     }
 }

@@ -5,16 +5,16 @@ import com.github.hirsivaja.ip.IpPayload;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-public interface EthernetPayload {
+public sealed interface EthernetPayload permits ArpPacket, EthernetBytePayload, IpPayload {
     int MAX_PAYLOAD_SIZE = 1500;
     int ARP = 0x0806;
     int IPV4 = 0x0800;
     int IPV6 = 0x86DD;
     void encode(ByteBuffer out);
-    int getLength();
+    int length();
 
     default byte[] toBytes() {
-        ByteBuffer out = ByteBuffer.allocate(getLength());
+        ByteBuffer out = ByteBuffer.allocate(length());
         encode(out);
         return Arrays.copyOfRange(out.array(), 0, out.rewind().remaining());
     }
@@ -23,13 +23,10 @@ public interface EthernetPayload {
         if(len <= MAX_PAYLOAD_SIZE) {
             return EthernetBytePayload.decode(in, len);
         }
-        switch (len) {
-            case ARP:
-                return ArpPacket.decode(in);
-            case IPV4:
-            case IPV6:
-                return IpPayload.decode(in);
-            default: throw new IllegalArgumentException("Ethernet payload type " + len + " is not supported.");
-        }
+        return switch (len) {
+            case ARP -> ArpPacket.decode(in);
+            case IPV4, IPV6 -> IpPayload.decode(in);
+            default -> throw new IllegalArgumentException("Ethernet payload type " + len + " is not supported.");
+        };
     }
 }

@@ -13,13 +13,13 @@ public enum NdpOptionType {
         this.type = type;
     }
 
-    public byte getType() {
+    public byte type() {
         return type;
     }
 
-    public static NdpOptionType getNdpOptionType(byte type) {
+    public static NdpOptionType fromNdpOptionType(byte type) {
         for (NdpOptionType identifier : NdpOptionType.values()) {
-            if (identifier.getType() == type) {
+            if (identifier.type() == type) {
                 return identifier;
             }
         }

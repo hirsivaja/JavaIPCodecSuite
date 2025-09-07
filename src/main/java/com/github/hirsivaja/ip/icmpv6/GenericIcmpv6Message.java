@@ -1,26 +1,22 @@
 package com.github.hirsivaja.ip.icmpv6;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class GenericIcmpv6Message implements Icmpv6Message {
-    private final Icmpv6Type type;
-    private final byte code;
-    private final byte[] payload;
+public record GenericIcmpv6Message(Icmpv6Type type, byte code, ByteArray payload) implements Icmpv6Message {
 
     public GenericIcmpv6Message(Icmpv6Type type, byte code, byte[] payload) {
-        this.type = type;
-        this.code = code;
-        this.payload = payload;
+        this(type, code, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(payload);
+        out.put(payload.array());
     }
 
     @Override
-    public int getLength() {
-        return BASE_LEN + payload.length;
+    public int length() {
+        return BASE_LEN + payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, byte code) {
@@ -29,17 +25,7 @@ public class GenericIcmpv6Message implements Icmpv6Message {
         return new GenericIcmpv6Message(type, code, payload);
     }
 
-    @Override
-    public Icmpv6Type getType() {
-        return type;
-    }
-
-    @Override
-    public byte getCode() {
-        return code;
-    }
-
-    public byte[] getPayload() {
-        return payload;
+    public byte[] rawPayload() {
+        return payload.array();
     }
 }

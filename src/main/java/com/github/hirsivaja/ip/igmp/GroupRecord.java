@@ -1,35 +1,35 @@
 package com.github.hirsivaja.ip.igmp;
 
+import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.ipv4.Ipv4Address;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GroupRecord {
-    private final byte recordType;
-    private final Ipv4Address multicastAddress;
-    private final Ipv4Address[] sourceAddresses;
-    private final byte[] auxData;
+public record GroupRecord(
+        byte recordType,
+        Ipv4Address multicastAddress,
+        List<Ipv4Address> sourceAddresses,
+        ByteArray auxData) {
 
-    public GroupRecord(byte recordType, Ipv4Address multicastAddress, Ipv4Address[] sourceAddresses, byte[] auxData) {
-        this.recordType = recordType;
-        this.multicastAddress = multicastAddress;
-        this.sourceAddresses = sourceAddresses;
-        this.auxData = auxData;
+    public GroupRecord(byte recordType, Ipv4Address multicastAddress, List<Ipv4Address> sourceAddresses, byte[] auxData) {
+        this(recordType, multicastAddress, sourceAddresses, new ByteArray(auxData));
     }
 
     public void encode(ByteBuffer out) {
         out.put(recordType);
-        out.put((byte) auxData.length);
-        out.putShort((short) sourceAddresses.length);
+        out.put((byte) auxData.length());
+        out.putShort((short) sourceAddresses.size());
         multicastAddress.encode(out);
         for(Ipv4Address sourceAddress : sourceAddresses) {
             sourceAddress.encode(out);
         }
-        out.put(auxData);
+        out.put(auxData.array());
     }
 
-    public int getLength() {
-        return 8 + (sourceAddresses.length * 4) + auxData.length ;
+    public int length() {
+        return 8 + (sourceAddresses.size() * 4) + auxData.length();
     }
 
     public static GroupRecord decode(ByteBuffer in) {
@@ -37,28 +37,16 @@ public class GroupRecord {
         int auxDataLen = in.get() & 0xFF;
         short numberOfSources = in.getShort();
         Ipv4Address multicastAddress = Ipv4Address.decode(in);
-        Ipv4Address[] sourceAddresses = new Ipv4Address[numberOfSources];
-        for(int i = 0; i < sourceAddresses.length; i++) {
-            sourceAddresses[i] = Ipv4Address.decode(in);
+        List<Ipv4Address> sourceAddresses = new ArrayList<>();
+        for(int i = 0; i < numberOfSources; i++) {
+            sourceAddresses.add(Ipv4Address.decode(in));
         }
         byte[] auxData = new byte[auxDataLen];
         in.get(auxData);
         return new GroupRecord(recordType, multicastAddress, sourceAddresses, auxData);
     }
 
-    public byte getRecordType() {
-        return recordType;
-    }
-
-    public Ipv4Address getMulticastAddress() {
-        return multicastAddress;
-    }
-
-    public Ipv4Address[] getSourceAddresses() {
-        return sourceAddresses;
-    }
-
-    public byte[] getAuxData() {
-        return auxData;
+    public byte[] rawAuxData() {
+        return auxData.array();
     }
 }

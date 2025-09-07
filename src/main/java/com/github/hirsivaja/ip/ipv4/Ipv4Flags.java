@@ -1,28 +1,19 @@
 package com.github.hirsivaja.ip.ipv4;
 
-public class Ipv4Flags {
+public record Ipv4Flags(boolean isMoreFragments, boolean isDoNotFragment, boolean isReservedFlag) {
     private static final byte MFR = (byte) 0x04;
     private static final byte DNF = (byte) 0x02;
     private static final byte RES = (byte) 0x01;
-    private final boolean moreFragments;
-    private final boolean doNotFragment;
-    private final boolean reservedFlag;
-
-    public Ipv4Flags(boolean moreFragments, boolean doNotFragment, boolean reservedFlag) {
-        this.moreFragments = moreFragments;
-        this.doNotFragment = doNotFragment;
-        this.reservedFlag = reservedFlag;
-    }
 
     public byte toByte() {
         byte b = 0;
-        if(moreFragments) {
+        if(isMoreFragments) {
             b |= MFR;
         }
-        if(doNotFragment) {
+        if(isDoNotFragment) {
             b |= DNF;
         }
-        if(reservedFlag) {
+        if(isReservedFlag) {
             b |= RES;
         }
         return b;
@@ -33,26 +24,5 @@ public class Ipv4Flags {
         boolean doNotFragment = (flags & DNF & 0xFF) > 0;
         boolean reservedFlag = (flags & RES & 0xFF) > 0;
         return new Ipv4Flags(moreFragments, doNotFragment, reservedFlag);
-    }
-
-    public boolean isMoreFragments() {
-        return moreFragments;
-    }
-
-    public boolean isDoNotFragment() {
-        return doNotFragment;
-    }
-
-    public boolean isReservedFlag() {
-        return reservedFlag;
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(" +
-                "moreFragments=" + moreFragments +
-                ", doNotFragment=" + doNotFragment +
-                ", reservedFlag=" + reservedFlag +
-                ")";
     }
 }

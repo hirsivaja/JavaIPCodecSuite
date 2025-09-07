@@ -14,11 +14,11 @@ public class ArpPacketTest {
         byte[] arpBytes = IpUtils.parseHexBinary("0001080006040001C80E147E339FC0A80701000000000000C0A8071D");
         ArpPacket arpPacket = ArpPacket.decode(ByteBuffer.wrap(arpBytes));
 
-        Assert.assertEquals(1, arpPacket.getOperation());
-        Assert.assertEquals(6, arpPacket.getSenderHwAddress().getLength());
-        Assert.assertEquals(4, arpPacket.getSenderProtocolAddress().getLength());
-        Assert.assertEquals(6, arpPacket.getTargetHwAddress().getLength());
-        Assert.assertEquals(4, arpPacket.getTargetProtocolAddress().getLength());
+        Assert.assertEquals(1, arpPacket.operation());
+        Assert.assertEquals(6, arpPacket.senderHwAddress().length());
+        Assert.assertEquals(4, arpPacket.senderProtocolAddress().length());
+        Assert.assertEquals(6, arpPacket.targetHwAddress().length());
+        Assert.assertEquals(4, arpPacket.targetProtocolAddress().length());
 
         Assert.assertArrayEquals(arpBytes, TestUtils.toBytes(arpPacket));
     }

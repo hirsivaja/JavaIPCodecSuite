@@ -1,29 +1,28 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.option;
 
+import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public class RplDagMetricContainerOption implements RplOption {
-
-    private final byte[] dagMetricContainerData;
+public record RplDagMetricContainerOption(ByteArray dagMetricContainerData) implements RplOption {
 
     public RplDagMetricContainerOption(byte[] dagMetricContainerData) {
-        this.dagMetricContainerData = dagMetricContainerData;
+        this(new ByteArray(dagMetricContainerData));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.put(getOptionType().getType());
-        out.put((byte) dagMetricContainerData.length);
-        out.put(dagMetricContainerData);
+        out.put(optionType().type());
+        out.put((byte) dagMetricContainerData.length());
+        out.put(dagMetricContainerData.array());
     }
 
     @Override
-    public int getLength() {
-        return 2 + dagMetricContainerData.length;
+    public int length() {
+        return 2 + dagMetricContainerData.length();
     }
 
     @Override
-    public RplOptionType getOptionType() {
+    public RplOptionType optionType() {
         return RplOptionType.DAG_METRIC_CONTAINER;
     }
 
@@ -34,7 +33,7 @@ public class RplDagMetricContainerOption implements RplOption {
         return new RplDagMetricContainerOption(dagMetricContainerData);
     }
 
-    public byte[] getDagMetricContainerData() {
-        return dagMetricContainerData;
+    public byte[] rawDagMetricContainerData() {
+        return dagMetricContainerData.array();
     }
 }

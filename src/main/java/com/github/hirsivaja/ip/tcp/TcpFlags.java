@@ -1,6 +1,14 @@
 package com.github.hirsivaja.ip.tcp;
 
-public class TcpFlags {
+public record TcpFlags(
+        boolean isCongestionWindowReduced,
+        boolean isEceFlag,
+        boolean isUrgentPointerSignificant,
+        boolean isAcknowledgementSignificant,
+        boolean isPushFunction,
+        boolean isReset,
+        boolean isSynchronizeSequenceNumbers,
+        boolean isLastPacket) {
     private static final byte CWR = (byte) 0x80;
     private static final byte ECE = (byte) 0x40;
     private static final byte URG = (byte) 0x20;
@@ -9,53 +17,31 @@ public class TcpFlags {
     private static final byte RST = (byte) 0x04;
     private static final byte SYN = (byte) 0x02;
     private static final byte FIN = (byte) 0x01;
-    private final boolean congestionWindowReduced;
-    private final boolean eceFlag;
-    private final boolean urgentPointerSignificant;
-    private final boolean acknowledgementSignificant;
-    private final boolean pushFunction;
-    private final boolean reset;
-    private final boolean synchronizeSequenceNumbers;
-    private final boolean lastPacket;
-
-    @SuppressWarnings("squid:S00107")
-    public TcpFlags(boolean congestionWindowReduced, boolean eceFlag, boolean urgentPointerSignificant,
-                    boolean acknowledgementSignificant, boolean pushFunction, boolean reset,
-                    boolean synchronizeSequenceNumbers, boolean lastPacket) {
-        this.congestionWindowReduced = congestionWindowReduced;
-        this.eceFlag = eceFlag;
-        this.urgentPointerSignificant = urgentPointerSignificant;
-        this.acknowledgementSignificant = acknowledgementSignificant;
-        this.pushFunction = pushFunction;
-        this.reset = reset;
-        this.synchronizeSequenceNumbers = synchronizeSequenceNumbers;
-        this.lastPacket = lastPacket;
-    }
 
     public byte toByte() {
         byte b = 0;
-        if(congestionWindowReduced) {
+        if(isCongestionWindowReduced) {
             b |= CWR;
         }
-        if(eceFlag) {
+        if(isEceFlag) {
             b |= ECE;
         }
-        if(urgentPointerSignificant) {
+        if(isUrgentPointerSignificant) {
             b |= URG;
         }
-        if(acknowledgementSignificant) {
+        if(isAcknowledgementSignificant) {
             b |= ACK;
         }
-        if(pushFunction) {
+        if(isPushFunction) {
             b |= PSH;
         }
-        if(reset) {
+        if(isReset) {
             b |= RST;
         }
-        if(synchronizeSequenceNumbers) {
+        if(isSynchronizeSequenceNumbers) {
             b |= SYN;
         }
-        if(lastPacket) {
+        if(isLastPacket) {
             b |= FIN;
         }
         return b;
@@ -74,53 +60,7 @@ public class TcpFlags {
                 pushFunction, reset, synchronizeSequenceNumbers, lastPacket);
     }
 
-    public boolean isCongestionWindowReduced() {
-        return congestionWindowReduced;
-    }
-
-    public boolean isEceFlag() {
-        return eceFlag;
-    }
-
-    public boolean isUrgentPointerSignificant() {
-        return urgentPointerSignificant;
-    }
-
-    public boolean isAcknowledgementSignificant() {
-        return acknowledgementSignificant;
-    }
-
-    public boolean isPushFunction() {
-        return pushFunction;
-    }
-
-    public boolean isReset() {
-        return reset;
-    }
-
-    public boolean isSynchronizeSequenceNumbers() {
-        return synchronizeSequenceNumbers;
-    }
-
-    public boolean isLastPacket() {
-        return lastPacket;
-    }
-
     public boolean isExplicitCongestionNotificationCapable() {
-        return synchronizeSequenceNumbers && eceFlag;
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(" +
-                "congestionWindowReduced=" + congestionWindowReduced +
-                ", eceFlag=" + eceFlag +
-                ", urgentPointerSignificant=" + urgentPointerSignificant +
-                ", acknowledgementSignificant=" + acknowledgementSignificant +
-                ", pushFunction=" + pushFunction +
-                ", reset=" + reset +
-                ", synchronizeSequenceNumbers=" + synchronizeSequenceNumbers +
-                ", lastPacket=" + lastPacket +
-                ")";
+        return isSynchronizeSequenceNumbers && isEceFlag;
     }
 }
