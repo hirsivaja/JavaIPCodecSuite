@@ -100,17 +100,33 @@ public record Ipv6Header(
         }
     }
 
+    /**
+     * Header + extensions length (no payload)
+     */
+    @Override
+    public int length() {
+        return Ipv6Header.HEADER_LEN + extensionsLength();
+    }
+
+    /**
+     * Payload + extensions length (no header)
+     */
+    public int dataLength() {
+        return Short.toUnsignedInt(payloadLength);
+    }
+
+    /**
+     * Payload + extensions + header length
+     */
     public int totalLength() {
         return Short.toUnsignedInt(payloadLength) + HEADER_LEN;
     }
 
+    /**
+     * Payload length (no header or extensions)
+     */
     public int payloadOnlyLength() {
         return Short.toUnsignedInt(payloadLength) - extensionsLength();
-    }
-
-    @Override
-    public int length() {
-        return Ipv6Header.HEADER_LEN + extensionsLength();
     }
 
     @Override
@@ -119,10 +135,10 @@ public record Ipv6Header(
     }
 
     public short extensionsLength() {
-        return extensionsLength(extensionHeaders);
+        return calculateExtensionsLength(extensionHeaders);
     }
 
-    private static short extensionsLength(List<ExtensionHeader> extensions) {
+    public static short calculateExtensionsLength(List<ExtensionHeader> extensions) {
         if(extensions == null){
             return 0;
         }

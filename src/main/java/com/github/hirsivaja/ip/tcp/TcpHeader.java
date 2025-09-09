@@ -63,4 +63,12 @@ public record TcpHeader(
     public byte[] rawOptions() {
         return options.array();
     }
+
+    public int uSrcPort() {
+        return Short.toUnsignedInt(srcPort);
+    }
+
+    public int uDstPort() {
+        return Short.toUnsignedInt(dstPort);
+    }
 }

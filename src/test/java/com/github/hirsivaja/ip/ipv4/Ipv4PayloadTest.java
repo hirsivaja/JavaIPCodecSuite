@@ -23,6 +23,9 @@ public class Ipv4PayloadTest {
         Assert.assertEquals(0, header.dscp());
         Assert.assertEquals(0, header.ecn().type());
         Assert.assertEquals((short) 0x0050, header.totalLength());
+        Assert.assertEquals((short) 0x003C, header.dataLength());
+        Assert.assertEquals((short) 0x003C, header.payloadLength());
+        Assert.assertEquals((short) 0x0014, header.length());
         Assert.assertEquals((short) 0x935A, header.identification());
         Assert.assertEquals(0, header.flags().toByte());
         Assert.assertEquals(0, header.fragmentOffset());

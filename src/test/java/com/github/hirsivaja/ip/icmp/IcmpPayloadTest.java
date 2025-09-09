@@ -22,6 +22,7 @@ public class IcmpPayloadTest {
         Assert.assertEquals(0x0001, ((EchoRequest) ((IcmpPayload) ipv4Payload).message()).sequenceNumber());
         Assert.assertEquals(1408, ((IcmpPayload) ipv4Payload).message().length());
         Assert.assertEquals(1428, ipv4Payload.length());
+        Assert.assertNotNull(((IcmpPayload) ipv4Payload).ipv4Header());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(ipv4Payload));
     }

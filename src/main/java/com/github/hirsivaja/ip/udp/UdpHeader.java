@@ -31,4 +31,12 @@ public record UdpHeader(short srcPort, short dstPort, short len, short checksum)
     public int dataLength() {
         return Short.toUnsignedInt(len);
     }
+
+    public int uSrcPort() {
+        return Short.toUnsignedInt(srcPort);
+    }
+
+    public int uDstPort() {
+        return Short.toUnsignedInt(dstPort);
+    }
 }

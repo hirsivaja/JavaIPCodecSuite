@@ -72,9 +72,33 @@ public record Ipv4Header(
         return outBytes;
     }
 
+    /**
+     * Header + options length (no payload)
+     */
     @Override
     public int length() {
         return HEADER_LEN + options.length();
+    }
+
+    /**
+     * Payload + options length (no header)
+     */
+    public int dataLength() {
+        return Short.toUnsignedInt(len) - Ipv4Header.HEADER_LEN;
+    }
+
+    /**
+     * Payload + options + header length
+     */
+    public int totalLength() {
+        return Short.toUnsignedInt(len);
+    }
+
+    /**
+     * Payload length (no header or options)
+     */
+    public int payloadLength() {
+        return totalLength() - Ipv4Header.HEADER_LEN - options.length();
     }
 
     @Override
@@ -111,14 +135,6 @@ public record Ipv4Header(
         in.get(options);
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,
                 srcIp, dstIp, options);
-    }
-
-    public int totalLength() {
-        return Short.toUnsignedInt(len);
-    }
-
-    public int payloadLength() {
-        return totalLength() - Ipv4Header.HEADER_LEN - options.length();
     }
 
     public byte[] rawOptions() {

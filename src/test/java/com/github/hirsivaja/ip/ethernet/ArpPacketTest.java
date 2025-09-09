@@ -21,5 +21,6 @@ public class ArpPacketTest {
         Assert.assertEquals(4, arpPacket.targetProtocolAddress().length());
 
         Assert.assertArrayEquals(arpBytes, TestUtils.toBytes(arpPacket));
+        Assert.assertArrayEquals(arpBytes, arpPacket.toBytes());
     }
 }

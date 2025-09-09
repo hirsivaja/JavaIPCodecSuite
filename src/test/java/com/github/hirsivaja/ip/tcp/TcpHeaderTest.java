@@ -11,9 +11,14 @@ public class TcpHeaderTest {
 
     @Test
     public void tcpTest() {
-        byte[] tcpBytes = IpUtils.parseHexBinary("0507005022EC582E3AC018C550104248B8B30000");
+        byte[] tcpBytes = IpUtils.parseHexBinary("8507005022EC582E3AC018C550104248B8B30000");
         TcpHeader header = TcpHeader.decode(ByteBuffer.wrap(tcpBytes));
 
+        Assert.assertEquals(34055, header.uSrcPort());
+        Assert.assertEquals(80, header.uDstPort());
+        Assert.assertEquals(-31481, header.srcPort());
+        Assert.assertEquals((short) 34055, header.srcPort());
+        Assert.assertEquals(80, header.dstPort());
         Assert.assertArrayEquals(tcpBytes, TestUtils.toBytes(header));
     }
 
