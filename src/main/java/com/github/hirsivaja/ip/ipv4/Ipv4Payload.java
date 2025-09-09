@@ -38,7 +38,7 @@ public sealed interface Ipv4Payload extends IpPayload permits
         return isIpv4;
     }
 
-    public record GenericIpv4Payload(Ipv4Header header, ByteArray payload) implements Ipv4Payload {
+    record GenericIpv4Payload(Ipv4Header header, ByteArray payload) implements Ipv4Payload {
 
         @Override
         public void encode(ByteBuffer out) {

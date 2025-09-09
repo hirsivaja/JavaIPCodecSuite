@@ -23,7 +23,7 @@ public record TcpMessagePayload(
         short checksum = tcpHeader.checksum() == 0 ?
                 IpUtils.calculateInternetChecksum(generateChecksumData(header, tcpHeader, payload.array())) :
                 tcpHeader.checksum();
-        this.tcpHeader = new TcpHeader((short) tcpHeader.srcPort(), (short) tcpHeader.dstPort(), tcpHeader.sequenceNumber(),
+        this.tcpHeader = new TcpHeader(tcpHeader.srcPort(), tcpHeader.dstPort(), tcpHeader.sequenceNumber(),
                 tcpHeader.ackNumber(), tcpHeader.flags(), tcpHeader.windowSize(), checksum,
                 tcpHeader.urgentPointer(), tcpHeader.rawOptions());
         this.payload = payload;

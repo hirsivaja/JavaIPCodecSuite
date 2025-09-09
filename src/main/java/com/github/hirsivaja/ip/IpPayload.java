@@ -45,12 +45,10 @@ public sealed interface IpPayload extends EthernetPayload permits Ipv4Payload, I
         in.mark();
         byte version = (byte) (in.get() >>> Ipv4Header.VERSION_SHIFT);
         in.reset();
-        if(version == Ipv4Header.VERSION) {
-            return Ipv4Payload.decode(in);
-        } else if (version == Ipv6Header.VERSION) {
-            return Ipv6Payload.decode(in);
-        } else {
-            throw new IllegalArgumentException("Not an IP payload");
-        }
+        return switch (version) {
+            case Ipv4Header.VERSION -> Ipv4Payload.decode(in);
+            case Ipv6Header.VERSION -> Ipv6Payload.decode(in);
+            default -> throw new IllegalArgumentException("Not an IP payload");
+        };
     }
 }

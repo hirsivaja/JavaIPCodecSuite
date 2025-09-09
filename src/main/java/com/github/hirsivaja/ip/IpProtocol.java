@@ -3,7 +3,7 @@ package com.github.hirsivaja.ip;
 public sealed interface IpProtocol permits IpProtocol.GenericIpProtocol, IpProtocol.Type {
     byte type();
 
-    public static IpProtocol fromType(byte type) {
+    static IpProtocol fromType(byte type) {
         for (Type identifier : Type.values()) {
             if (identifier.type() == type) {
                 return identifier;
@@ -12,9 +12,9 @@ public sealed interface IpProtocol permits IpProtocol.GenericIpProtocol, IpProto
         return new GenericIpProtocol(type);
     }
 
-    public record GenericIpProtocol(byte type) implements IpProtocol {}
+    record GenericIpProtocol(byte type) implements IpProtocol {}
 
-    public enum Type implements IpProtocol {
+    enum Type implements IpProtocol {
         HOP_BY_HOP((byte) 0x00),
         ICMP((byte) 0x01),
         IGMP((byte) 0x02),
@@ -29,15 +29,15 @@ public sealed interface IpProtocol permits IpProtocol.GenericIpProtocol, IpProto
         NO_NEXT((byte) 0x3B),
         DESTINATION((byte) 0x3C);
 
-        private final byte type;
+        private final byte typeValue;
 
         Type(byte type) {
-            this.type = type;
+            this.typeValue = type;
         }
 
         @Override
         public byte type() {
-            return type;
+            return typeValue;
         }
     }
 }

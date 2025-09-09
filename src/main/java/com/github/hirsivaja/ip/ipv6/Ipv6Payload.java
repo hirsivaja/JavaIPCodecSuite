@@ -56,7 +56,7 @@ public sealed interface Ipv6Payload extends IpPayload permits
         return false;
     }
 
-    public record GenericIpv6Payload(Ipv6Header header, ByteArray payload) implements Ipv6Payload {
+    record GenericIpv6Payload(Ipv6Header header, ByteArray payload) implements Ipv6Payload {
 
         @Override
         public void encode(ByteBuffer out) {

@@ -96,7 +96,7 @@ public record Ipv6Header(
         if(extensionHeaders.isEmpty()){
             return nextHeader;
         } else {
-            return extensionHeaders.get(extensionHeaders.size() - 1).nextHeader();
+            return extensionHeaders.getLast().nextHeader();
         }
     }
 

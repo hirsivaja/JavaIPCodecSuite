@@ -28,7 +28,7 @@ public class ExtensionHeaderTest {
         IpPayload payload = Ipv6Payload.decode(ByteBuffer.wrap(ipv6Bytes));
 
         Assert.assertEquals(2, ((Ipv6Header) payload.header()).extensionHeaders().size());
-        AuthenticationHeaderExtension ah = (AuthenticationHeaderExtension) ((Ipv6Header) payload.header()).extensionHeaders().get(0);
+        AuthenticationHeaderExtension ah = (AuthenticationHeaderExtension) ((Ipv6Header) payload.header()).extensionHeaders().getFirst();
         Assert.assertEquals(0x12345678, ah.authenticationHeader().spi());
         Assert.assertEquals(0x87654321, ah.authenticationHeader().seqNumber());
         Assert.assertArrayEquals(IpUtils.parseHexBinary("55555555"), ah.authenticationHeader().icv().array());

@@ -23,7 +23,7 @@ public record UdpMessagePayload(
         short checksum = udpHeader.checksum() == 0 ?
                 IpUtils.calculateInternetChecksum(generateChecksumData(header, udpHeader, payload.array())) :
                 udpHeader.checksum();
-        this.udpHeader = new UdpHeader((short) udpHeader.srcPort(), (short) udpHeader.dstPort(),
+        this.udpHeader = new UdpHeader(udpHeader.srcPort(), udpHeader.dstPort(),
                 (short) udpHeader.dataLength(), checksum);
         this.payload = payload;
     }
@@ -31,8 +31,8 @@ public record UdpMessagePayload(
     @Override
     public void encode(ByteBuffer out) {
         header.encode(out);
-        out.putShort((short) udpHeader.srcPort());
-        out.putShort((short) udpHeader.dstPort());
+        out.putShort(udpHeader.srcPort());
+        out.putShort(udpHeader.dstPort());
         out.putShort((short) (payload.length() + UdpHeader.UDP_HEADER_LEN));
         out.putShort(udpHeader.checksum());
         out.put(payload.array());
