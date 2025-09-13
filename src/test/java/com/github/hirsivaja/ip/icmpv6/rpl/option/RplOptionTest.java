@@ -127,7 +127,7 @@ public class RplOptionTest {
         RplSolicitedInformationOption castOption = (RplSolicitedInformationOption) option;
         Assert.assertEquals(1, castOption.rplInstanceId());
         Assert.assertEquals(2, castOption.flags());
-        Assert.assertEquals(16, castOption.dodagId().length());
+        Assert.assertEquals(16, castOption.dodagid().length());
         Assert.assertEquals((byte) 0xFF, castOption.versionNumber());
 
         Assert.assertArrayEquals(optionBytes, TestUtils.toBytes(option));
