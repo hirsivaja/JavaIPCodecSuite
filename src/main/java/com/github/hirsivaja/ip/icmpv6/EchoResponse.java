@@ -31,12 +31,12 @@ public record EchoResponse(short identifier, short sequenceNumber, ByteArray pay
 
     @Override
     public Icmpv6Type type() {
-        return Icmpv6Type.ECHO_RESPONSE;
+        return Icmpv6Types.ECHO_RESPONSE;
     }
 
     @Override
-    public byte code() {
-        return 0;
+    public Icmpv6Code code() {
+        return Icmpv6Codes.ECHO_RESPONSE;
     }
 
     public byte[] rawPayload() {

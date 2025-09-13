@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 
@@ -11,7 +13,7 @@ public interface RplPayload {
 
     void encode(ByteBuffer out);
 
-    RplPayloadType type();
+    Icmpv6Code code();
 
     int length();
 
@@ -31,21 +33,21 @@ public interface RplPayload {
         return outBytes;
     }
 
-    static RplPayload fromByteArray(byte[] rplPayload, RplPayloadType code){
+    static RplPayload fromByteArray(byte[] rplPayload, Icmpv6Code code){
         return decode(ByteBuffer.wrap(rplPayload), code);
     }
 
-    static RplPayload decode(ByteBuffer in, RplPayloadType code) {
+    static RplPayload decode(ByteBuffer in, Icmpv6Code code) {
         return switch (code) {
-            case DIS -> RplDis.decode(in, false);
-            case DIO -> RplDio.decode(in, false);
-            case DAO -> RplDao.decode(in, false);
-            case DAO_ACK -> RplDaoAck.decode(in, false);
-            case SECURE_DIS -> RplDis.decode(in, true);
-            case SECURE_DIO -> RplDio.decode(in, true);
-            case SECURE_DAO -> RplDao.decode(in, true);
-            case SECURE_DAO_ACK -> RplDaoAck.decode(in, true);
-            case CONSISTENCY_CHECK -> RplConsistencyCheck.decode(in);
+            case Icmpv6Codes.DIS -> RplDis.decode(in, false);
+            case Icmpv6Codes.DIO -> RplDio.decode(in, false);
+            case Icmpv6Codes.DAO -> RplDao.decode(in, false);
+            case Icmpv6Codes.DAO_ACK -> RplDaoAck.decode(in, false);
+            case Icmpv6Codes.SECURE_DIS -> RplDis.decode(in, true);
+            case Icmpv6Codes.SECURE_DIO -> RplDio.decode(in, true);
+            case Icmpv6Codes.SECURE_DAO -> RplDao.decode(in, true);
+            case Icmpv6Codes.SECURE_DAO_ACK -> RplDaoAck.decode(in, true);
+            case Icmpv6Codes.CONSISTENCY_CHECK -> RplConsistencyCheck.decode(in);
             default -> throw new IllegalArgumentException("Unexpected value: " + code);
         };
     }

@@ -1,6 +1,8 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
 import com.github.hirsivaja.ip.ByteArray;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 
@@ -40,11 +42,11 @@ public record RplDaoAck(
     }
 
     @Override
-    public RplPayloadType type() {
+    public Icmpv6Code code() {
         if(security == null) {
-            return RplPayloadType.DAO_ACK;
+            return Icmpv6Codes.DAO_ACK;
         } else {
-            return RplPayloadType.SECURE_DAO_ACK;
+            return Icmpv6Codes.SECURE_DAO_ACK;
         }
     }
 

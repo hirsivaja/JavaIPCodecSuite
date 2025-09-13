@@ -1,5 +1,7 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 
@@ -29,8 +31,8 @@ public record RplConsistencyCheck(
     }
 
     @Override
-    public RplPayloadType type() {
-        return RplPayloadType.CONSISTENCY_CHECK;
+    public Icmpv6Code code() {
+        return Icmpv6Codes.CONSISTENCY_CHECK;
     }
 
     @Override

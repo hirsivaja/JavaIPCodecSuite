@@ -1,7 +1,10 @@
 package com.github.hirsivaja.ip.icmpv6.mld;
 
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Type;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Types;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -40,11 +43,11 @@ public record MulticastListenerReportV2Message(
 
     @Override
     public Icmpv6Type type() {
-        return Icmpv6Type.MULTICAST_LISTENER_REPORT_V2;
+        return Icmpv6Types.MULTICAST_LISTENER_REPORT_V2;
     }
 
     @Override
-    public byte code() {
-        return 0;
+    public Icmpv6Code code() {
+        return Icmpv6Codes.MULTICAST_LISTENER_DISCOVERY_REPORTS;
     }
 }

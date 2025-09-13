@@ -1,6 +1,7 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
 import com.github.hirsivaja.ip.IpUtils;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurityMode;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +13,7 @@ public class RplPayloadTest {
     @Test
     public void disTest() {
         byte[] disBytes = IpUtils.parseHexBinary("000000000000");
-        RplPayload rplPayload = RplPayload.fromByteArray(disBytes, RplPayloadType.DIS);
+        RplPayload rplPayload = RplPayload.fromByteArray(disBytes, Icmpv6Codes.DIS);
 
         Assert.assertTrue(rplPayload instanceof RplDis);
         Assert.assertFalse(rplPayload.hasSecurity());

@@ -1,5 +1,6 @@
 package com.github.hirsivaja.ip.icmpv6.mld;
 
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Type;
 import com.github.hirsivaja.ip.ipv6.Ipv6Address;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public record MulticastListenerQueryMessage(
         Icmpv6Type type,
-        byte code,
+        Icmpv6Code code,
         short maximumResponseCode,
         Ipv6Address multicastAddress,
         byte flags,
@@ -35,7 +36,7 @@ public record MulticastListenerQueryMessage(
         return BASE_LEN + 24 + (sourceAddresses.size() * 16);
     }
 
-    public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, byte code) {
+    public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, Icmpv6Code code) {
         short maximumResponseCode = in.getShort();
         in.getShort(); // RESERVED
         Ipv6Address multicastAddress = Ipv6Address.decode(in);

@@ -3,9 +3,9 @@ package com.github.hirsivaja.ip.icmpv6;
 import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public record ParameterProblem(byte code, int pointer, ByteArray payload) implements Icmpv6Message {
+public record ParameterProblem(Icmpv6Code code, int pointer, ByteArray payload) implements Icmpv6Message {
 
-    public ParameterProblem(byte code, int pointer, byte[] payload) {
+    public ParameterProblem(Icmpv6Code code, int pointer, byte[] payload) {
         this(code, pointer, new ByteArray(payload));
     }
 
@@ -20,7 +20,7 @@ public record ParameterProblem(byte code, int pointer, ByteArray payload) implem
         return BASE_LEN + 4 + payload.array().length;
     }
 
-    public static Icmpv6Message decode(ByteBuffer in, byte code) {
+    public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {
         int pointer = in.getInt();
         byte[] payload = new byte[in.remaining()];
         in.get(payload);
@@ -29,7 +29,7 @@ public record ParameterProblem(byte code, int pointer, ByteArray payload) implem
 
     @Override
     public Icmpv6Type type() {
-        return Icmpv6Type.PARAMETER_PROBLEM;
+        return Icmpv6Types.PARAMETER_PROBLEM;
     }
 
     public byte[] rawPayload() {

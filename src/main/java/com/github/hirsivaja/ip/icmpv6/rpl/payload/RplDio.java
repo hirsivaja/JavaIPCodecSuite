@@ -1,6 +1,8 @@
 package com.github.hirsivaja.ip.icmpv6.rpl.payload;
 
 import com.github.hirsivaja.ip.ByteArray;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 
@@ -45,11 +47,11 @@ public record RplDio(
     }
 
     @Override
-    public RplPayloadType type() {
+    public Icmpv6Code code() {
         if(security == null) {
-            return RplPayloadType.DIO;
+            return Icmpv6Codes.DIO;
         } else {
-            return RplPayloadType.SECURE_DIO;
+            return Icmpv6Codes.SECURE_DIO;
         }
     }
 

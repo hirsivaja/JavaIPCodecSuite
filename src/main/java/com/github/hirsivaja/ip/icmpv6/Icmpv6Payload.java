@@ -12,7 +12,7 @@ public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements
     public void encode(ByteBuffer out) {
         header.encode(out);
         out.put(message.type().type());
-        out.put(message.code());
+        out.put(message.code().code());
         out.putShort(IpUtils.calculateInternetChecksum(generateChecksumData(header, message, (short) 0)));
         message.encode(out);
     }
@@ -21,7 +21,7 @@ public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements
         ByteBuffer checksumBuf = ByteBuffer.allocate(Ipv6Header.HEADER_LEN + message.length());
         checksumBuf.put(header.generatePseudoHeader());
         checksumBuf.put(message.type().type());
-        checksumBuf.put(message.code());
+        checksumBuf.put(message.code().code());
         checksumBuf.putShort(checksum);
         message.encode(checksumBuf);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
@@ -36,7 +36,7 @@ public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements
 
     public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header) {
         Icmpv6Type type = Icmpv6Type.fromType(in.get());
-        byte code = in.get();
+        Icmpv6Code code = Icmpv6Code.fromType(type, in.get());
         short checksum = in.getShort();
         Icmpv6Message message = Icmpv6Message.decode(in, type, code);
         IpUtils.ensureInternetChecksum(generateChecksumData(header, message, checksum));

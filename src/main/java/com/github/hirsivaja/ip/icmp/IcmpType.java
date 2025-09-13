@@ -10,7 +10,7 @@ public sealed interface IcmpType permits IcmpType.GenericIcmpType, IcmpTypes {
                 return identifier;
             }
         }
-        throw new IllegalArgumentException("Unknown ICMP type " + type);
+        return new GenericIcmpType(type);
     }
 
     record GenericIcmpType(byte type) implements IcmpType {}

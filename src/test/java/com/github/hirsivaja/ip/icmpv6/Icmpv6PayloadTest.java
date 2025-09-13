@@ -66,7 +66,7 @@ public class Icmpv6PayloadTest {
 
         Assert.assertTrue(ipv6Payload instanceof Icmpv6Payload);
         Assert.assertTrue(((Icmpv6Payload) ipv6Payload).message() instanceof TimeExceeded);
-        Assert.assertEquals(0, ((Icmpv6Payload) ipv6Payload).message().code());
+        Assert.assertEquals(0, ((Icmpv6Payload) ipv6Payload).message().code().code());
 
         Assert.assertArrayEquals(teBytes, TestUtils.toBytes(ipv6Payload));
     }

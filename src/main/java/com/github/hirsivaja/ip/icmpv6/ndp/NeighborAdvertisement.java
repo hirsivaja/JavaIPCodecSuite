@@ -1,7 +1,10 @@
 package com.github.hirsivaja.ip.icmpv6.ndp;
 
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Type;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Types;
 import com.github.hirsivaja.ip.icmpv6.ndp.option.NdpOption;
 import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 
@@ -40,11 +43,11 @@ public record NeighborAdvertisement(
 
     @Override
     public Icmpv6Type type() {
-        return Icmpv6Type.NEIGHBOR_ADVERTISEMENT;
+        return Icmpv6Types.NEIGHBOR_ADVERTISEMENT;
     }
 
     @Override
-    public byte code() {
-        return 0;
+    public Icmpv6Code code() {
+        return Icmpv6Codes.NEIGHBOR_ADVERTISEMENT;
     }
 }

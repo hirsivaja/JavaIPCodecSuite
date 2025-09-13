@@ -3,9 +3,9 @@ package com.github.hirsivaja.ip.icmpv6;
 import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public record DestinationUnreachable(byte code, short nextHopMtu, ByteArray payload) implements Icmpv6Message {
+public record DestinationUnreachable(Icmpv6Code code, short nextHopMtu, ByteArray payload) implements Icmpv6Message {
 
-    public DestinationUnreachable(byte code, short nextHopMtu, byte[] payload) {
+    public DestinationUnreachable(Icmpv6Code code, short nextHopMtu, byte[] payload) {
         this(code, nextHopMtu, new ByteArray(payload));
     }
 
@@ -21,7 +21,7 @@ public record DestinationUnreachable(byte code, short nextHopMtu, ByteArray payl
         return BASE_LEN + 4 + payload.length();
     }
 
-    public static Icmpv6Message decode(ByteBuffer in, byte code) {
+    public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {
         in.getShort(); // UNUSED
         short nextHopMtu = in.getShort();
         byte[] payload = new byte[in.remaining()];
@@ -31,7 +31,7 @@ public record DestinationUnreachable(byte code, short nextHopMtu, ByteArray payl
 
     @Override
     public Icmpv6Type type() {
-        return Icmpv6Type.DESTINATION_UNREACHABLE;
+        return Icmpv6Types.DESTINATION_UNREACHABLE;
     }
 
     public byte[] rawPayload() {

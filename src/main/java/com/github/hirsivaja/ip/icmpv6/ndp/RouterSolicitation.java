@@ -1,7 +1,10 @@
 package com.github.hirsivaja.ip.icmpv6.ndp;
 
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Type;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Types;
 import com.github.hirsivaja.ip.icmpv6.ndp.option.NdpOption;
 
 import java.nio.ByteBuffer;
@@ -34,11 +37,11 @@ public record RouterSolicitation(List<NdpOption> options) implements Icmpv6Messa
 
     @Override
     public Icmpv6Type type() {
-        return Icmpv6Type.ROUTER_SOLICITATION;
+        return Icmpv6Types.ROUTER_SOLICITATION;
     }
 
     @Override
-    public byte code() {
-        return 0;
+    public Icmpv6Code code() {
+        return Icmpv6Codes.ROUTER_SOLICITATION;
     }
 }
