@@ -1,16 +1,17 @@
 package com.github.hirsivaja.ip.icmp;
 
 import com.github.hirsivaja.ip.ByteArray;
+import com.github.hirsivaja.ip.ipv4.Ipv4Address;
 import java.nio.ByteBuffer;
 
-public record DestinationUnreachable(IcmpCode code, ByteArray payload) implements IcmpMessage {
-    public DestinationUnreachable(IcmpCode code, byte[] payload) {
-        this(code, new ByteArray(payload));
+public record Redirect(IcmpCode code, Ipv4Address address, ByteArray payload) implements IcmpMessage {
+    public Redirect(IcmpCode code, Ipv4Address address, byte[] payload) {
+        this(code, address, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.putInt(0);
+        address.encode(out);
         out.put(payload.array());
     }
 
@@ -20,15 +21,15 @@ public record DestinationUnreachable(IcmpCode code, ByteArray payload) implement
     }
 
     public static IcmpMessage decode(ByteBuffer in, IcmpCode code) {
-        in.getInt(); // UNUSED
+        Ipv4Address address = Ipv4Address.decode(in);
         byte[] payload = new byte[in.remaining()];
         in.get(payload);
-        return new DestinationUnreachable(code, payload);
+        return new Redirect(code, address, payload);
     }
 
     @Override
     public IcmpType type() {
-        return IcmpTypes.DESTINATION_UNREACHABLE;
+        return IcmpTypes.REDIRECT_MESSAGE;
     }
 
     public byte[] rawPayload() {

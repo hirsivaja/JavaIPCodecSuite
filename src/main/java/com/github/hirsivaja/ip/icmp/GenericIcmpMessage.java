@@ -3,9 +3,9 @@ package com.github.hirsivaja.ip.icmp;
 import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public record GenericIcmpMessage(IcmpType type, byte code, ByteArray payload) implements IcmpMessage {
+public record GenericIcmpMessage(IcmpType type, IcmpCode code, ByteArray payload) implements IcmpMessage {
 
-    public GenericIcmpMessage(IcmpType type, byte code, byte[] payload) {
+    public GenericIcmpMessage(IcmpType type, IcmpCode code, byte[] payload) {
         this(type, code, new ByteArray(payload));
     }
 
@@ -19,7 +19,7 @@ public record GenericIcmpMessage(IcmpType type, byte code, ByteArray payload) im
         return BASE_LEN + payload.array().length;
     }
 
-    public static IcmpMessage decode(ByteBuffer in, IcmpType type, byte code) {
+    public static IcmpMessage decode(ByteBuffer in, IcmpType type, IcmpCode code) {
         byte[] payload = new byte[in.remaining()];
         in.get(payload);
         return new GenericIcmpMessage(type, code, payload);
@@ -28,11 +28,6 @@ public record GenericIcmpMessage(IcmpType type, byte code, ByteArray payload) im
     @Override
     public IcmpType type() {
         return type;
-    }
-
-    @Override
-    public byte code() {
-        return code;
     }
 
     public byte[] rawPayload() {

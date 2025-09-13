@@ -30,12 +30,12 @@ public record EchoReply(short identifier, short sequenceNumber, ByteArray payloa
 
     @Override
     public IcmpType type() {
-        return IcmpType.ECHO_REPLY;
+        return IcmpTypes.ECHO_REPLY;
     }
 
     @Override
-    public byte code() {
-        return 0;
+    public IcmpCode code() {
+        return IcmpCodes.ECHO_REPLY;
     }
 
     public byte[] rawPayload() {

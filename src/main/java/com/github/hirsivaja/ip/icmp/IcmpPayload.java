@@ -12,7 +12,7 @@ public record IcmpPayload(Ipv4Header header, IcmpMessage message) implements Ipv
     public void encode(ByteBuffer out) {
         header.encode(out);
         out.put(message.type().type());
-        out.put(message.code());
+        out.put(message.code().code());
         out.putShort(IpUtils.calculateInternetChecksum(generateChecksumData(message, (short) 0)));
         message.encode(out);
     }
@@ -20,7 +20,7 @@ public record IcmpPayload(Ipv4Header header, IcmpMessage message) implements Ipv
     private static byte[] generateChecksumData(IcmpMessage message, short checksum) {
         ByteBuffer checksumBuf = ByteBuffer.allocate(message.length());
         checksumBuf.put(message.type().type());
-        checksumBuf.put(message.code());
+        checksumBuf.put(message.code().code());
         checksumBuf.putShort(checksum);
         message.encode(checksumBuf);
         byte[] checksumData = new byte[checksumBuf.rewind().remaining()];
@@ -35,7 +35,7 @@ public record IcmpPayload(Ipv4Header header, IcmpMessage message) implements Ipv
 
     public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header) {
         IcmpType type = IcmpType.fromType(in.get());
-        byte code = in.get();
+        IcmpCode code = IcmpCode.fromType(type, in.get());
         short checksum = in.getShort();
         IcmpMessage message = IcmpMessage.decode(in, type, code);
         IpUtils.ensureInternetChecksum(generateChecksumData(message, checksum));

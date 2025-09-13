@@ -3,14 +3,14 @@ package com.github.hirsivaja.ip.icmp;
 import com.github.hirsivaja.ip.ByteArray;
 import java.nio.ByteBuffer;
 
-public record DestinationUnreachable(IcmpCode code, ByteArray payload) implements IcmpMessage {
-    public DestinationUnreachable(IcmpCode code, byte[] payload) {
+public record TimeExceeded(IcmpCode code, ByteArray payload) implements IcmpMessage {
+    public TimeExceeded(IcmpCode code, byte[] payload) {
         this(code, new ByteArray(payload));
     }
 
     @Override
     public void encode(ByteBuffer out) {
-        out.putInt(0);
+        out.putInt(0); // UNUSED
         out.put(payload.array());
     }
 
@@ -23,12 +23,12 @@ public record DestinationUnreachable(IcmpCode code, ByteArray payload) implement
         in.getInt(); // UNUSED
         byte[] payload = new byte[in.remaining()];
         in.get(payload);
-        return new DestinationUnreachable(code, payload);
+        return new TimeExceeded(code, payload);
     }
 
     @Override
     public IcmpType type() {
-        return IcmpTypes.DESTINATION_UNREACHABLE;
+        return IcmpTypes.TIME_EXCEEDED;
     }
 
     public byte[] rawPayload() {
