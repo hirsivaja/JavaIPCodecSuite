@@ -30,8 +30,8 @@ public record RouterAdvertisement(short lifetime, List<Ipv4Address> addresses, L
         if(addressEntrySize != ADDRESS_ENTRY_SIZE) {
             throw new IllegalArgumentException("Unexpected Address Entry size " + addressEntrySize);
         }
-        List<Ipv4Address> addresses = new ArrayList();
-        List<Integer> preferenceLevels = new ArrayList();
+        List<Ipv4Address> addresses = new ArrayList<>();
+        List<Integer> preferenceLevels = new ArrayList<>();
         for(int i = 0; i < numberOfAddresses; i++) {
             addresses.add(Ipv4Address.decode(in));
             preferenceLevels.add(in.getInt());

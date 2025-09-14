@@ -1,0 +1,38 @@
+package com.github.hirsivaja.ip.icmpv6.ndp;
+
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Type;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Types;
+import java.nio.ByteBuffer;
+
+public record MobilePrefixSolicitation(short identifier) implements Icmpv6Message {
+
+    @Override
+    public void encode(ByteBuffer out) {
+        out.putShort(identifier);
+        out.putShort((short) 0); // RESERVED
+    }
+
+    @Override
+    public int length() {
+        return BASE_LEN + 4;
+    }
+
+    public static Icmpv6Message decode(ByteBuffer in) {
+        short identifier = in.getShort();
+        in.getShort(); // RESERVED
+        return new MobilePrefixSolicitation(identifier);
+    }
+
+    @Override
+    public Icmpv6Type type() {
+        return Icmpv6Types.MOBILE_PREFIX_SOLICITATION;
+    }
+
+    @Override
+    public Icmpv6Code code() {
+        return Icmpv6Codes.MOBILE_PREFIX_SOLICITATION;
+    }
+}
