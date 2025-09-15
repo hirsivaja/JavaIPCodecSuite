@@ -16,6 +16,7 @@ public class RplBaseTest {
         RplControlMessage rplPayload = RplControlMessage.fromByteArray(disBytes, Icmpv6Codes.DIS);
 
         Assert.assertTrue(rplPayload.base() instanceof RplDis);
+        Assert.assertFalse(rplPayload.base().hasDodagid());
         Assert.assertFalse(rplPayload.hasSecurity());
         Assert.assertEquals(4, rplPayload.options().size());
 
@@ -31,6 +32,7 @@ public class RplBaseTest {
         RplControlMessage rplPayload = (RplControlMessage) RplControlMessage.decode(ByteBuffer.wrap(dioBytes), Icmpv6Codes.DIO);
 
         RplDio dio = (RplDio) rplPayload.base();
+        Assert.assertTrue(dio.hasDodagid());
         Assert.assertEquals(30, dio.rplInstance());
         Assert.assertEquals(-15, dio.versionNumber());
         Assert.assertEquals(768, dio.rank());

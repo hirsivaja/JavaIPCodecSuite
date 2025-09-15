@@ -3,7 +3,7 @@ package com.github.hirsivaja.ip.icmpv6.ndp.option;
 import java.nio.ByteBuffer;
 
 public record TimestampOption(long timestamp) implements NdpOption {
-    private final static int LEN = 2;
+    private static final int LEN = 2;
 
     @Override
     public void encode(ByteBuffer out) {

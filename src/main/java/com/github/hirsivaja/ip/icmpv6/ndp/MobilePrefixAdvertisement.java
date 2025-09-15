@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record MobilePrefixAdvertisement(short identifier, boolean mFlag, boolean oFlag, List<NdpOption> options) implements Icmpv6Message {
-    private final static int MO = 0xC000;
-    private final static int M = 0x8000;
-    private final static int O = 0x4000;
+    private static final int MO = 0xC000;
+    private static final int M = 0x8000;
+    private static final int O = 0x4000;
 
     @Override
     public void encode(ByteBuffer out) {
@@ -47,7 +47,7 @@ public record MobilePrefixAdvertisement(short identifier, boolean mFlag, boolean
             }
             case M -> mFlag = true;
             case O -> oFlag = true;
-            default -> {}
+            default -> {/* BOTH FLAGS FALSE */}
         }
         List<NdpOption> options = new ArrayList<>();
         while(in.remaining() > 2) {

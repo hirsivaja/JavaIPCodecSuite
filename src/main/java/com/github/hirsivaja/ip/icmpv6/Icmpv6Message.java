@@ -49,8 +49,8 @@ public interface Icmpv6Message {
             case Icmpv6Types.CERTIFICATION_PATH_SOLICITATION -> CertificationPathSolicitation.decode(in);
             case Icmpv6Types.CERTIFICATION_PATH_ADVERTISEMENT -> CertificationPathAdvertisement.decode(in);
             case Icmpv6Types.MULTICAST_ROUTER_ADVERTISEMENT -> MulticastRouterAdvertisement.decode(in, code);
-            case Icmpv6Types.MULTICAST_ROUTER_SOLICITATION -> MulticastRouterSolicitation.decode(in);
-            case Icmpv6Types.MULTICAST_ROUTER_TERMINATION -> MulticastRouterTermination.decode(in);
+            case Icmpv6Types.MULTICAST_ROUTER_SOLICITATION -> MulticastRouterSolicitation.decode();
+            case Icmpv6Types.MULTICAST_ROUTER_TERMINATION -> MulticastRouterTermination.decode();
             case Icmpv6Types.RPL -> RplControlMessage.decode(in, code);
             case Icmpv6Types.EXTENDED_ECHO_REQUEST -> ExtendedEchoRequest.decode(in);
             case Icmpv6Types.EXTENDED_ECHO_REPLY -> ExtendedEchoReply.decode(in, code);

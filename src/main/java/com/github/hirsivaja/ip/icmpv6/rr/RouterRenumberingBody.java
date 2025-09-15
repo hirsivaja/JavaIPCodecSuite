@@ -9,7 +9,7 @@ public sealed interface RouterRenumberingBody permits RouterRenumberingCommand, 
     int length();
     Icmpv6Code code();
 
-    public static RouterRenumberingBody decode(ByteBuffer in, Icmpv6Code code) {
+    static RouterRenumberingBody decode(ByteBuffer in, Icmpv6Code code) {
         return switch(code) {
             case Icmpv6Codes.ROUTER_RENUMBERING_COMMAND -> RouterRenumberingCommand.decode(in);
             case Icmpv6Codes.ROUTER_RENUMBERING_RESULT -> RouterRenumberingResult.decode(in);

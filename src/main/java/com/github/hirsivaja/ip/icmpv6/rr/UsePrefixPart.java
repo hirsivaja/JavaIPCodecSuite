@@ -12,10 +12,10 @@ public record UsePrefixPart(
         int preferredLifetime,
         boolean vFlag,
         boolean pFlag, Ipv6Address usePrefix) {
-    public final static int LEN = 32;
-    private final static int VP = 0xC0000000;
-    private final static int V = 0x80000000;
-    private final static int P = 0x40000000;
+    public static final int LEN = 32;
+    private static final int VP = 0xC0000000;
+    private static final int V = 0x80000000;
+    private static final int P = 0x40000000;
 
     public void encode(ByteBuffer out) {
         out.put(useLength);
@@ -57,7 +57,7 @@ public record UsePrefixPart(
             }
             case V -> vFlag = true;
             case P -> pFlag = true;
-            default -> {}
+            default -> {/* BOTH FLAGS FALSE */}
         }
         Ipv6Address usePrefix = Ipv6Address.decode(in);
         return new UsePrefixPart(useLength, keepLength, flagMask, raFlags, validLifetime, preferredLifetime, vFlag, pFlag, usePrefix);

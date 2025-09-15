@@ -15,7 +15,7 @@ public record RouterRenumberingResult(List<MatchReport> matchReports) implements
 
     @Override
     public int length() {
-        return matchReports.stream().mapToInt(MatchReport::length).sum();
+        return matchReports.size() * MatchReport.LENGTH;
     }
 
     @Override

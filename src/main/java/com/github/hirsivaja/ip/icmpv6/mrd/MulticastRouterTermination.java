@@ -20,7 +20,7 @@ public record MulticastRouterTermination() implements Icmpv6Message {
         return BASE_LEN;
     }
 
-    public static Icmpv6Message decode(ByteBuffer in) {
+    public static Icmpv6Message decode() {
         return new MulticastRouterTermination();
     }
 

@@ -3,7 +3,7 @@ package com.github.hirsivaja.ip.icmpv6.ndp.option;
 import java.nio.ByteBuffer;
 
 public record AdvertisementIntervalOption(int advertisementInterval) implements NdpOption {
-    private final static int LEN = 1;
+    private static final int LEN = 1;
 
     @Override
     public void encode(ByteBuffer out) {

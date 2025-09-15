@@ -49,7 +49,7 @@ public class IcmpPayloadTest {
         Assert.assertTrue(((IcmpPayload) ipv4Payload).message() instanceof ExtendedEchoRequest);
         Assert.assertEquals(0x13C2, ((ExtendedEchoRequest) ((IcmpPayload) ipv4Payload).message()).identifier());
         Assert.assertEquals(0x00, ((ExtendedEchoRequest) ((IcmpPayload) ipv4Payload).message()).sequenceNumber());
-        Assert.assertEquals(true, ((ExtendedEchoRequest) ((IcmpPayload) ipv4Payload).message()).isLocal());
+        Assert.assertTrue(((ExtendedEchoRequest) ((IcmpPayload) ipv4Payload).message()).isLocal());
         Assert.assertEquals(1408, ((IcmpPayload) ipv4Payload).message().length());
         Assert.assertEquals(1428, ipv4Payload.length());
         Assert.assertNotNull(((IcmpPayload) ipv4Payload).ipv4Header());
@@ -67,9 +67,9 @@ public class IcmpPayloadTest {
         Assert.assertEquals(0x13C2, ((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).identifier());
         Assert.assertEquals((byte) 0xFF, ((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).sequenceNumber());
         Assert.assertEquals(0b111, ((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).state());
-        Assert.assertEquals(true, ((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).isActive());
-        Assert.assertEquals(true, ((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).hasIpv4());
-        Assert.assertEquals(true, ((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).hasIpv6());
+        Assert.assertTrue(((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).isActive());
+        Assert.assertTrue(((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).hasIpv4());
+        Assert.assertTrue(((ExtendedEchoReply) ((IcmpPayload) ipv4Payload).message()).hasIpv6());
 
         Assert.assertArrayEquals(rspBytes, TestUtils.toBytes(ipv4Payload));
     }

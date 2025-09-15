@@ -4,7 +4,7 @@ public sealed interface IcmpType permits IcmpType.GenericIcmpType, IcmpTypes {
 
     byte type();
 
-    public static IcmpType fromType(byte type) {
+    static IcmpType fromType(byte type) {
         for (IcmpType identifier : IcmpTypes.values()) {
             if (identifier.type() == type) {
                 return identifier;

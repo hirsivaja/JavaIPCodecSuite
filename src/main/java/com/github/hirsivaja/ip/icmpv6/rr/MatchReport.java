@@ -10,6 +10,7 @@ public record MatchReport(
         byte matchLength,
         int interfaceIndex,
         Ipv6Address matchedPrefix) {
+    public static final int LENGTH = 24;
 
     public void encode(ByteBuffer out) {
         if(bFlag && fFlag) {
@@ -27,10 +28,6 @@ public record MatchReport(
         matchedPrefix.encode(out);
     }
 
-    public int length() {
-        return 24;
-    }
-
     public static MatchReport decode(ByteBuffer in) {
         short reserved = in.getShort();
         boolean bFlag = false;
@@ -42,7 +39,7 @@ public record MatchReport(
             }
             case 2 -> bFlag = true;
             case 1 -> fFlag = true;
-            default -> {}
+            default -> {/* BOTH FLAGS FALSE */}
         }
         byte ordinal = in.get();
         byte matchLength = in.get();

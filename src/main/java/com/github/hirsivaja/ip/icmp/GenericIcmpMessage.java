@@ -25,11 +25,6 @@ public record GenericIcmpMessage(IcmpType type, IcmpCode code, ByteArray payload
         return new GenericIcmpMessage(type, code, payload);
     }
 
-    @Override
-    public IcmpType type() {
-        return type;
-    }
-
     public byte[] rawPayload() {
         return payload.array();
     }
