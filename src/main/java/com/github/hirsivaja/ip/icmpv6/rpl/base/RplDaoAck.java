@@ -1,4 +1,4 @@
-package com.github.hirsivaja.ip.icmpv6.rpl.payload;
+package com.github.hirsivaja.ip.icmpv6.rpl.base;
 
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Code;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;
@@ -6,18 +6,19 @@ import com.github.hirsivaja.ip.icmpv6.rpl.Dodagid;
 
 import java.nio.ByteBuffer;
 
-public record RplDao(
+public record RplDaoAck(
         byte rplInstance,
         byte flags,
         byte daoSequence,
+        byte status,
         Dodagid dodagid) implements RplBase {
     private static final int MIN_LEN = 4;
 
     public void encode(ByteBuffer out){
         out.put(rplInstance);
         out.put(flags);
-        out.put((byte) 0); // RESERVED
         out.put(daoSequence);
+        out.put(status);
         if(dodagid != null) {
             out.put(dodagid.rawDodagid());
         }
@@ -26,9 +27,9 @@ public record RplDao(
     @Override
     public Icmpv6Code code(boolean secured) {
         if(secured) {
-            return Icmpv6Codes.SECURE_DAO;
+            return Icmpv6Codes.SECURE_DAO_ACK;
         } else {
-            return Icmpv6Codes.DAO;
+            return Icmpv6Codes.DAO_ACK;
         }
     }
 
@@ -42,17 +43,17 @@ public record RplDao(
         return dodagid != null;
     }
 
-    public static RplDao decode(ByteBuffer in){
+    public static RplDaoAck decode(ByteBuffer in){
         byte rplInstance = in.get();
         byte flags = in.get();
-        in.get(); // RESERVED
         byte daoSequence = in.get();
-        boolean hasDodagid = (flags & 0x40) > 0;
+        byte status = in.get();
+        boolean hasDodagid = (flags & 0x80) > 0;
         Dodagid dodagid = null;
         if(hasDodagid) {
             dodagid = Dodagid.decode(in);
             
         }
-        return new RplDao(rplInstance, flags, daoSequence, dodagid);
+        return new RplDaoAck(rplInstance, flags, daoSequence, status, dodagid);
     }
 }

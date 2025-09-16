@@ -1,4 +1,4 @@
-package com.github.hirsivaja.ip.icmpv6.rpl.payload;
+package com.github.hirsivaja.ip.icmpv6.rpl.base;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Codes;

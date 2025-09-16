@@ -28,7 +28,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
-        arguments: test jar
+        arguments: test testIntegration jar
 
     - name: Set version number env
       run: echo "GITHUB_BUILDVERSION=$(cat build.gradle | grep 'version =' | cut -d"'" -f 2)" >> $GITHUB_ENV

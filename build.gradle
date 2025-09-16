@@ -11,6 +11,25 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    testi {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    testiImplementation.extendsFrom testImplementation
+}
+
+tasks.register('testIntegration', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.testi.output.classesDirs
+    classpath = sourceSets.testi.runtimeClasspath
+}
+
 dependencies {
     testImplementation 'junit:junit:4.13.2'
 }

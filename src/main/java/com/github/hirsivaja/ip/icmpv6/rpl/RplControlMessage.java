@@ -8,7 +8,7 @@ import com.github.hirsivaja.ip.icmpv6.Icmpv6Types;
 import com.github.hirsivaja.ip.icmpv6.rpl.option.RplOption;
 
 import java.nio.ByteBuffer;
-import com.github.hirsivaja.ip.icmpv6.rpl.payload.RplBase;
+import com.github.hirsivaja.ip.icmpv6.rpl.base.RplBase;
 import com.github.hirsivaja.ip.icmpv6.rpl.security.RplSecurity;
 import java.util.ArrayList;
 import java.util.List;
