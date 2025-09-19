@@ -63,7 +63,7 @@ public record Ipv6Address(ByteArray address) implements IpAddress {
     public String toString() {
         try {
             return this.getClass().getSimpleName() + "[" + toInetAddress().getHostAddress() + "]";
-        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException _) {
             // Suppressing the exception
         }
         return this.getClass().getSimpleName() + "[" + IpUtils.printHexBinary(address.array()) + "]";
