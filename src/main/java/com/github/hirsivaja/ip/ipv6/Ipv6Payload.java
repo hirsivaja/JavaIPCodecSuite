@@ -3,6 +3,7 @@ package com.github.hirsivaja.ip.ipv6;
 import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpPayload;
 import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
 import com.github.hirsivaja.ip.ipsec.EspPayload;
 import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
@@ -15,25 +16,17 @@ public sealed interface Ipv6Payload extends IpPayload permits
         Ipv6Payload.GenericIpv6Payload {
     int NEXT_HEADER_INDEX = 6;
 
-    static boolean isExtension(IpProtocol nextHeader) {
-        return nextHeader == IpProtocol.Type.ROUTING ||
-                nextHeader == IpProtocol.Type.HOP_BY_HOP ||
-                nextHeader == IpProtocol.Type.FRAGMENTATION ||
-                nextHeader == IpProtocol.Type.AUTHENTICATION ||
-                nextHeader == IpProtocol.Type.DESTINATION;
-    }
-
     static IpPayload decode(ByteBuffer in) {
         Ipv6Header header = Ipv6Header.decode(in);
         byte[] ipv6Payload = new byte[header.payloadOnlyLength()];
         in.get(ipv6Payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(ipv6Payload);
         return switch (header.lastNextHeader()) {
-            case IpProtocol.Type.TCP -> TcpMessagePayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.UDP -> UdpMessagePayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.ESP -> EspPayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.ICMPV6 -> Icmpv6Payload.decode(payloadBuffer, header);
-            case IpProtocol.Type.ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
+            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header);
+            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header);
+            case IpProtocols.ESP -> EspPayload.decode(payloadBuffer, header);
+            case IpProtocols.ICMPV6 -> Icmpv6Payload.decode(payloadBuffer, header);
+            case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
             default -> GenericIpv6Payload.decode(in, header);
         };
     }
@@ -43,14 +36,14 @@ public sealed interface Ipv6Payload extends IpPayload permits
         if(in.remaining() >= Ipv6Header.HEADER_LEN && (in.get(0) >>> 4) == Ipv6Header.VERSION) {
             IpProtocol nextHeader = IpProtocol.fromType(in.get(NEXT_HEADER_INDEX));
             in.position(currentPosition);
-            return nextHeader == IpProtocol.Type.ICMPV6 ||
-                    nextHeader == IpProtocol.Type.UDP ||
-                    nextHeader == IpProtocol.Type.ENCAPSULATION ||
-                    nextHeader == IpProtocol.Type.ROUTING ||
-                    nextHeader == IpProtocol.Type.FRAGMENTATION ||
-                    nextHeader == IpProtocol.Type.AUTHENTICATION ||
-                    nextHeader == IpProtocol.Type.HOP_BY_HOP ||
-                    nextHeader == IpProtocol.Type.DESTINATION;
+            return nextHeader == IpProtocols.ICMPV6 ||
+                    nextHeader == IpProtocols.UDP ||
+                    nextHeader == IpProtocols.IPV6_ENCAPSULATION ||
+                    nextHeader == IpProtocols.IPV6_ROUTING ||
+                    nextHeader == IpProtocols.IPV6_FRAGMENTATION ||
+                    nextHeader == IpProtocols.AUTHENTICATION ||
+                    nextHeader == IpProtocols.HOP_BY_HOP ||
+                    nextHeader == IpProtocols.IPV6_DESTINATION;
         }
         in.position(currentPosition);
         return false;

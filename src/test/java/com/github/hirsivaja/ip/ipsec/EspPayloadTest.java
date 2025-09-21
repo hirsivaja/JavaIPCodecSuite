@@ -1,7 +1,7 @@
 package com.github.hirsivaja.ip.ipsec;
 
 import com.github.hirsivaja.ip.IpPayload;
-import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
@@ -38,7 +38,7 @@ public class EspPayloadTest {
 
         EspData data = esp.asEspData(4);
         Assert.assertEquals(120, data.encryptedData().length());
-        Assert.assertEquals(IpProtocol.Type.ICMPV6, data.nextHeader());
+        Assert.assertEquals(IpProtocols.ICMPV6, data.nextHeader());
         Assert.assertArrayEquals(IpUtils.parseHexBinary("12345678"), data.rawIcv());
     }
 }

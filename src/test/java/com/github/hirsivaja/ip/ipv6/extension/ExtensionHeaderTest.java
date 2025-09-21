@@ -30,8 +30,8 @@ public class ExtensionHeaderTest {
         byte[] ipv6Bytes = IpUtils.parseHexBinary("6E00000000240001FE80000000000000021562FFFE6AFEF0FF0200000000000000000000000000163A000502000001008F000D990000000104000000FF020000000000000000000000000002");
 
         Icmpv6Message message = new MulticastListenerReportV2Message(List.of(new MulticastAccessRecord((byte) 4, new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000002")), List.of(), new byte[0])));
-        List<ExtensionHeader> extensionHeaders = List.of(new HopByHopExtension(IpProtocol.Type.ICMPV6, (short) 1282, 256, new byte[0]));
-        Ipv6Header header = new Ipv6Header((byte) 0xF8, EcnCodePoint.NO_ECN_NO_ECT, 0, (short) (message.length() + Ipv6Header.calculateExtensionsLength(extensionHeaders)), IpProtocol.Type.HOP_BY_HOP, (byte) 1, new Ipv6Address(IpUtils.parseHexBinary("FE80000000000000021562FFFE6AFEF0")), new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000016")), extensionHeaders);
+        List<ExtensionHeader> extensionHeaders = List.of(new HopByHopExtension(IpProtocols.ICMPV6, (short) 1282, 256, new byte[0]));
+        Ipv6Header header = new Ipv6Header((byte) 0xF8, EcnCodePoint.NO_ECN_NO_ECT, 0, (short) (message.length() + Ipv6Header.calculateExtensionsLength(extensionHeaders)), IpProtocols.HOP_BY_HOP, (byte) 1, new Ipv6Address(IpUtils.parseHexBinary("FE80000000000000021562FFFE6AFEF0")), new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000016")), extensionHeaders);
         IpPayload payload = new Icmpv6Payload(header, message);
 
         Assert.assertEquals(1, ((Ipv6Header) payload.header()).extensionHeaders().size());
@@ -56,10 +56,10 @@ public class ExtensionHeaderTest {
     @Test
     public void fragmentationTest() {
         byte[] fragmentationBytes = IpUtils.parseHexBinary("3B00111112345678");
-        ExtensionHeader header = ExtensionHeader.decode(ByteBuffer.wrap(fragmentationBytes), IpProtocol.Type.FRAGMENTATION);
+        ExtensionHeader header = ExtensionHeader.decode(ByteBuffer.wrap(fragmentationBytes), IpProtocols.IPV6_FRAGMENTATION);
         Assert.assertTrue(header instanceof FragmentationExtension);
         FragmentationExtension fragmentationHeader = (FragmentationExtension) header;
-        Assert.assertEquals(IpProtocol.Type.NO_NEXT, header.nextHeader());
+        Assert.assertEquals(IpProtocols.IPV6_NO_NEXT, header.nextHeader());
         Assert.assertEquals(0x0222, fragmentationHeader.fragmentOffset());
         Assert.assertTrue(fragmentationHeader.isMoreFragments());
         Assert.assertEquals(0x12345678, fragmentationHeader.identification());

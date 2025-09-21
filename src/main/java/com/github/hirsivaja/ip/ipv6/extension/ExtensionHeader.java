@@ -1,17 +1,27 @@
 package com.github.hirsivaja.ip.ipv6.extension;
 
 import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.IpProtocols;
 
 import java.nio.ByteBuffer;
 
 public interface ExtensionHeader {
+
+    static boolean isExtension(IpProtocol nextHeader) {
+        return nextHeader == IpProtocols.HOP_BY_HOP ||
+                nextHeader == IpProtocols.IPV6_ROUTING ||
+                nextHeader == IpProtocols.IPV6_FRAGMENTATION ||
+                nextHeader == IpProtocols.AUTHENTICATION ||
+                nextHeader == IpProtocols.IPV6_DESTINATION;
+    }
+
     static ExtensionHeader decode(ByteBuffer in, IpProtocol nextHeader) {
         return switch (nextHeader) {
-            case IpProtocol.Type.HOP_BY_HOP -> HopByHopExtension.decode(in);
-            case IpProtocol.Type.ROUTING -> RoutingExtension.decode(in);
-            case IpProtocol.Type.FRAGMENTATION -> FragmentationExtension.decode(in);
-            case IpProtocol.Type.AUTHENTICATION -> AuthenticationHeaderExtension.decode(in);
-            case IpProtocol.Type.DESTINATION -> DestinationOptionsExtension.decode(in);
+            case IpProtocols.HOP_BY_HOP -> HopByHopExtension.decode(in);
+            case IpProtocols.IPV6_ROUTING -> RoutingExtension.decode(in);
+            case IpProtocols.IPV6_FRAGMENTATION -> FragmentationExtension.decode(in);
+            case IpProtocols.AUTHENTICATION -> AuthenticationHeaderExtension.decode(in);
+            case IpProtocols.IPV6_DESTINATION -> DestinationOptionsExtension.decode(in);
             default -> throw new IllegalArgumentException("Unexpected extension header type " + nextHeader);
         };
     }

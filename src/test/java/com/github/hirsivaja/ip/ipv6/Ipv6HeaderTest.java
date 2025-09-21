@@ -2,6 +2,7 @@ package com.github.hirsivaja.ip.ipv6;
 
 import com.github.hirsivaja.ip.EcnCodePoint;
 import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
@@ -36,7 +37,7 @@ public class Ipv6HeaderTest {
         byte[] sourceAddress = IpUtils.parseHexBinary("12345452362345234511234214334532");
         byte[] destinationAddress = IpUtils.parseHexBinary("75242334234234234412341232342342");
         short len = 0x1234;
-        IpProtocol nextHeader =  IpProtocol.Type.NO_NEXT;
+        IpProtocol nextHeader =  IpProtocols.IPV6_NO_NEXT;
 
         Ipv6Header ipv6Header = new Ipv6Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, 0, len, nextHeader, (byte) 0, new Ipv6Address(sourceAddress), new Ipv6Address(destinationAddress));
 

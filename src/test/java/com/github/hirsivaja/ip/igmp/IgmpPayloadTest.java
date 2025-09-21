@@ -14,7 +14,7 @@ public class IgmpPayloadTest {
     @Test
     public void membershipReportV0Test() {
         byte[] reqBytes = IpUtils.parseHexBinary("0101048412345678876543211234567890ABCDEF");
-        Ipv4Header header = new Ipv4Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.Type.ICMP, null, null, new byte[0]);
+        Ipv4Header header = new Ipv4Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocols.ICMP, null, null, new byte[0]);
 
         IgmpPayload payload = (IgmpPayload) IgmpPayload.decode(ByteBuffer.wrap(reqBytes), header);
         GenericIgmpV0Message msg = (GenericIgmpV0Message) payload.message();
@@ -30,7 +30,7 @@ public class IgmpPayloadTest {
     @Test
     public void membershipReportV1Test() {
         byte[] reqBytes = IpUtils.parseHexBinary("1200FE04EFFFFFFA");
-        Ipv4Header header = new Ipv4Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocol.Type.ICMP, null, null, new byte[0]);
+        Ipv4Header header = new Ipv4Header((byte) 0, EcnCodePoint.NO_ECN_NO_ECT, (short) 0, (short) 0, null, (short) 0, (byte) 0, IpProtocols.ICMP, null, null, new byte[0]);
 
         IgmpPayload payload = (IgmpPayload) IgmpPayload.decode(ByteBuffer.wrap(reqBytes), header);
         GenericIgmpV1Message msg = (GenericIgmpV1Message) payload.message();

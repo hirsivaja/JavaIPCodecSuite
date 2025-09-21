@@ -83,7 +83,7 @@ public record Ipv6Header(
         Ipv6Address destinationAddress = Ipv6Address.decode(in);
         List<ExtensionHeader> extensionHeaders = new ArrayList<>();
         IpProtocol extensionHeaderId = nextHeader;
-        while(Ipv6Payload.isExtension(extensionHeaderId)) {
+        while(ExtensionHeader.isExtension(extensionHeaderId)) {
             ExtensionHeader extensionHeader = ExtensionHeader.decode(in, extensionHeaderId);
             extensionHeaders.add(extensionHeader);
             extensionHeaderId = extensionHeader.nextHeader();

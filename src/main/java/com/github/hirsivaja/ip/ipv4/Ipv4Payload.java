@@ -2,7 +2,7 @@ package com.github.hirsivaja.ip.ipv4;
 
 import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpPayload;
-import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.igmp.IgmpPayload;
 import com.github.hirsivaja.ip.ipsec.EspPayload;
 import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
@@ -20,13 +20,13 @@ public sealed interface Ipv4Payload extends IpPayload permits
         in.get(payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(payload);
         return switch (header.protocol()) {
-            case IpProtocol.Type.ICMP -> IcmpPayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.IGMP -> IgmpPayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.TCP -> TcpMessagePayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.UDP -> UdpMessagePayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.ESP -> EspPayload.decode(payloadBuffer, header);
-            case IpProtocol.Type.AUTHENTICATION -> AuthenticationPayload.decode(payloadBuffer, header);
+            case IpProtocols.ICMP -> IcmpPayload.decode(payloadBuffer, header);
+            case IpProtocols.IGMP -> IgmpPayload.decode(payloadBuffer, header);
+            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header);
+            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header);
+            case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
+            case IpProtocols.ESP -> EspPayload.decode(payloadBuffer, header);
+            case IpProtocols.AUTHENTICATION -> AuthenticationPayload.decode(payloadBuffer, header);
             default -> GenericIpv4Payload.decode(in, header);
         };
     }

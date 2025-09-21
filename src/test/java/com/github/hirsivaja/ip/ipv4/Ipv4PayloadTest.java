@@ -1,7 +1,7 @@
 package com.github.hirsivaja.ip.ipv4;
 
 import com.github.hirsivaja.ip.IpPayload;
-import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
 import org.junit.Assert;
@@ -30,7 +30,7 @@ public class Ipv4PayloadTest {
         Assert.assertEquals(0, header.flags().toByte());
         Assert.assertEquals(0, header.fragmentOffset());
         Assert.assertEquals((byte) 0x80, header.ttl());
-        Assert.assertEquals(IpProtocol.Type.ENCAPSULATION, header.protocol());
+        Assert.assertEquals(IpProtocols.IPV6_ENCAPSULATION, header.protocol());
         Assert.assertEquals(0x4637D5D3, header.srcIp().toInt());
         Assert.assertEquals(0xC0586301, header.dstIp().toInt());
         Assert.assertEquals(0, header.options().length());
