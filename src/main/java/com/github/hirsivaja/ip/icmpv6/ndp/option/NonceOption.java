@@ -27,8 +27,7 @@ public record NonceOption(ByteArray nonce) implements NdpOption {
     }
 
     public static NonceOption decode(ByteBuffer in){
-        int length = in.get() * 8;
-        byte[] nonce = new byte[length - 2];
+        byte[] nonce = new byte[in.remaining()];
         in.get(nonce);
         return new NonceOption(nonce);
     }

@@ -29,10 +29,9 @@ public record CertificateOption(byte certificateType, ByteArray certificateAndPa
     }
 
     public static CertificateOption decode(ByteBuffer in){
-        int length = in.get() * 8;
         byte certificateType = in.get();
         in.get(); // RESERVED
-        byte[] certificateAndPadding = new byte[length - 4];
+        byte[] certificateAndPadding = new byte[in.remaining()];
         in.get(certificateAndPadding);
         return new CertificateOption(certificateType, certificateAndPadding);
     }

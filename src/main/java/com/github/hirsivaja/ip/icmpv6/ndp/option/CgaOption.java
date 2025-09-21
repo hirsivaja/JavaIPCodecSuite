@@ -36,10 +36,9 @@ public record CgaOption(ByteArray cgaParameters) implements NdpOption {
     }
 
     public static CgaOption decode(ByteBuffer in){
-        int length = in.get() * 8;
         int paddingLength = Byte.toUnsignedInt(in.get());
         in.get(); // RESERVED
-        byte[] cgaParameters = new byte[length - 4 - paddingLength];
+        byte[] cgaParameters = new byte[in.remaining() - paddingLength];
         in.get(cgaParameters);
         byte[] padding = new byte[paddingLength];
         in.get(padding);

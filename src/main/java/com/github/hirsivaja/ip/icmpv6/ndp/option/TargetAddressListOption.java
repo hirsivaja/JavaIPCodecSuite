@@ -10,7 +10,7 @@ public record TargetAddressListOption(List<Ipv6Address> targetAddresses) impleme
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
-        out.put((byte) ((targetAddresses.size() * 2) + 1));
+        out.put((byte) (length() / 8));
         out.putShort((short) 0);
         out.putInt(0);
         targetAddresses.forEach(targetAddress -> targetAddress.encode(out));
@@ -27,11 +27,10 @@ public record TargetAddressListOption(List<Ipv6Address> targetAddresses) impleme
     }
 
     public static TargetAddressListOption decode(ByteBuffer in){
-        byte len = in.get();
         in.getShort(); // RESERVED
         in.getInt(); // RESERVED
         List<Ipv6Address> targetAddresses = new ArrayList<>();
-        for(int i = 0; i < (len - 1) / 2; i++) {
+        while(in.hasRemaining()) {
             targetAddresses.add(Ipv6Address.decode(in));
         }
         return new TargetAddressListOption(targetAddresses);

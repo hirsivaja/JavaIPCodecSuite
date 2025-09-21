@@ -7,7 +7,7 @@ public record MtuOption(int mtu) implements NdpOption {
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
-        out.put((byte) 1);
+        out.put((byte) (length() / 8));
         out.putShort((short) 0);
         out.putInt(mtu);
     }
@@ -23,7 +23,6 @@ public record MtuOption(int mtu) implements NdpOption {
     }
 
     public static MtuOption decode(ByteBuffer in){
-        in.get(); // LEN
         in.getShort(); // RESERVED
         int mtu = in.getInt();
         return new MtuOption(mtu);

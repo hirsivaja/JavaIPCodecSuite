@@ -29,11 +29,10 @@ public record RsaSignatureOption(ByteArray keyHash, ByteArray digitalSignatureAn
     }
 
     public static RsaSignatureOption decode(ByteBuffer in){
-        int length = in.get() * 8;
         in.getShort(); // RESERVED
         byte[] keyHash = new byte[16];
         in.get(keyHash);
-        byte[] digitalSignatureAndPadding = new byte[length - 20];
+        byte[] digitalSignatureAndPadding = new byte[in.remaining()];
         in.get(digitalSignatureAndPadding);
         return new RsaSignatureOption(keyHash, digitalSignatureAndPadding);
     }

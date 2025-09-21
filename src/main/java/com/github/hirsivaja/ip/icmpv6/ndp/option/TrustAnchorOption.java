@@ -36,11 +36,10 @@ public record TrustAnchorOption(byte nameType, ByteArray name) implements NdpOpt
     }
 
     public static TrustAnchorOption decode(ByteBuffer in){
-        int length = in.get() * 8;
         byte nameType = in.get();
         int paddingLength = Byte.toUnsignedInt(in.get());
         in.get(); // RESERVED
-        byte[] name = new byte[length - 4 - paddingLength];
+        byte[] name = new byte[in.remaining() - paddingLength];
         in.get(name);
         byte[] padding = new byte[paddingLength];
         in.get(padding);

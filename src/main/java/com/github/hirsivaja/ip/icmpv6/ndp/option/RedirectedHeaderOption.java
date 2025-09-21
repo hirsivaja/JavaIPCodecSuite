@@ -12,7 +12,7 @@ public record RedirectedHeaderOption(ByteArray headerAndData) implements NdpOpti
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
-        out.put((byte) ((headerAndData.length() + 8) / 8));
+        out.put((byte) (length() / 8));
         out.putShort((short) 0);
         out.putInt(0);
         out.put(headerAndData.array());
@@ -29,10 +29,9 @@ public record RedirectedHeaderOption(ByteArray headerAndData) implements NdpOpti
     }
 
     public static RedirectedHeaderOption decode(ByteBuffer in){
-        byte len = in.get();
         in.getShort(); // RESERVED
         in.getInt(); // RESERVED
-        byte[] headerAndData = new byte[len * 8 - 8];
+        byte[] headerAndData = new byte[in.remaining()];
         in.get(headerAndData);
         return new RedirectedHeaderOption(headerAndData);
     }

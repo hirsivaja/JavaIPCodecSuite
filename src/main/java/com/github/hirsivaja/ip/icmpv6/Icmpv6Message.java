@@ -1,8 +1,10 @@
 package com.github.hirsivaja.ip.icmpv6;
 
+import com.github.hirsivaja.ip.icmpv6.ndp.ExperimentalMobilitySubtype;
 import com.github.hirsivaja.ip.icmpv6.mld.GenericMldMessage;
 import com.github.hirsivaja.ip.icmpv6.mld.MulticastListenerQueryMessage;
 import com.github.hirsivaja.ip.icmpv6.mld.MulticastListenerReportV2Message;
+import com.github.hirsivaja.ip.icmpv6.mpl.MplControlMessage;
 import com.github.hirsivaja.ip.icmpv6.mrd.MulticastRouterAdvertisement;
 import com.github.hirsivaja.ip.icmpv6.mrd.MulticastRouterSolicitation;
 import com.github.hirsivaja.ip.icmpv6.mrd.MulticastRouterTermination;
@@ -48,10 +50,16 @@ public interface Icmpv6Message {
             case Icmpv6Types.MOBILE_PREFIX_ADVERTISEMENT -> MobilePrefixAdvertisement.decode(in);
             case Icmpv6Types.CERTIFICATION_PATH_SOLICITATION -> CertificationPathSolicitation.decode(in);
             case Icmpv6Types.CERTIFICATION_PATH_ADVERTISEMENT -> CertificationPathAdvertisement.decode(in);
+            case Icmpv6Types.EXPERIMENTAL_MOBILE_PROTOCOLS -> ExperimentalMobilitySubtype.decode(in, code);
             case Icmpv6Types.MULTICAST_ROUTER_ADVERTISEMENT -> MulticastRouterAdvertisement.decode(in, code);
             case Icmpv6Types.MULTICAST_ROUTER_SOLICITATION -> MulticastRouterSolicitation.decode();
             case Icmpv6Types.MULTICAST_ROUTER_TERMINATION -> MulticastRouterTermination.decode();
+            case Icmpv6Types.FMIPV6_MESSAGES -> Fmipv6Message.decode(in, code);
             case Icmpv6Types.RPL -> RplControlMessage.decode(in, code);
+            case Icmpv6Types.ILNPV6_LOCATOR_UPDATE_MESSAGE -> Fmipv6Message.decode(in, code);
+            case Icmpv6Types.DUPLICATE_ADDRESS_REQUEST -> Fmipv6Message.decode(in, code);
+            case Icmpv6Types.DUPLICATE_ADDRESS_CONFIRMATION -> Fmipv6Message.decode(in, code);
+            case Icmpv6Types.MPL_CONTROL_MESSAGE -> MplControlMessage.decode(in, code);
             case Icmpv6Types.EXTENDED_ECHO_REQUEST -> ExtendedEchoRequest.decode(in);
             case Icmpv6Types.EXTENDED_ECHO_REPLY -> ExtendedEchoReply.decode(in, code);
             default -> GenericIcmpv6Message.decode(in, type, code);

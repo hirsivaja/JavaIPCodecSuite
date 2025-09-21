@@ -12,7 +12,7 @@ public record SourceLinkLayerOption(ByteArray linkLayerAddress) implements NdpOp
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
-        out.put((byte) ((linkLayerAddress.length() + 2) / 8));
+        out.put((byte) (length() / 8));
         out.put(linkLayerAddress.array());
     }
 
@@ -27,8 +27,7 @@ public record SourceLinkLayerOption(ByteArray linkLayerAddress) implements NdpOp
     }
 
     public static SourceLinkLayerOption decode(ByteBuffer in){
-        byte len = in.get();
-        byte[] linkLayerAddress = new byte[len * 8 - 2];
+        byte[] linkLayerAddress = new byte[in.remaining()];
         in.get(linkLayerAddress);
         return new SourceLinkLayerOption(linkLayerAddress);
     }

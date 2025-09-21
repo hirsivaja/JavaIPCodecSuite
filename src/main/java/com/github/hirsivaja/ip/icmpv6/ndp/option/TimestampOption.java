@@ -3,12 +3,11 @@ package com.github.hirsivaja.ip.icmpv6.ndp.option;
 import java.nio.ByteBuffer;
 
 public record TimestampOption(long timestamp) implements NdpOption {
-    private static final int LEN = 2;
 
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
-        out.put((byte) LEN);
+        out.put((byte) (length() / 8));
         out.putShort((short) 0);
         out.putInt(0);
         out.putLong(timestamp);
@@ -25,10 +24,6 @@ public record TimestampOption(long timestamp) implements NdpOption {
     }
 
     public static TimestampOption decode(ByteBuffer in){
-        byte len = in.get();
-        if(len != LEN) {
-            throw new IllegalArgumentException();
-        }
         in.getShort(); // RESERVED
         in.getInt(); // RESERVED
         long timestamp = in.getLong();

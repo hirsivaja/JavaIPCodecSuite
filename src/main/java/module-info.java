@@ -7,6 +7,7 @@ open module com.github.hirsivaja.jipcs {
     exports com.github.hirsivaja.ip.icmp;
     exports com.github.hirsivaja.ip.icmpv6;
     exports com.github.hirsivaja.ip.icmpv6.mld;
+    exports com.github.hirsivaja.ip.icmpv6.mpl;
     exports com.github.hirsivaja.ip.icmpv6.mrd;
     exports com.github.hirsivaja.ip.icmpv6.ndp;
     exports com.github.hirsivaja.ip.icmpv6.ndp.option;

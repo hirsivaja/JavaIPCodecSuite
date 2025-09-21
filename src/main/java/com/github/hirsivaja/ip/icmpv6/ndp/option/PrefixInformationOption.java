@@ -14,7 +14,7 @@ public record PrefixInformationOption(
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
-        out.put((byte) 4);
+        out.put((byte) (length() / 8));
         out.put(prefixLen);
         out.put(flags);
         out.putInt(validLifetime);
@@ -34,7 +34,6 @@ public record PrefixInformationOption(
     }
 
     public static PrefixInformationOption decode(ByteBuffer in){
-        in.get(); // Length
         byte prefixLen = in.get();
         byte flags = in.get();
         int validLifetime = in.getInt();
