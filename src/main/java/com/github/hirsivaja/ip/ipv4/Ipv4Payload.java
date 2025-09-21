@@ -15,15 +15,19 @@ public sealed interface Ipv4Payload extends IpPayload permits
         IcmpPayload, IgmpPayload, TcpMessagePayload, UdpMessagePayload, EncapsulationPayload, EspPayload,
         AuthenticationPayload, Ipv4Payload.GenericIpv4Payload {
     static IpPayload decode(ByteBuffer in) {
-        Ipv4Header header = Ipv4Header.decode(in);
+        return decode(in, true);
+    }
+
+    static IpPayload decode(ByteBuffer in, boolean ensureChecksum) {
+        Ipv4Header header = Ipv4Header.decode(in, ensureChecksum);
         byte[] payload = new byte[header.payloadLength()];
         in.get(payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(payload);
         return switch (header.protocol()) {
-            case IpProtocols.ICMP -> IcmpPayload.decode(payloadBuffer, header);
-            case IpProtocols.IGMP -> IgmpPayload.decode(payloadBuffer, header);
-            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header);
-            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header);
+            case IpProtocols.ICMP -> IcmpPayload.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.IGMP -> IgmpPayload.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
             case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
             case IpProtocols.ESP -> EspPayload.decode(payloadBuffer, header);
             case IpProtocols.AUTHENTICATION -> AuthenticationPayload.decode(payloadBuffer, header);

@@ -17,15 +17,19 @@ public sealed interface Ipv6Payload extends IpPayload permits
     int NEXT_HEADER_INDEX = 6;
 
     static IpPayload decode(ByteBuffer in) {
+        return decode(in, true);
+    }
+
+    static IpPayload decode(ByteBuffer in, boolean ensureChecksum) {
         Ipv6Header header = Ipv6Header.decode(in);
         byte[] ipv6Payload = new byte[header.payloadOnlyLength()];
         in.get(ipv6Payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(ipv6Payload);
         return switch (header.lastNextHeader()) {
-            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header);
-            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header);
+            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
             case IpProtocols.ESP -> EspPayload.decode(payloadBuffer, header);
-            case IpProtocols.ICMPV6 -> Icmpv6Payload.decode(payloadBuffer, header);
+            case IpProtocols.ICMPV6 -> Icmpv6Payload.decode(payloadBuffer, header, ensureChecksum);
             case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
             default -> GenericIpv6Payload.decode(in, header);
         };

@@ -54,10 +54,18 @@ public record UdpMessagePayload(
     }
 
     public static IpPayload decode(ByteBuffer in, IpHeader header) {
+        return decode(in, header, true);
+    }
+
+    public static IpPayload decode(ByteBuffer in, IpHeader header, boolean ensureChecksum) {
         UdpHeader udpHeader = UdpHeader.decode(in);
         byte[] updPayload = new byte[udpHeader.dataLength() - UdpHeader.UDP_HEADER_LEN];
         in.get(updPayload);
-        IpUtils.ensureInternetChecksum(generateChecksumData(header, udpHeader, updPayload));
+        if(ensureChecksum) {
+            IpUtils.ensureInternetChecksum(generateChecksumData(header, udpHeader, updPayload));
+        } else {
+            IpUtils.verifyInternetChecksum(generateChecksumData(header, udpHeader, updPayload));
+        }
         return new UdpMessagePayload(header, udpHeader, updPayload);
     }
 

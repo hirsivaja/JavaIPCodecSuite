@@ -42,12 +42,16 @@ public sealed interface IpPayload extends EthernetPayload permits Ipv4Payload, I
     }
 
     static IpPayload decode(ByteBuffer in) {
+        return decode(in, true);
+    }
+
+    static IpPayload decode(ByteBuffer in, boolean ensureChecksum) {
         in.mark();
         byte version = (byte) (in.get() >>> Ipv4Header.VERSION_SHIFT);
         in.reset();
         return switch (version) {
-            case Ipv4Header.VERSION -> Ipv4Payload.decode(in);
-            case Ipv6Header.VERSION -> Ipv6Payload.decode(in);
+            case Ipv4Header.VERSION -> Ipv4Payload.decode(in, ensureChecksum);
+            case Ipv6Header.VERSION -> Ipv6Payload.decode(in, ensureChecksum);
             default -> throw new IllegalArgumentException("Not an IP payload");
         };
     }

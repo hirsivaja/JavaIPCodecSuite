@@ -52,10 +52,18 @@ public record TcpMessagePayload(
     }
 
     public static IpPayload decode(ByteBuffer in, IpHeader header) {
+        return decode(in, header, true);
+    }
+
+    public static IpPayload decode(ByteBuffer in, IpHeader header, boolean ensureChecksum) {
         TcpHeader tcpHeader = TcpHeader.decode(in);
         byte[] tcpPayload = new byte[in.remaining()];
         in.get(tcpPayload);
-        IpUtils.ensureInternetChecksum(generateChecksumData(header, tcpHeader, tcpPayload));
+        if(ensureChecksum) {
+            IpUtils.ensureInternetChecksum(generateChecksumData(header, tcpHeader, tcpPayload));
+        } else {
+            IpUtils.verifyInternetChecksum(generateChecksumData(header, tcpHeader, tcpPayload));
+        }
         return new TcpMessagePayload(header, tcpHeader, tcpPayload);
     }
 

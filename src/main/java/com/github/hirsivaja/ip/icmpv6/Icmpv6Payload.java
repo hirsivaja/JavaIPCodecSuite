@@ -35,11 +35,19 @@ public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements
     }
 
     public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header) {
+        return decode(in, header, true);
+    }
+
+    public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header, boolean ensureChecksum) {
         Icmpv6Type type = Icmpv6Type.fromType(in.get());
         Icmpv6Code code = Icmpv6Code.fromType(type, in.get());
         short checksum = in.getShort();
         Icmpv6Message message = Icmpv6Message.decode(in, type, code);
-        IpUtils.ensureInternetChecksum(generateChecksumData(header, message, checksum));
+        if(ensureChecksum) {
+            IpUtils.ensureInternetChecksum(generateChecksumData(header, message, checksum));
+        } else {
+            IpUtils.verifyInternetChecksum(generateChecksumData(header, message, checksum));
+        }
         return new Icmpv6Payload(header, message);
     }
 

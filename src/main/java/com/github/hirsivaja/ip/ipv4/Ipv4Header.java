@@ -107,6 +107,10 @@ public record Ipv4Header(
     }
 
     public static Ipv4Header decode(ByteBuffer in) {
+        return decode(in, true);
+    }
+
+    public static Ipv4Header decode(ByteBuffer in, boolean ensureChecksum) {
         in.mark();
         byte version = in.get();
         byte ihl = (byte) (version & 0x0F);
@@ -130,7 +134,11 @@ public record Ipv4Header(
         in.reset();
         byte[] headerBytes = new byte[HEADER_LEN];
         in.get(headerBytes);
-        IpUtils.ensureInternetChecksum(headerBytes);
+        if(ensureChecksum) {
+            IpUtils.ensureInternetChecksum(headerBytes);
+        } else {
+            IpUtils.verifyInternetChecksum(headerBytes);
+        }
         byte[] options = new byte[(ihl - 5) * 4];
         in.get(options);
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,

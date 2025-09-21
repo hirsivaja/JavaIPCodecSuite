@@ -34,11 +34,19 @@ public record IgmpPayload(Ipv4Header header, IgmpMessage message) implements Ipv
     }
 
     public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header) {
+        return decode(in, header, true);
+    }
+
+    public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header, boolean ensureChecksum) {
         IgmpType type = IgmpType.fromType(in.get());
         byte code = in.get();
         short checksum = in.getShort();
         IgmpMessage message = IgmpMessage.decode(in, type, code);
-        IpUtils.ensureInternetChecksum(generateChecksumData(message, checksum));
+        if(ensureChecksum) {
+            IpUtils.ensureInternetChecksum(generateChecksumData(message, checksum));
+        } else {
+            IpUtils.verifyInternetChecksum(generateChecksumData(message, checksum));
+        }
         return new IgmpPayload(header, message);
     }
 }
