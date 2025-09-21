@@ -8,6 +8,9 @@ import com.github.hirsivaja.ip.icmpv6.mld.MulticastListenerReportV2Message;
 import com.github.hirsivaja.ip.ipv6.Ipv6Address;
 import com.github.hirsivaja.ip.ipv6.Ipv6Header;
 import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
+import com.github.hirsivaja.ip.ipv6.extension.destination.DestinationOptionType;
+import com.github.hirsivaja.ip.ipv6.extension.destination.GenericDestinationOption;
+import com.github.hirsivaja.ip.ipv6.extension.mobility.MobilityMessageType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +33,7 @@ public class ExtensionHeaderTest {
         byte[] ipv6Bytes = IpUtils.parseHexBinary("6E00000000240001FE80000000000000021562FFFE6AFEF0FF0200000000000000000000000000163A000502000001008F000D990000000104000000FF020000000000000000000000000002");
 
         Icmpv6Message message = new MulticastListenerReportV2Message(List.of(new MulticastAccessRecord((byte) 4, new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000002")), List.of(), new byte[0])));
-        List<ExtensionHeader> extensionHeaders = List.of(new HopByHopExtension(IpProtocols.ICMPV6, (short) 1282, 256, new byte[0]));
+        List<ExtensionHeader> extensionHeaders = List.of(new HopByHopExtension(IpProtocols.ICMPV6, List.of(new GenericDestinationOption(DestinationOptionType.ROUTER_ALERT, new byte[]{0, 0}), new GenericDestinationOption(DestinationOptionType.PAD_N, new byte[]{}))));
         Ipv6Header header = new Ipv6Header((byte) 0xF8, EcnCodePoint.NO_ECN_NO_ECT, 0, (short) (message.length() + Ipv6Header.calculateExtensionsLength(extensionHeaders)), IpProtocols.HOP_BY_HOP, (byte) 1, new Ipv6Address(IpUtils.parseHexBinary("FE80000000000000021562FFFE6AFEF0")), new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000016")), extensionHeaders);
         IpPayload payload = new Icmpv6Payload(header, message);
 
@@ -65,5 +68,31 @@ public class ExtensionHeaderTest {
         Assert.assertEquals(0x12345678, fragmentationHeader.identification());
 
         Assert.assertArrayEquals(fragmentationBytes, TestUtils.toBytes(header));
+    }
+
+    @Test
+    public void mobilityTest() {
+        byte[] mobilityBytes = IpUtils.parseHexBinary("3B010100123400000123456789ABCDEF");
+        ExtensionHeader header = ExtensionHeader.decode(ByteBuffer.wrap(mobilityBytes), IpProtocols.MOBILITY_HEADER);
+
+        Assert.assertTrue(header instanceof MobilityHeaderExtension);
+        MobilityHeaderExtension mobilityHeader = (MobilityHeaderExtension) header;
+        Assert.assertEquals(IpProtocols.IPV6_NO_NEXT, header.nextHeader());
+        Assert.assertEquals(MobilityMessageType.HOME_TEST_INIT, mobilityHeader.mobilityMessage().type());
+
+        Assert.assertArrayEquals(mobilityBytes, TestUtils.toBytes(header));
+    }
+
+    @Test
+    public void mobilityBindingUpdateTest() {
+        byte[] mobilityBytes = IpUtils.parseHexBinary("3B010500123412344321567800000000");
+        ExtensionHeader header = ExtensionHeader.decode(ByteBuffer.wrap(mobilityBytes), IpProtocols.MOBILITY_HEADER);
+
+        Assert.assertTrue(header instanceof MobilityHeaderExtension);
+        MobilityHeaderExtension mobilityHeader = (MobilityHeaderExtension) header;
+        Assert.assertEquals(IpProtocols.IPV6_NO_NEXT, header.nextHeader());
+        Assert.assertEquals(MobilityMessageType.BINDING_UPDATE, mobilityHeader.mobilityMessage().type());
+
+        Assert.assertArrayEquals(mobilityBytes, TestUtils.toBytes(header));
     }
 }

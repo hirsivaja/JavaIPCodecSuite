@@ -125,7 +125,7 @@ public enum IpProtocols implements IpProtocol {
     SMP((byte) 0x79),
     SM((byte) 0x7A),
     PTP((byte) 0x7B),
-    IS_IS_OVER_IPv4((byte) 0x7C),
+    IS_IS_OVER_IPV4((byte) 0x7C),
     FIRE((byte) 0x7D),
     CRTP((byte) 0x7E),
     CRUDP((byte) 0x7F),

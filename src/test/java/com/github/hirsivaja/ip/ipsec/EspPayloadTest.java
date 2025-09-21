@@ -1,9 +1,9 @@
 package com.github.hirsivaja.ip.ipsec;
 
 import com.github.hirsivaja.ip.IpPayload;
-import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
+import com.github.hirsivaja.ip.ipv6.Ipv6Header;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,10 +17,11 @@ public class EspPayloadTest {
 
         IpPayload payload = IpPayload.decode(ByteBuffer.wrap(espBytes));
 
-        EspPayload esp = (EspPayload) payload;
-        Assert.assertEquals(0x3D713155, esp.spi());
-        Assert.assertEquals(0x00000003, esp.seqNumber());
-        Assert.assertEquals(144, esp.data().length());
+        Ipv6Header header = (Ipv6Header) payload.header();
+        EspHeader espHeader = (EspHeader) header.extensionHeaders().getFirst();
+        Assert.assertEquals(0x3D713155, espHeader.spi());
+        Assert.assertEquals(0x00000003, espHeader.seqNumber());
+        Assert.assertEquals(144, espHeader.data().length());
         Assert.assertArrayEquals(espBytes, TestUtils.toBytes(payload));
     }
 
@@ -30,15 +31,11 @@ public class EspPayloadTest {
 
         IpPayload payload = IpPayload.decode(ByteBuffer.wrap(espBytes));
 
-        EspPayload esp = (EspPayload) payload;
-        Assert.assertEquals(0x88772211, esp.spi());
-        Assert.assertEquals(0x00000123, esp.seqNumber());
-        Assert.assertEquals(144, esp.data().length());
+        Ipv6Header header = (Ipv6Header) payload.header();
+        EspHeader espHeader = (EspHeader) header.extensionHeaders().getFirst();
+        Assert.assertEquals(0x88772211, espHeader.spi());
+        Assert.assertEquals(0x00000123, espHeader.seqNumber());
+        Assert.assertEquals(144, espHeader.data().length());
         Assert.assertArrayEquals(espBytes, TestUtils.toBytes(payload));
-
-        EspData data = esp.asEspData(4);
-        Assert.assertEquals(120, data.encryptedData().length());
-        Assert.assertEquals(IpProtocols.ICMPV6, data.nextHeader());
-        Assert.assertArrayEquals(IpUtils.parseHexBinary("12345678"), data.rawIcv());
     }
 }

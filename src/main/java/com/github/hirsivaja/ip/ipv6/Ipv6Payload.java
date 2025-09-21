@@ -5,14 +5,13 @@ import com.github.hirsivaja.ip.IpPayload;
 import com.github.hirsivaja.ip.IpProtocol;
 import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
-import com.github.hirsivaja.ip.ipsec.EspPayload;
 import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
 import com.github.hirsivaja.ip.udp.UdpMessagePayload;
 
 import java.nio.ByteBuffer;
 
 public sealed interface Ipv6Payload extends IpPayload permits
-        TcpMessagePayload, UdpMessagePayload, EspPayload, Icmpv6Payload, EncapsulationPayload,
+        TcpMessagePayload, UdpMessagePayload, Icmpv6Payload, EncapsulationPayload,
         Ipv6Payload.GenericIpv6Payload {
     int NEXT_HEADER_INDEX = 6;
 
@@ -21,14 +20,13 @@ public sealed interface Ipv6Payload extends IpPayload permits
     }
 
     static IpPayload decode(ByteBuffer in, boolean ensureChecksum) {
-        Ipv6Header header = Ipv6Header.decode(in);
+        Ipv6Header header = Ipv6Header.decode(in, ensureChecksum);
         byte[] ipv6Payload = new byte[header.payloadOnlyLength()];
         in.get(ipv6Payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(ipv6Payload);
         return switch (header.lastNextHeader()) {
             case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
             case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
-            case IpProtocols.ESP -> EspPayload.decode(payloadBuffer, header);
             case IpProtocols.ICMPV6 -> Icmpv6Payload.decode(payloadBuffer, header, ensureChecksum);
             case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
             default -> GenericIpv6Payload.decode(in, header);

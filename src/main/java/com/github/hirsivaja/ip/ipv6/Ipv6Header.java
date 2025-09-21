@@ -67,6 +67,10 @@ public record Ipv6Header(
     }
 
     public static Ipv6Header decode(ByteBuffer in){
+        return decode(in, true);
+    }
+
+    public static Ipv6Header decode(ByteBuffer in, boolean ensureChecksum){
         int start = in.getInt();
         byte version = (byte) (start >>> VERSION_SHIFT);
         if(version != VERSION){
@@ -84,7 +88,7 @@ public record Ipv6Header(
         List<ExtensionHeader> extensionHeaders = new ArrayList<>();
         IpProtocol extensionHeaderId = nextHeader;
         while(ExtensionHeader.isExtension(extensionHeaderId)) {
-            ExtensionHeader extensionHeader = ExtensionHeader.decode(in, extensionHeaderId);
+            ExtensionHeader extensionHeader = ExtensionHeader.decode(in, extensionHeaderId, ensureChecksum);
             extensionHeaders.add(extensionHeader);
             extensionHeaderId = extensionHeader.nextHeader();
         }

@@ -1,41 +1,38 @@
 package com.github.hirsivaja.ip.ipv6.extension;
 
-import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpProtocol;
+import com.github.hirsivaja.ip.ipv6.extension.destination.DestinationOption;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public record DestinationOptionsExtension(
         IpProtocol nextHeader,
-        short options,
-        int padding,
-        ByteArray extraOptions) implements ExtensionHeader {
-
-    public DestinationOptionsExtension(IpProtocol nextHeader, short options, int padding, byte[] extraOptions) {
-        this(nextHeader, options, padding, new ByteArray(extraOptions));
-    }
+        List<DestinationOption> options) implements ExtensionHeader {
 
     @Override
     public void encode(ByteBuffer out) {
         out.put(nextHeader.type());
-        out.put((byte) extraOptions.length());
-        out.putShort(options);
-        out.putInt(padding);
-        out.put(extraOptions.array());
+        out.put((byte) (length() / 8 - 1));
+        options.forEach(option -> option.encode(out));
     }
 
     @Override
     public int length() {
-        return 8 + extraOptions.length();
+        return 2 + options.stream().mapToInt(DestinationOption::length).sum();
     }
 
     public static ExtensionHeader decode(ByteBuffer in) {
         IpProtocol nextHeader = IpProtocol.fromType(in.get());
-        byte extensionLen = in.get();
-        short options = in.getShort();
-        int padding = in.getInt();
-        byte[] extraOptions = new byte[extensionLen];
-        in.get(extraOptions);
-        return new DestinationOptionsExtension(nextHeader, options, padding, extraOptions);
+        int extensionLen = Byte.toUnsignedInt(in.get()) * 8 + 8;
+        int currentLen = 2;
+        List<DestinationOption> options = new ArrayList<>();
+        while(currentLen < extensionLen) {
+            DestinationOption option = DestinationOption.decode(in);
+            options.add(option);
+            currentLen += option.length();
+        }
+        return new DestinationOptionsExtension(nextHeader, options);
     }
 }
