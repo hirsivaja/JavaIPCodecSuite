@@ -25,6 +25,22 @@ public interface DestinationOption {
         ByteBuffer optionBuffer = ByteBuffer.wrap(optionBytes);
         return switch (optionType) {
             case PAD_N -> PadN.decode(optionBuffer);
+            case JUMBO_PAYLOAD -> JumboPayload.decode(optionBuffer);
+            case RPL, RPL_DISCARD -> Rpl.decode(optionBuffer);
+            case TUNNEL_ENCAPSULATION_LIMIT -> TunnelEncapsulationLimit.decode(optionBuffer);
+            case ROUTER_ALERT -> RouterAlert.decode(optionBuffer);
+            case QUICK_START -> QuickStart.decode(optionBuffer);
+            case CALIPSO -> Calipso.decode(optionBuffer);
+            case SMF_DPD -> SmfDpd.decode(optionBuffer);
+            case HOME_ADDRESS -> HomeAddress.decode(optionBuffer);
+            case ILNP_NONCE -> IlnpNonce.decode(optionBuffer);
+            case LINE_IDENTIFICATION -> LineIdentificationOption.decode(optionBuffer);
+            case MPL, MPL_DEPRECATED -> Mpl.decode(optionBuffer);
+            case IP_DFF -> IpDff.decode(optionBuffer);
+            case PDM -> Pdm.decode(optionBuffer);
+            case MINIMUM_PATH_MTU -> MinimumPathMtu.decode(optionBuffer);
+            case IOAM, IOAM_CHANGEABLE -> Ioam.decode(optionBuffer);
+            case ALTMARK -> AltMark.decode(optionBuffer);
             default -> GenericDestinationOption.decode(optionBuffer, optionType);
         };
     }

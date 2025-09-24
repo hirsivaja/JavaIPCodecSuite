@@ -21,6 +21,10 @@ public interface MobilityOption {
         ByteBuffer optionBuffer = ByteBuffer.wrap(optionBytes);
         return switch (optionType) {
             case PAD_N -> PadN.decode(optionBuffer);
+            case BINDING_REFRESH_ADVICE -> BindingRefreshAdvice.decode(in);
+            case ALTERNATE_CARE_OF_ADDRESS -> AlternateCareOfAddress.decode(in);
+            case NONCE_INDICES -> NonceIndices.decode(in);
+            case BINDING_AUTHORIZATION_DATA -> BindingAuthorizationData.decode(in);
             default -> GenericMobilityOption.decode(optionBuffer, optionType);
         };
     }

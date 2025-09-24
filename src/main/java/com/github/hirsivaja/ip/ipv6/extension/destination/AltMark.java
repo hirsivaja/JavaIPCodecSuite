@@ -2,28 +2,27 @@ package com.github.hirsivaja.ip.ipv6.extension.destination;
 
 import java.nio.ByteBuffer;
 
-public record PadN(int size) implements DestinationOption {
+public record AltMark(int flowMonIdAndFlags) implements DestinationOption {
 
     @Override
     public void encode(ByteBuffer out) {
         out.put(optionType().type());
         out.put((byte) (length() - 2));
-        out.put(new byte[size]);
+        out.putInt(flowMonIdAndFlags);
     }
 
     @Override
     public int length() {
-        return 2 + size;
+        return 6;
     }
 
     @Override
     public DestinationOptionType optionType() {
-        return DestinationOptionType.PAD_N;
+        return DestinationOptionType.ALTMARK;
     }
 
     public static DestinationOption decode(ByteBuffer in) {
-        int size = in.remaining();
-        in.get(new byte[size]);
-        return new PadN(size);
+        int flowMonIdAndFlags = in.getInt();
+        return new AltMark(flowMonIdAndFlags);
     }
 }
