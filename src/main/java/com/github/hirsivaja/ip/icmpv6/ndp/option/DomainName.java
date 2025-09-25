@@ -8,9 +8,9 @@ import java.util.List;
 public record DomainName(List<ByteArray> labels) {
 
     public void encode(ByteBuffer out) {
-        for(int i = 0; i < labels.size(); i++) {
-            out.put((byte) labels.get(i).length());
-            out.put(labels.get(i).array());
+        for (ByteArray label : labels) {
+            out.put((byte) label.length());
+            out.put(label.array());
         }
         out.put((byte) 0);
     }
@@ -21,7 +21,7 @@ public record DomainName(List<ByteArray> labels) {
 
     public static DomainName decode(ByteBuffer in) {
         List<ByteArray> labels = new ArrayList<>();
-        int len = 0;
+        int len;
         do {
             len = Byte.toUnsignedInt(in.get());
             if(len > 0) {

@@ -3,10 +3,10 @@ package com.github.hirsivaja.ip.ipv6.extension.destination;
 import java.nio.ByteBuffer;
 
 public interface DestinationOption {
-    static byte SKIP = 0;
-    static byte DISCARD = 1;
-    static byte DISCARD_AND_SEND_ERROR = 2;
-    static byte DISCARD_AND_SEND_ERROR_IF_NOT_MULTICAST = 3;
+    byte SKIP = 0;
+    byte DISCARD = 1;
+    byte DISCARD_AND_SEND_ERROR = 2;
+    byte DISCARD_AND_SEND_ERROR_IF_NOT_MULTICAST = 3;
 
     void encode(ByteBuffer out);
 

@@ -22,7 +22,15 @@ public enum DestinationOptionType {
     MINIMUM_PATH_MTU((byte) 0x10, true, DestinationOption.SKIP), // 0x30
     IOAM((byte) 0x11, false, DestinationOption.SKIP), // 0x11
     IOAM_CHANGEABLE((byte) 0x11, true, DestinationOption.SKIP), // 0x31
-    ALTMARK((byte) 0x12, false, DestinationOption.SKIP); // 0x12
+    ALTMARK((byte) 0x12, false, DestinationOption.SKIP), // 0x31
+    EXPERIMENT_1((byte) 0x1E, false, DestinationOption.SKIP), // 0x1E
+    EXPERIMENT_2((byte) 0x1E, true, DestinationOption.SKIP), // 0x3E
+    EXPERIMENT_3((byte) 0x1E, false, DestinationOption.DISCARD), // 0x5E
+    EXPERIMENT_4((byte) 0x1E, true, DestinationOption.DISCARD), // 0x7E
+    EXPERIMENT_5((byte) 0x1E, false, DestinationOption.DISCARD_AND_SEND_ERROR), // 0x9E
+    EXPERIMENT_6((byte) 0x1E, true, DestinationOption.DISCARD_AND_SEND_ERROR), // 0xBE
+    EXPERIMENT_7((byte) 0x1E, false, DestinationOption.DISCARD_AND_SEND_ERROR_IF_NOT_MULTICAST), // 0xDE
+    EXPERIMENT_8((byte) 0x1E, true, DestinationOption.DISCARD_AND_SEND_ERROR_IF_NOT_MULTICAST); // 0xFE
 
     private final byte rest;
     private final boolean changeable;

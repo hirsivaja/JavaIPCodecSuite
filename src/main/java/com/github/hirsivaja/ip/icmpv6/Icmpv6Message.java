@@ -1,6 +1,5 @@
 package com.github.hirsivaja.ip.icmpv6;
 
-import com.github.hirsivaja.ip.icmpv6.ndp.ExperimentalMobilitySubtype;
 import com.github.hirsivaja.ip.icmpv6.mld.GenericMldMessage;
 import com.github.hirsivaja.ip.icmpv6.mld.MulticastListenerQueryMessage;
 import com.github.hirsivaja.ip.icmpv6.mld.MulticastListenerReportV2Message;

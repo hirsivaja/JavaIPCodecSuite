@@ -5,11 +5,13 @@ import com.github.hirsivaja.ip.ipv6.extension.mobility.MobilityMessage;
 import com.github.hirsivaja.ip.ipv6.extension.mobility.MobilityMessageType;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 public record MobilityHeaderExtension(
         IpProtocol nextHeader,
         short checksum,
         MobilityMessage mobilityMessage) implements ExtensionHeader {
+    private static final Logger logger = Logger.getLogger("MobilityHeaderExtension");
 
     @Override
     public void encode(ByteBuffer out) {
@@ -36,9 +38,9 @@ public record MobilityHeaderExtension(
         in.get(); // RESERVED
         short checksum = in.getShort();
         if(ensureChecksum) {
-            // TODO
+            logger.warning("Checksum verification for MobilityHeaderExtension is not implemented!");
         } else {
-            // TODO
+            logger.finer("Skipped checksum verification for MobilityHeaderExtension!");
         }
         byte[] messageBytes = new byte[headerLen + 2];
         in.get(messageBytes);

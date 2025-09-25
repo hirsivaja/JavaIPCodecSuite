@@ -10,7 +10,15 @@ public enum RplOptionType {
     TRANSIT_INFORMATION((byte) 0x06),
     SOLICITED_INFORMATION((byte) 0x07),
     PREFIX_INFORMATION((byte) 0x08),
-    RPL_TARGET_DESCRIPTOR((byte) 0x09);
+    RPL_TARGET_DESCRIPTOR((byte) 0x09),
+    P2P_ROUTE_DISCOVERY((byte) 0x0A),
+    RREQ((byte) 0x0B),
+    RREP((byte) 0x0C),
+    ART((byte) 0x0D),
+    RNFD((byte) 0x0E),
+    STATEFUL_VIO((byte) 0x0F),
+    SOURCE_ROUTED_VIO((byte) 0x10),
+    SIBLING_INFORMATION((byte) 0x11);
 
     private final byte type;
 

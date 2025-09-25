@@ -12,7 +12,7 @@ public record Timestamp(byte pointer, byte flags, List<Integer> ipOrTimestamp) i
         out.put((byte) (length()));
         out.put(pointer);
         out.put(flags);
-        ipOrTimestamp.forEach(i -> out.putInt(i));
+        ipOrTimestamp.forEach(out::putInt);
     }
 
     @Override

@@ -3,10 +3,10 @@ package com.github.hirsivaja.ip.ipv4.option;
 import java.nio.ByteBuffer;
 
 public interface IpOption {
-    static byte CONTROL = 0;
-    static byte RESERVED_1 = 1;
-    static byte DEBUG = 2;
-    static byte RESERVED_2 = 3;
+    byte CONTROL = 0;
+    byte RESERVED_1 = 1;
+    byte DEBUG = 2;
+    byte RESERVED_2 = 3;
 
     void encode(ByteBuffer out);
 

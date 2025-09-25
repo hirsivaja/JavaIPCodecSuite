@@ -4,6 +4,7 @@ import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.IpProtocol;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 public record HipExtension(
         IpProtocol nextHeader,
@@ -14,6 +15,7 @@ public record HipExtension(
         ByteArray senderHit,
         ByteArray receiverHit,
         ByteArray hipParameters) implements ExtensionHeader {
+    private static final Logger logger = Logger.getLogger("HipExtension");
 
     public HipExtension(IpProtocol nextHeader, byte packetType, byte flags, short checksum, short controls, byte[] senderHit, byte[] receiverHit, byte[] hipParameters) {
         this(nextHeader, packetType, flags, checksum, controls, new ByteArray(senderHit), new ByteArray(receiverHit), new ByteArray(hipParameters));
@@ -48,9 +50,9 @@ public record HipExtension(
         byte flags = in.get();
         short checksum = in.getShort();
         if(ensureChecksum) {
-            // TODO
+            logger.warning("Checksum verification for HipExtension is not implemented!");
         } else {
-            // TODO
+            logger.finer("Skipped checksum verification for HipExtension!");
         }
         short controls = in.getShort();
         byte[] senderHit = new byte[16];

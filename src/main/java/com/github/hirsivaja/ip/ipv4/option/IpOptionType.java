@@ -26,7 +26,11 @@ public enum IpOptionType {
     // 0x16 is unassigned
     DYNAMIC_PACKET_STATE((byte) 0x17, IpOption.CONTROL, true),
     UPSTREAM_MULTICAST_PACKET((byte) 0x18, IpOption.CONTROL, true),
-    QUICK_START((byte) 0x19, IpOption.CONTROL, false);
+    QUICK_START((byte) 0x19, IpOption.CONTROL, false),
+    EXPERIMENT_1((byte) 0x1E, IpOption.CONTROL, false),
+    EXPERIMENT_2((byte) 0x1E, IpOption.DEBUG, false),
+    EXPERIMENT_3((byte) 0x1E, IpOption.CONTROL, true),
+    EXPERIMENT_4((byte) 0x1E, IpOption.DEBUG, true);
 
     private final byte number;
     private final byte optionClass;
