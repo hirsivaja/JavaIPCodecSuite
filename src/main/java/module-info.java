@@ -19,6 +19,7 @@ open module com.github.hirsivaja.jipcs {
     exports com.github.hirsivaja.ip.igmp;
     exports com.github.hirsivaja.ip.ipsec;
     exports com.github.hirsivaja.ip.ipv4;
+    exports com.github.hirsivaja.ip.ipv4.option;
     exports com.github.hirsivaja.ip.ipv6;
     exports com.github.hirsivaja.ip.ipv6.extension;
     exports com.github.hirsivaja.ip.ipv6.extension.destination;

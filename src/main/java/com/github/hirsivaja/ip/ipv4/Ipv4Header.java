@@ -1,12 +1,14 @@
 package com.github.hirsivaja.ip.ipv4;
 
-import com.github.hirsivaja.ip.ByteArray;
 import com.github.hirsivaja.ip.EcnCodePoint;
 import com.github.hirsivaja.ip.IpHeader;
 import com.github.hirsivaja.ip.IpProtocol;
 import com.github.hirsivaja.ip.IpUtils;
+import com.github.hirsivaja.ip.ipv4.option.IpOption;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public record Ipv4Header(
         byte dscp,
@@ -19,7 +21,7 @@ public record Ipv4Header(
         IpProtocol protocol,
         Ipv4Address srcIp,
         Ipv4Address dstIp,
-        ByteArray options) implements IpHeader {
+        List<IpOption> options) implements IpHeader {
     public static final byte VERSION = (byte) 0x04;
     public static final int HEADER_LEN = 20;
     public static final int PSEUDO_HEADER_LEN = 12;
@@ -29,14 +31,14 @@ public record Ipv4Header(
 
     @SuppressWarnings("squid:S00107")
     public Ipv4Header(byte dscp, EcnCodePoint ecn, short len, short identification, Ipv4Flags flags, short fragmentOffset, byte ttl,
-                      IpProtocol protocol, Ipv4Address srcIp, Ipv4Address dstIp, byte[] options) {
-        this(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol, srcIp, dstIp, new ByteArray(options));
+                      IpProtocol protocol, Ipv4Address srcIp, Ipv4Address dstIp) {
+        this(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol, srcIp, dstIp, List.of());
     }
 
     @Override
     public void encode(ByteBuffer out) {
         out.mark();
-        byte versionIhl = (byte) (VERSION << VERSION_SHIFT | ((options.length() / 4) + 5));
+        byte versionIhl = (byte) (VERSION << VERSION_SHIFT | ((optionsLength() / 4) + 5));
         out.put(versionIhl);
         byte dscpEcn = (byte) (ecn.type() & 0xFF | (dscp << DSCP_SHIFT));
         out.put(dscpEcn);
@@ -50,7 +52,7 @@ public record Ipv4Header(
         out.putShort((short) 0);
         srcIp.encode(out);
         dstIp.encode(out);
-        out.put(options.array());
+        options.forEach(option -> option.encode(out));
         int position = out.position();
         byte[] headerBytes = new byte[HEADER_LEN];
         out.reset().get(headerBytes);
@@ -66,7 +68,7 @@ public record Ipv4Header(
         dstIp.encode(out);
         out.put((byte) 0);
         out.put(protocol.type());
-        out.putShort((short) (len - HEADER_LEN - options.length()));
+        out.putShort((short) (len - HEADER_LEN - optionsLength()));
         byte[] outBytes = new byte[PSEUDO_HEADER_LEN];
         out.rewind().get(outBytes);
         return outBytes;
@@ -77,7 +79,7 @@ public record Ipv4Header(
      */
     @Override
     public int length() {
-        return HEADER_LEN + options.length();
+        return HEADER_LEN + optionsLength();
     }
 
     /**
@@ -98,7 +100,11 @@ public record Ipv4Header(
      * Payload length (no header or options)
      */
     public int payloadLength() {
-        return totalLength() - Ipv4Header.HEADER_LEN - options.length();
+        return totalLength() - Ipv4Header.HEADER_LEN - optionsLength();
+    }
+
+    private int optionsLength() {
+        return options.stream().mapToInt(IpOption::length).sum();
     }
 
     @Override
@@ -139,13 +145,17 @@ public record Ipv4Header(
         } else {
             IpUtils.verifyInternetChecksum(headerBytes);
         }
-        byte[] options = new byte[(ihl - 5) * 4];
-        in.get(options);
+        List<IpOption> options = new ArrayList<>();
+        int optionsLength = (ihl - 5) * 4;
+        while(optionsLength > 0) {
+            IpOption option = IpOption.decode(in);
+            options.add(option);
+            optionsLength -= option.length();
+        }
+        if(optionsLength != 0) {
+            throw new IllegalArgumentException("Could not decode options for the IPv4 header.");
+        }
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,
                 srcIp, dstIp, options);
-    }
-
-    public byte[] rawOptions() {
-        return options.array();
     }
 }

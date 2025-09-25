@@ -4,6 +4,8 @@ import com.github.hirsivaja.ip.IpPayload;
 import com.github.hirsivaja.ip.IpProtocols;
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
+import com.github.hirsivaja.ip.ipv4.option.IpOptionType;
+import com.github.hirsivaja.ip.ipv4.option.RouterAlert;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +35,7 @@ public class Ipv4PayloadTest {
         Assert.assertEquals(IpProtocols.IPV6_ENCAPSULATION, header.protocol());
         Assert.assertEquals(0x4637D5D3, header.srcIp().toInt());
         Assert.assertEquals(0xC0586301, header.dstIp().toInt());
-        Assert.assertEquals(0, header.options().length());
+        Assert.assertEquals(0, header.options().size());
         Assert.assertEquals(0x50, payload.length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
@@ -47,7 +49,9 @@ public class Ipv4PayloadTest {
         IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
         Ipv4Header header = (Ipv4Header) payload.header();
 
-        Assert.assertEquals(4, header.options().length());
+        Assert.assertEquals(1, header.options().size());
+        Assert.assertEquals(IpOptionType.ROUTER_ALERT, header.options().getFirst().optionType());
+        Assert.assertEquals(0, ((RouterAlert) header.options().getFirst()).value());
         Assert.assertEquals(0x28, payload.length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(payload));
@@ -69,7 +73,7 @@ public class Ipv4PayloadTest {
         IpPayload payload = Ipv4Payload.decode(ByteBuffer.wrap(ipv4Bytes));
         Ipv4Header header = (Ipv4Header) payload.header();
 
-        Assert.assertEquals(0, header.options().length());
+        Assert.assertEquals(0, header.options().size());
         Assert.assertTrue(payload instanceof AuthenticationPayload);
         AuthenticationPayload authenticationPayload = (AuthenticationPayload) payload;
         Assert.assertTrue(authenticationPayload.authenticatedPayload() instanceof EncapsulationPayload);
