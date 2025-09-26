@@ -25,7 +25,7 @@ public record TcpMessagePayload(
                 tcpHeader.checksum();
         this.tcpHeader = new TcpHeader(tcpHeader.srcPort(), tcpHeader.dstPort(), tcpHeader.sequenceNumber(),
                 tcpHeader.ackNumber(), tcpHeader.flags(), tcpHeader.windowSize(), checksum,
-                tcpHeader.urgentPointer(), tcpHeader.rawOptions());
+                tcpHeader.urgentPointer(), tcpHeader.options());
         this.payload = payload;
     }
 

@@ -2,6 +2,7 @@ package com.github.hirsivaja.ip.tcp;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
+import com.github.hirsivaja.ip.tcp.option.TcpOptionType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,5 +29,9 @@ public class TcpHeaderTest {
         TcpHeader header = TcpHeader.decode(ByteBuffer.wrap(tcpBytes));
 
         Assert.assertArrayEquals(tcpBytes, TestUtils.toBytes(header));
+        Assert.assertEquals(3, header.options().size());
+        Assert.assertEquals(TcpOptionType.NO_OPERATION, header.options().get(0).optionType());
+        Assert.assertEquals(TcpOptionType.NO_OPERATION, header.options().get(1).optionType());
+        Assert.assertEquals(TcpOptionType.TIMESTAMPS, header.options().get(2).optionType());
     }
 }

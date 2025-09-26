@@ -1,7 +1,9 @@
 package com.github.hirsivaja.ip.tcp;
 
-import com.github.hirsivaja.ip.ByteArray;
+import com.github.hirsivaja.ip.tcp.option.TcpOption;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public record TcpHeader(
         short srcPort,
@@ -12,20 +14,19 @@ public record TcpHeader(
         short windowSize,
         short checksum,
         short urgentPointer,
-        ByteArray options) {
+        List<TcpOption> options) {
     public static final int TCP_HEADER_LEN = 20;
     private static final int DATA_OFFSET_SHIFT = 4;
 
-    @SuppressWarnings("squid:S00107")
     public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, TcpFlags flags, short windowSize,
-                     short urgentPointer, byte[] options) {
-        this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, (short) 0, urgentPointer, options);
+                     short urgentPointer) {
+        this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, (short) 0, urgentPointer, List.of());
     }
 
     @SuppressWarnings("squid:S00107")
     public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, TcpFlags flags, short windowSize,
-                     short checksum, short urgentPointer, byte[] options) {
-        this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, checksum, urgentPointer, new ByteArray(options));
+                     short urgentPointer, List<TcpOption> options) {
+        this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, (short) 0, urgentPointer, options);
     }
 
     public void encode(ByteBuffer out) {
@@ -33,16 +34,20 @@ public record TcpHeader(
         out.putShort(dstPort);
         out.putInt(sequenceNumber);
         out.putInt(ackNumber);
-        out.put((byte) (((options.array().length / 4) + 5) << DATA_OFFSET_SHIFT));
+        out.put((byte) (((optionsLength() / 4) + 5) << DATA_OFFSET_SHIFT));
         out.put(flags.toByte());
         out.putShort(windowSize);
         out.putShort(checksum);
         out.putShort(urgentPointer);
-        out.put(options.array());
+        options.forEach(option -> option.encode(out));
     }
 
     public int length() {
-        return TCP_HEADER_LEN + options.array().length;
+        return TCP_HEADER_LEN + optionsLength();
+    }
+
+    public int optionsLength() {
+        return options.stream().mapToInt(TcpOption::length).sum();
     }
 
     public static TcpHeader decode(ByteBuffer in) {
@@ -55,13 +60,17 @@ public record TcpHeader(
         short windowSize = in.getShort();
         short checksum = in.getShort();
         short urgentPointer = in.getShort();
-        byte[] options = new byte[(dataOffset - 5) * 4];
-        in.get(options);
+        List<TcpOption> options = new ArrayList<>();
+        int optionsLength = (dataOffset - 5) * 4;
+        while(optionsLength > 0) {
+            TcpOption option = TcpOption.decode(in);
+            options.add(option);
+            optionsLength -= option.length();
+        }
+        if(optionsLength != 0) {
+            throw new IllegalArgumentException("Could not decode options for the TCP header.");
+        }
         return new TcpHeader(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, checksum, urgentPointer, options);
-    }
-
-    public byte[] rawOptions() {
-        return options.array();
     }
 
     public int uSrcPort() {
