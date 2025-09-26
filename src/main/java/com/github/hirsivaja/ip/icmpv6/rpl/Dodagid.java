@@ -38,7 +38,7 @@ public record Dodagid(ByteArray dodagid) {
     public String toString() {
         try {
             return this.getClass().getSimpleName() + "[" + InetAddress.getByAddress(dodagid.array()).getHostAddress() + "]";
-        } catch (UnknownHostException _) {
+        } catch (UnknownHostException ignored) {
             // Suppressing the exception
         }
         return this.getClass().getSimpleName() + "[" + IpUtils.printHexBinary(dodagid.array()) + "]";
