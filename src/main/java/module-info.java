@@ -25,5 +25,6 @@ open module com.github.hirsivaja.jipcs {
     exports com.github.hirsivaja.ip.ipv6.extension.destination;
     exports com.github.hirsivaja.ip.ipv6.extension.mobility;
     exports com.github.hirsivaja.ip.tcp;
+    exports com.github.hirsivaja.ip.tcp.option;
     exports com.github.hirsivaja.ip.udp;
 }
