@@ -6,7 +6,7 @@ On [link layer](https://en.wikipedia.org/wiki/Link_layer):
 * ARP [(Address Resolution Protocol)](https://en.wikipedia.org/wiki/Address_Resolution_Protocol) [(RFC 826)](https://datatracker.ietf.org/doc/html/rfc826)
 * ETHERNET [(Ethernet frame)](https://en.wikipedia.org/wiki/Ethernet_frame) [(IEEE 802.3)](https://ieeexplore.ieee.org/document/9844436)
 
-On [network layer](https://en.wikipedia.org/wiki/Network_layer):
+On [internet layer](https://en.wikipedia.org/wiki/Internet_layer):
 * IPv4 packet [(Internet Protocol version 4)](https://en.wikipedia.org/wiki/Internet_Protocol_version_4) [(RFC 791)](https://datatracker.ietf.org/doc/html/rfc791#page-11)
   * [IP Options](https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml#ip-parameters-1)
 * IPv6 packet [(Internet Protocol version 6)](https://en.wikipedia.org/wiki/Internet_Protocol_version_6) [(RFC 8200)](https://datatracker.ietf.org/doc/html/rfc8200#page-6)
