@@ -1,39 +1,39 @@
 package com.github.hirsivaja.ip.ipv6;
 
 import com.github.hirsivaja.ip.ByteArray;
-import com.github.hirsivaja.ip.IpPayload;
+import com.github.hirsivaja.ip.IpPacket;
 import com.github.hirsivaja.ip.IpProtocol;
 import com.github.hirsivaja.ip.IpProtocols;
-import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
-import com.github.hirsivaja.ip.tcp.TcpMessagePayload;
-import com.github.hirsivaja.ip.udp.UdpMessagePayload;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Packet;
+import com.github.hirsivaja.ip.tcp.TcpPacket;
+import com.github.hirsivaja.ip.udp.UdpPacket;
 
 import java.nio.ByteBuffer;
 
-public sealed interface Ipv6Payload extends IpPayload permits
-        TcpMessagePayload, UdpMessagePayload, Icmpv6Payload, EncapsulationPayload,
-        Ipv6Payload.GenericIpv6Payload {
+public sealed interface Ipv6Packet extends IpPacket permits
+        TcpPacket, UdpPacket, Icmpv6Packet, EncapsulationPacket,
+        Ipv6Packet.GenericIpv6Packet {
     int NEXT_HEADER_INDEX = 6;
 
-    static IpPayload decode(ByteBuffer in) {
+    static IpPacket decode(ByteBuffer in) {
         return decode(in, true);
     }
 
-    static IpPayload decode(ByteBuffer in, boolean ensureChecksum) {
+    static IpPacket decode(ByteBuffer in, boolean ensureChecksum) {
         Ipv6Header header = Ipv6Header.decode(in, ensureChecksum);
         byte[] ipv6Payload = new byte[header.payloadOnlyLength()];
         in.get(ipv6Payload);
         ByteBuffer payloadBuffer = ByteBuffer.wrap(ipv6Payload);
         return switch (header.lastNextHeader()) {
-            case IpProtocols.TCP -> TcpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
-            case IpProtocols.UDP -> UdpMessagePayload.decode(payloadBuffer, header, ensureChecksum);
-            case IpProtocols.ICMPV6 -> Icmpv6Payload.decode(payloadBuffer, header, ensureChecksum);
-            case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPayload.decode(payloadBuffer, header);
-            default -> GenericIpv6Payload.decode(in, header);
+            case IpProtocols.TCP -> TcpPacket.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.UDP -> UdpPacket.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.ICMPV6 -> Icmpv6Packet.decode(payloadBuffer, header, ensureChecksum);
+            case IpProtocols.IPV6_ENCAPSULATION -> EncapsulationPacket.decode(payloadBuffer, header);
+            default -> GenericIpv6Packet.decode(payloadBuffer, header);
         };
     }
 
-    static boolean isIpv6Payload(ByteBuffer in) {
+    static boolean isIpv6Packet(ByteBuffer in) {
         int currentPosition = in.position();
         if(in.remaining() >= Ipv6Header.HEADER_LEN && (in.get(0) >>> 4) == Ipv6Header.VERSION) {
             IpProtocol nextHeader = IpProtocol.fromType(in.get(NEXT_HEADER_INDEX));
@@ -51,23 +51,23 @@ public sealed interface Ipv6Payload extends IpPayload permits
         return false;
     }
 
-    record GenericIpv6Payload(Ipv6Header header, ByteArray payload) implements Ipv6Payload {
+    record GenericIpv6Packet(Ipv6Header header, ByteArray data) implements Ipv6Packet {
 
         @Override
         public void encode(ByteBuffer out) {
             header.encode(out);
-            out.put(payload.array());
+            out.put(data.array());
         }
 
         @Override
         public int length() {
-            return header.length() + payload.array().length;
+            return header.length() + data.array().length;
         }
 
-        public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header) {
-            byte[] payload = new byte[in.remaining()];
-            in.get(payload);
-            return new GenericIpv6Payload(header, new ByteArray(payload));
+        public static Ipv6Packet decode(ByteBuffer in, Ipv6Header header) {
+            byte[] data = new byte[in.remaining()];
+            in.get(data);
+            return new GenericIpv6Packet(header, new ByteArray(data));
         }
     }
 }

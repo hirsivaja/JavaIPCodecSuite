@@ -16,9 +16,9 @@ public class TestUtils {
     public static byte[] toBytes(Object object) {
         ByteBuffer out;
         switch (object) {
-            case IpPayload ipPayload -> {
-                out = ByteBuffer.allocate(ipPayload.length());
-                ipPayload.encode(out);
+            case IpPacket ipPacket -> {
+                out = ByteBuffer.allocate(ipPacket.length());
+                ipPacket.encode(out);
             }
             case IpHeader ipHeader -> {
                 out = ByteBuffer.allocate(ipHeader.length());
