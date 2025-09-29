@@ -53,4 +53,13 @@ public class EthernetFrameTest {
 
         Assert.assertArrayEquals(ethernetBytes, TestUtils.toBytes(ethernetFrame));
     }
+
+    @Test
+    public void arpWithoutPaddingTest() {
+        byte[] ethernetBytes = IpUtils.parseHexBinary("D42122765B7800216A2D3B8E0806000108000604000200216A2D3B8EC0A80266D42122765B78C0A80201");
+        EthernetFrame ethernetFrame = EthernetFrame.fromBytes(ethernetBytes);
+
+        Assert.assertNotNull(ethernetFrame);
+        Assert.assertTrue(ethernetFrame.payload() instanceof ArpPacket);
+    }
 }

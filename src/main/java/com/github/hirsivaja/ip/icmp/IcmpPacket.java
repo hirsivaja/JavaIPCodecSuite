@@ -2,11 +2,11 @@ package com.github.hirsivaja.ip.icmp;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.ipv4.Ipv4Header;
-import com.github.hirsivaja.ip.ipv4.Ipv4Payload;
+import com.github.hirsivaja.ip.ipv4.Ipv4Packet;
 
 import java.nio.ByteBuffer;
 
-public record IcmpPayload(Ipv4Header header, IcmpMessage message) implements Ipv4Payload {
+public record IcmpPacket(Ipv4Header header, IcmpMessage message) implements Ipv4Packet {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -33,11 +33,11 @@ public record IcmpPayload(Ipv4Header header, IcmpMessage message) implements Ipv
         return header.length() + message.length();
     }
 
-    public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header) {
+    public static Ipv4Packet decode(ByteBuffer in, Ipv4Header header) {
         return decode(in, header, true);
     }
 
-    public static Ipv4Payload decode(ByteBuffer in, Ipv4Header header, boolean ensureChecksum) {
+    public static Ipv4Packet decode(ByteBuffer in, Ipv4Header header, boolean ensureChecksum) {
         IcmpType type = IcmpType.fromType(in.get());
         IcmpCode code = IcmpCode.fromType(type, in.get());
         short checksum = in.getShort();
@@ -47,7 +47,7 @@ public record IcmpPayload(Ipv4Header header, IcmpMessage message) implements Ipv
         } else {
             IpUtils.verifyInternetChecksum(generateChecksumData(message, checksum));
         }
-        return new IcmpPayload(header, message);
+        return new IcmpPacket(header, message);
     }
 
     public Ipv4Header ipv4Header() {

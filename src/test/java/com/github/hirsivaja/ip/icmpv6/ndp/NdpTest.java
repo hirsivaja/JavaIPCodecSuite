@@ -2,9 +2,9 @@ package com.github.hirsivaja.ip.icmpv6.ndp;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
-import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Packet;
 import com.github.hirsivaja.ip.ipv6.Ipv6Header;
-import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
+import com.github.hirsivaja.ip.ipv6.Ipv6Packet;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,12 +19,12 @@ public class NdpTest {
         byte[] msg = IpUtils.parseHexBinary("8500755700000000");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        RouterSolicitation rs = (RouterSolicitation) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        RouterSolicitation rs = (RouterSolicitation) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(0, rs.options().size());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
     }
 
@@ -34,8 +34,8 @@ public class NdpTest {
         byte[] msg = IpUtils.parseHexBinary("860046254000070800007530000003E801010060970769EA05010000000005DC030440C00036EE800036EE80000000003FFE0507000000010000000000000000");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        RouterAdvertisement ra = (RouterAdvertisement) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        RouterAdvertisement ra = (RouterAdvertisement) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(64, ra.currentHopLimit());
         Assert.assertEquals(0, ra.flags());
@@ -44,7 +44,7 @@ public class NdpTest {
         Assert.assertEquals(1800, ra.routerLifetime());
         Assert.assertEquals(3, ra.options().size());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
     }
 
@@ -54,13 +54,13 @@ public class NdpTest {
         byte[] msg = IpUtils.parseHexBinary("8700952D000000003FFE050700000001020086FFFE0580DA01010060970769EA");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        NeighborSolicitation ns = (NeighborSolicitation) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        NeighborSolicitation ns = (NeighborSolicitation) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(16, ns.targetAddress().length());
         Assert.assertEquals(1, ns.options().size());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
     }
 
@@ -70,13 +70,13 @@ public class NdpTest {
         byte[] msg = IpUtils.parseHexBinary("88005688400000003FFE050700000001020086FFFE0580DA");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        NeighborAdvertisement na = (NeighborAdvertisement) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        NeighborAdvertisement na = (NeighborAdvertisement) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(16, na.targetAddress().length());
         Assert.assertEquals(0, na.options().size());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
     }
 
@@ -86,14 +86,14 @@ public class NdpTest {
         byte[] msg = IpUtils.parseHexBinary("89003107000000000102030405060708010203040506070801020304050607080102030405060708");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        RedirectMessage rm = (RedirectMessage) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        RedirectMessage rm = (RedirectMessage) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(16, rm.targetAddress().length());
         Assert.assertEquals(16, rm.destinationAddress().length());
         Assert.assertEquals(0, rm.options().size());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
     }
 }

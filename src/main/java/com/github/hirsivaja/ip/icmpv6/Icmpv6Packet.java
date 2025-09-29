@@ -2,11 +2,11 @@ package com.github.hirsivaja.ip.icmpv6;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.ipv6.Ipv6Header;
-import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
+import com.github.hirsivaja.ip.ipv6.Ipv6Packet;
 
 import java.nio.ByteBuffer;
 
-public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements Ipv6Payload {
+public record Icmpv6Packet(Ipv6Header header, Icmpv6Message message) implements Ipv6Packet {
 
     @Override
     public void encode(ByteBuffer out) {
@@ -34,11 +34,11 @@ public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements
         return header.length() + message.length();
     }
 
-    public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header) {
+    public static Ipv6Packet decode(ByteBuffer in, Ipv6Header header) {
         return decode(in, header, true);
     }
 
-    public static Ipv6Payload decode(ByteBuffer in, Ipv6Header header, boolean ensureChecksum) {
+    public static Ipv6Packet decode(ByteBuffer in, Ipv6Header header, boolean ensureChecksum) {
         Icmpv6Type type = Icmpv6Type.fromType(in.get());
         Icmpv6Code code = Icmpv6Code.fromType(type, in.get());
         short checksum = in.getShort();
@@ -48,7 +48,7 @@ public record Icmpv6Payload(Ipv6Header header, Icmpv6Message message) implements
         } else {
             IpUtils.verifyInternetChecksum(generateChecksumData(header, message, checksum));
         }
-        return new Icmpv6Payload(header, message);
+        return new Icmpv6Packet(header, message);
     }
 
     public Ipv6Header ipv6Header() {

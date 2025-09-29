@@ -2,9 +2,9 @@ package com.github.hirsivaja.ip.icmpv6.mld;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
-import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Packet;
 import com.github.hirsivaja.ip.ipv6.Ipv6Header;
-import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
+import com.github.hirsivaja.ip.ipv6.Ipv6Packet;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,13 +19,13 @@ public class MldTest {
         byte[] msg = IpUtils.parseHexBinary("82003C0303E800000102030405060708090A0B0C0D0E0F00");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        GenericMldMessage query = (GenericMldMessage) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        GenericMldMessage query = (GenericMldMessage) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(1000, query.maximumResponseDelay());
         Assert.assertEquals(16, query.multicastAddress().length());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));
     }
 
@@ -35,8 +35,8 @@ public class MldTest {
         byte[] msg = IpUtils.parseHexBinary("820079FF03E8000000000000000000000000000000000000023C0000");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        MulticastListenerQueryMessage query = (MulticastListenerQueryMessage) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        MulticastListenerQueryMessage query = (MulticastListenerQueryMessage) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(1000, query.maximumResponseCode());
         Assert.assertEquals(16, query.multicastAddress().length());
@@ -44,7 +44,7 @@ public class MldTest {
         Assert.assertEquals(60, query.qqic());
         Assert.assertEquals(0, query.sourceAddresses().size());
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));
     }
 
@@ -54,17 +54,17 @@ public class MldTest {
         byte[] msg = IpUtils.parseHexBinary("8F00E0D70000000304000000FF0200000000000000000001FF76BA4204000000FF0200000000000000000000000000FB04000000FF0200000000000000000001FF631C08");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload payload = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
-        MulticastListenerReportV2Message report = (MulticastListenerReportV2Message) ((Icmpv6Payload) payload).message();
+        Ipv6Packet packet = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
+        MulticastListenerReportV2Message report = (MulticastListenerReportV2Message) ((Icmpv6Packet) packet).message();
 
         Assert.assertEquals(3, report.multicastAccessRecords().size());
-        MulticastAccessRecord record = report.multicastAccessRecords().getFirst();
-        Assert.assertEquals(4, record.recordType());
-        Assert.assertEquals(16, record.multicastAddress().length());
-        Assert.assertEquals(0, record.sourceAddresses().size());
-        Assert.assertEquals(0, record.rawAuxData().length);
+        MulticastAccessRecord mar = report.multicastAccessRecords().getFirst();
+        Assert.assertEquals(4, mar.recordType());
+        Assert.assertEquals(16, mar.multicastAddress().length());
+        Assert.assertEquals(0, mar.sourceAddresses().size());
+        Assert.assertEquals(0, mar.rawAuxData().length);
 
-        byte[] outBytes = TestUtils.toBytes(payload);
+        byte[] outBytes = TestUtils.toBytes(packet);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 48, outBytes.length));
     }
 }

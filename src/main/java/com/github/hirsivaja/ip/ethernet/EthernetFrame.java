@@ -87,8 +87,10 @@ public record EthernetFrame(
         }
         EthernetPayload payload = EthernetPayload.decode(in, len);
         int paddingLen = MINIMUM_FRAME_SIZE - payload.length() - (hasDot1qTag ? 4 : 0) - FRAME_BASE_SIZE;
-        byte[] padding = new byte[Math.max(paddingLen, 0)];
-        in.get(padding);
+        if(in.remaining() >= paddingLen) {
+            byte[] padding = new byte[Math.max(paddingLen, 0)];
+            in.get(padding);
+        }
         int crc = 0;
         if(in.remaining() >= 4) {
             crc = in.getInt();

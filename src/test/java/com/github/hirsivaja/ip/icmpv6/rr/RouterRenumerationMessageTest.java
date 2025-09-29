@@ -2,9 +2,9 @@ package com.github.hirsivaja.ip.icmpv6.rr;
 
 import com.github.hirsivaja.ip.IpUtils;
 import com.github.hirsivaja.ip.TestUtils;
-import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Packet;
 import com.github.hirsivaja.ip.ipv6.Ipv6Header;
-import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
+import com.github.hirsivaja.ip.ipv6.Ipv6Packet;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.junit.Assert;
@@ -18,7 +18,7 @@ public class RouterRenumerationMessageTest {
         byte[] msg = IpUtils.parseHexBinary("8AFFE7171234567812F8123400000000");
 
         Ipv6Header header = Ipv6Header.decode(ByteBuffer.wrap(headerBytes));
-        Ipv6Payload dio = Icmpv6Payload.decode(ByteBuffer.wrap(msg), header);
+        Ipv6Packet dio = Icmpv6Packet.decode(ByteBuffer.wrap(msg), header);
 
         byte[] outBytes = TestUtils.toBytes(dio);
         Assert.assertArrayEquals(msg, Arrays.copyOfRange(outBytes, 40, outBytes.length));
