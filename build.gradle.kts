@@ -15,7 +15,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    systemProperty("java.util.logging.config.file", "src/test/resources/logging.properties")
 }
+
 kotlin {
     jvmToolchain(21)
 }

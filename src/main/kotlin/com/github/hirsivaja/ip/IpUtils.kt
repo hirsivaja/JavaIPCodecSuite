@@ -1,8 +1,11 @@
 package com.github.hirsivaja.ip
 
 import java.nio.ByteBuffer
+import java.util.logging.Logger
 
 object IpUtils {
+    private val LOG: Logger = Logger.getLogger(IpUtils::class.java.name)
+
     fun calculateInternetChecksum(data: ByteArray): Short {
         val buf: ByteBuffer = ByteBuffer.wrap(data)
         var sum: Long = 0
@@ -22,6 +25,9 @@ object IpUtils {
 
     fun verifyInternetChecksum(checksumData: ByteArray, actual: Short): Boolean {
         val expected = calculateInternetChecksum(checksumData)
+        if(expected != actual) {
+            LOG.warning { "CRC mismatch!" }
+        }
         return expected == actual
     }
 
@@ -31,6 +37,6 @@ object IpUtils {
 
     fun ensureInternetChecksum(checksumData: ByteArray, actual: Short) {
         val expected = calculateInternetChecksum(checksumData)
-        require(expected == actual) { "Checksum does not match!" }
+        require(expected == actual) { "The calculated checksum $actual was not the provided checksum $expected" }
     }
 }
