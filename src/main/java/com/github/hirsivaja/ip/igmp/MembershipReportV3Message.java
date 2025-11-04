@@ -20,7 +20,7 @@ public record MembershipReportV3Message(
 
     @Override
     public int length() {
-        int length = BASE_LEN + 4;
+        int length = 4;
         for(GroupRecord groupRecord : groupRecords) {
             length += groupRecord.length();
         }

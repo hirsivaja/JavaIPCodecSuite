@@ -17,7 +17,7 @@ public record EchoReply(short identifier, short sequenceNumber, ByteArray payloa
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + payload.array().length;
+        return 4 + payload.array().length;
     }
 
     public static IcmpMessage decode(ByteBuffer in) {

@@ -29,7 +29,7 @@ public record RedirectMessage(
 
     @Override
     public int length() {
-        return BASE_LEN + 36 + options.stream().mapToInt(NdpOption::length).sum();
+        return 36 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

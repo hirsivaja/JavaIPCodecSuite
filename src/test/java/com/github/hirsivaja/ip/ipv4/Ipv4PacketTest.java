@@ -15,13 +15,12 @@ public class Ipv4PacketTest {
     @Test
     public void codecTest() {
         byte[] ipv4Bytes = IpUtils.parseHexBinary("45000050935A0000802967C64637D5D3C0586301600000000014068020024637D5D30000000000004637D5D3200148600000200100000000000000680507005022EC582E3AC018C550104248B8B30000");
-        Assert.assertTrue(Ipv4Packet.isIpv4Packet(ByteBuffer.wrap(ipv4Bytes)));
 
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(ipv4Bytes));
         Ipv4Header header = (Ipv4Header) packet.header();
 
-        Assert.assertTrue(packet instanceof EncapsulationPacket);
-        Assert.assertEquals(60, ((EncapsulationPacket) packet).encapsulatedPacket().length());
+        Assert.assertTrue(packet.payload() instanceof EncapsulationPayload);
+        Assert.assertEquals(60, ((EncapsulationPayload) packet.payload()).encapsulatedPacket().length());
         Assert.assertEquals(0, header.dscp());
         Assert.assertEquals(0, header.ecn().type());
         Assert.assertEquals((short) 0x0050, header.totalLength());
@@ -43,16 +42,14 @@ public class Ipv4PacketTest {
 
     @Test
     public void optionsTest() {
-        byte[] ipv4Bytes = IpUtils.parseHexBinary("46000028000040000102D0FBC0A8071AE0000016940400002200F9020000000104000000E00000FB");
-        Assert.assertTrue(Ipv4Packet.isIpv4Packet(ByteBuffer.wrap(ipv4Bytes)));
-
+        byte[] ipv4Bytes = IpUtils.parseHexBinary("460000240000400001024229C0A80201E000000194040000110AECB900000000023C0000");
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(ipv4Bytes));
         Ipv4Header header = (Ipv4Header) packet.header();
 
         Assert.assertEquals(1, header.options().size());
         Assert.assertEquals(IpOptionType.ROUTER_ALERT, header.options().getFirst().optionType());
         Assert.assertEquals(0, ((RouterAlert) header.options().getFirst()).value());
-        Assert.assertEquals(0x28, packet.length());
+        Assert.assertEquals(0x24, packet.length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(packet));
     }
@@ -68,15 +65,14 @@ public class Ipv4PacketTest {
     @Test
     public void authenticationTest() {
         byte[] ipv4Bytes = IpUtils.parseHexBinary("45000074000040000133D17EC0A8071AE00000162902000012345678123456781234567845000050935A0000802967C64637D5D3C0586301600000000014068020024637D5D30000000000004637D5D3200148600000200100000000000000680507005022EC582E3AC018C550104248B8B30000");
-        Assert.assertTrue(Ipv4Packet.isIpv4Packet(ByteBuffer.wrap(ipv4Bytes)));
 
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(ipv4Bytes));
         Ipv4Header header = (Ipv4Header) packet.header();
 
         Assert.assertEquals(0, header.options().size());
-        Assert.assertTrue(packet instanceof AuthenticationPacket);
-        AuthenticationPacket authenticationPacket = (AuthenticationPacket) packet;
-        Assert.assertTrue(authenticationPacket.authenticatedPacket() instanceof EncapsulationPacket);
+        Assert.assertTrue(packet.payload() instanceof AuthenticationPayload);
+        AuthenticationPayload authenticationPacket = (AuthenticationPayload) packet.payload();
+        Assert.assertTrue(authenticationPacket.authenticatedPacket().payload() instanceof EncapsulationPayload);
         Assert.assertEquals(16, authenticationPacket.authenticationHeader().length());
 
         Assert.assertArrayEquals(ipv4Bytes, TestUtils.toBytes(packet));

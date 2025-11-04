@@ -1,6 +1,7 @@
 package com.github.hirsivaja.ip.tcp;
 
 import com.github.hirsivaja.ip.tcp.option.TcpOption;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +21,17 @@ public record TcpHeader(
 
     public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, TcpFlags flags, short windowSize,
                      short urgentPointer) {
-        this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, (short) 0, urgentPointer, List.of());
+        this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, urgentPointer, List.of());
     }
 
-    @SuppressWarnings("squid:S00107")
     public TcpHeader(short srcPort, short dstPort, int sequenceNumber, int ackNumber, TcpFlags flags, short windowSize,
                      short urgentPointer, List<TcpOption> options) {
         this(srcPort, dstPort, sequenceNumber, ackNumber, flags, windowSize, (short) 0, urgentPointer, options);
+    }
+
+    public TcpHeader withChecksum(short checksum) {
+        return new TcpHeader(this.srcPort, this.dstPort, this.sequenceNumber, this.ackNumber, this.flags,
+                this.windowSize, checksum, this.urgentPointer, this.options);
     }
 
     public void encode(ByteBuffer out) {

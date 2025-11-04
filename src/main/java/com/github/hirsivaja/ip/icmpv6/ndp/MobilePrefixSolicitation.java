@@ -17,7 +17,7 @@ public record MobilePrefixSolicitation(short identifier) implements Icmpv6Messag
 
     @Override
     public int length() {
-        return BASE_LEN + 4;
+        return 4;
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

@@ -18,7 +18,7 @@ public record DestinationUnreachable(Icmpv6Code code, short nextHopMtu, ByteArra
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + payload.length();
+        return 4 + payload.length();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {

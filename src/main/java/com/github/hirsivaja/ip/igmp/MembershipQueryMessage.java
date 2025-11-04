@@ -27,7 +27,7 @@ public record MembershipQueryMessage(
 
     @Override
     public int length() {
-        return BASE_LEN + 8 + (sourceAddresses.size() * 4);
+        return 8 + (sourceAddresses.size() * 4);
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {

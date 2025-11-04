@@ -16,7 +16,7 @@ public record GenericIcmpMessage(IcmpType type, IcmpCode code, ByteArray payload
 
     @Override
     public int length() {
-        return BASE_LEN + payload.array().length;
+        return payload.array().length;
     }
 
     public static IcmpMessage decode(ByteBuffer in, IcmpType type, IcmpCode code) {

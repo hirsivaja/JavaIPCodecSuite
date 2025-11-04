@@ -3,8 +3,6 @@ package com.github.hirsivaja.ip.icmp;
 import java.nio.ByteBuffer;
 
 public interface IcmpMessage {
-    int BASE_LEN = 4;
-
     IcmpType type();
     IcmpCode code();
     void encode(ByteBuffer out);

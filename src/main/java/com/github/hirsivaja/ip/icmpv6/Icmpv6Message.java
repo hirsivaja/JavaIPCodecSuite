@@ -14,13 +14,12 @@ import com.github.hirsivaja.ip.icmpv6.rr.RouterRenumberingMessage;
 import java.nio.ByteBuffer;
 
 public interface Icmpv6Message {
-    int BASE_LEN = 4;
-
     Icmpv6Type type();
     Icmpv6Code code();
     void encode(ByteBuffer out);
     int length();
 
+    @SuppressWarnings("squid:S1479")
     static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, Icmpv6Code code) {
         return switch (type) {
             case Icmpv6Types.DESTINATION_UNREACHABLE -> DestinationUnreachable.decode(in, code);
@@ -55,10 +54,10 @@ public interface Icmpv6Message {
             case Icmpv6Types.MULTICAST_ROUTER_TERMINATION -> MulticastRouterTermination.decode();
             case Icmpv6Types.FMIPV6_MESSAGES -> Fmipv6Message.decode(in, code);
             case Icmpv6Types.RPL -> RplControlMessage.decode(in, code);
-            case Icmpv6Types.ILNPV6_LOCATOR_UPDATE_MESSAGE -> Fmipv6Message.decode(in, code);
-            case Icmpv6Types.DUPLICATE_ADDRESS_REQUEST -> Fmipv6Message.decode(in, code);
-            case Icmpv6Types.DUPLICATE_ADDRESS_CONFIRMATION -> Fmipv6Message.decode(in, code);
-            case Icmpv6Types.MPL_CONTROL_MESSAGE -> MplControlMessage.decode(in, code);
+            case Icmpv6Types.ILNPV6_LOCATOR_UPDATE_MESSAGE -> Ilnpv6LocatorUpdateMessage.decode(in);
+            case Icmpv6Types.DUPLICATE_ADDRESS_REQUEST -> DuplicateAddressRequest.decode(in);
+            case Icmpv6Types.DUPLICATE_ADDRESS_CONFIRMATION -> DuplicateAddressConfirmation.decode(in);
+            case Icmpv6Types.MPL_CONTROL_MESSAGE -> MplControlMessage.decode(in);
             case Icmpv6Types.EXTENDED_ECHO_REQUEST -> ExtendedEchoRequest.decode(in);
             case Icmpv6Types.EXTENDED_ECHO_REPLY -> ExtendedEchoReply.decode(in, code);
             default -> GenericIcmpv6Message.decode(in, type, code);

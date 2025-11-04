@@ -19,7 +19,7 @@ public record RouterRenumberingMessage(
 
     @Override
     public int length() {
-        return BASE_LEN + rrHeader.length() + rrBody.length();
+        return rrHeader.length() + rrBody.length();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {

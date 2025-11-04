@@ -16,7 +16,7 @@ public record RplSolicitedInformationOption(
         out.put((byte) LEN);
         out.put(rplInstanceId);
         out.put(flags);
-        out.put(dodagid.rawDodagid());
+        dodagid.encode(out);
         out.put(versionNumber);
     }
 

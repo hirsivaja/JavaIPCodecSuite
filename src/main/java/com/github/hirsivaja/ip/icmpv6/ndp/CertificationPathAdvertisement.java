@@ -30,7 +30,7 @@ public record CertificationPathAdvertisement(
 
     @Override
     public int length() {
-        return BASE_LEN + 8 + options.stream().mapToInt(NdpOption::length).sum();
+        return 8 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

@@ -23,7 +23,7 @@ public record InverseNeighborDiscoveryAdvertisement(List<NdpOption> options) imp
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + options.stream().mapToInt(NdpOption::length).sum();
+        return 4 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

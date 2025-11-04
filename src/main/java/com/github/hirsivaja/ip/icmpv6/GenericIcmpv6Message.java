@@ -16,7 +16,7 @@ public record GenericIcmpv6Message(Icmpv6Type type, Icmpv6Code code, ByteArray p
 
     @Override
     public int length() {
-        return BASE_LEN + payload.array().length;
+        return payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, Icmpv6Code code) {

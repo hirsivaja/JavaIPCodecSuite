@@ -20,7 +20,7 @@ public record TimestampReply(
 
     @Override
     public int length() {
-        return BASE_LEN + 16;
+        return 16;
     }
 
     public static IcmpMessage decode(ByteBuffer in) {

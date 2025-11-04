@@ -21,7 +21,7 @@ public record DuplicateAddressRequest(byte status, short registrationLifetime, l
 
     @Override
     public int length() {
-        return BASE_LEN + 28;
+        return 28;
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

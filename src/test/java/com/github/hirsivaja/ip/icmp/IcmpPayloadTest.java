@@ -9,7 +9,15 @@ import org.junit.Test;
 
 import java.nio.ByteBuffer;
 
-public class IcmpPacketTest {
+public class IcmpPayloadTest {
+
+    @Test
+    public void instantiationTest() {
+        IcmpMessage message = new DestinationUnreachable(IcmpCodes.DESTINATION_NETWORK_UNKNOWN, new byte[32]);
+        IcmpPayload payload = new IcmpPayload(message);
+
+        Assert.assertEquals((short) 0xFCF9, payload.header().checksum());
+    }
 
     @Test
     public void echoRequestTest() {
@@ -17,12 +25,13 @@ public class IcmpPacketTest {
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(packet instanceof Ipv4Packet);
-        Assert.assertTrue(((IcmpPacket) packet).message() instanceof EchoRequest);
-        Assert.assertEquals(0x13C2, ((EchoRequest) ((IcmpPacket) packet).message()).identifier());
-        Assert.assertEquals(0x0001, ((EchoRequest) ((IcmpPacket) packet).message()).sequenceNumber());
-        Assert.assertEquals(1408, ((IcmpPacket) packet).message().length());
+        Assert.assertTrue(((IcmpPayload) packet.payload()).message() instanceof EchoRequest);
+        EchoRequest echoRequest = (EchoRequest) ((IcmpPayload) packet.payload()).message();
+        Assert.assertEquals(0x13C2, echoRequest.identifier());
+        Assert.assertEquals(0x0001, echoRequest.sequenceNumber());
+        Assert.assertEquals(1408, packet.payload().length());
         Assert.assertEquals(1428, packet.length());
-        Assert.assertNotNull(((IcmpPacket) packet).ipv4Header());
+        Assert.assertNotNull(((Ipv4Packet) packet).header());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(packet));
     }
@@ -33,9 +42,10 @@ public class IcmpPacketTest {
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(rspBytes));
 
         Assert.assertTrue(packet instanceof Ipv4Packet);
-        Assert.assertTrue(((IcmpPacket) packet).message() instanceof EchoReply);
-        Assert.assertEquals(0x13C2, ((EchoReply) ((IcmpPacket) packet).message()).identifier());
-        Assert.assertEquals(0x0001, ((EchoReply) ((IcmpPacket) packet).message()).sequenceNumber());
+        Assert.assertTrue(((IcmpPayload) packet.payload()).message() instanceof EchoReply);
+        EchoReply echoReply = (EchoReply) ((IcmpPayload) packet.payload()).message();
+        Assert.assertEquals(0x13C2, echoReply.identifier());
+        Assert.assertEquals(0x0001, echoReply.sequenceNumber());
 
         Assert.assertArrayEquals(rspBytes, TestUtils.toBytes(packet));
     }
@@ -46,13 +56,14 @@ public class IcmpPacketTest {
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(reqBytes));
 
         Assert.assertTrue(packet instanceof Ipv4Packet);
-        Assert.assertTrue(((IcmpPacket) packet).message() instanceof ExtendedEchoRequest);
-        Assert.assertEquals(0x13C2, ((ExtendedEchoRequest) ((IcmpPacket) packet).message()).identifier());
-        Assert.assertEquals(0x00, ((ExtendedEchoRequest) ((IcmpPacket) packet).message()).sequenceNumber());
-        Assert.assertTrue(((ExtendedEchoRequest) ((IcmpPacket) packet).message()).isLocal());
-        Assert.assertEquals(1408, ((IcmpPacket) packet).message().length());
+        Assert.assertTrue(((IcmpPayload) packet.payload()).message() instanceof ExtendedEchoRequest);
+        ExtendedEchoRequest extendedEchoRequest = (ExtendedEchoRequest) ((IcmpPayload) packet.payload()).message();
+        Assert.assertEquals(0x13C2, extendedEchoRequest.identifier());
+        Assert.assertEquals(0x00, extendedEchoRequest.sequenceNumber());
+        Assert.assertTrue(extendedEchoRequest.isLocal());
+        Assert.assertEquals(1408, packet.payload().length());
         Assert.assertEquals(1428, packet.length());
-        Assert.assertNotNull(((IcmpPacket) packet).ipv4Header());
+        Assert.assertNotNull(((Ipv4Packet) packet).header());
 
         Assert.assertArrayEquals(reqBytes, TestUtils.toBytes(packet));
     }
@@ -63,13 +74,14 @@ public class IcmpPacketTest {
         IpPacket packet = Ipv4Packet.decode(ByteBuffer.wrap(rspBytes));
 
         Assert.assertTrue(packet instanceof Ipv4Packet);
-        Assert.assertTrue(((IcmpPacket) packet).message() instanceof ExtendedEchoReply);
-        Assert.assertEquals(0x13C2, ((ExtendedEchoReply) ((IcmpPacket) packet).message()).identifier());
-        Assert.assertEquals((byte) 0xFF, ((ExtendedEchoReply) ((IcmpPacket) packet).message()).sequenceNumber());
-        Assert.assertEquals(0b111, ((ExtendedEchoReply) ((IcmpPacket) packet).message()).state());
-        Assert.assertTrue(((ExtendedEchoReply) ((IcmpPacket) packet).message()).isActive());
-        Assert.assertTrue(((ExtendedEchoReply) ((IcmpPacket) packet).message()).hasIpv4());
-        Assert.assertTrue(((ExtendedEchoReply) ((IcmpPacket) packet).message()).hasIpv6());
+        Assert.assertTrue(((IcmpPayload) packet.payload()).message() instanceof ExtendedEchoReply);
+        ExtendedEchoReply extendedEchoReply = (ExtendedEchoReply) ((IcmpPayload) packet.payload()).message();
+        Assert.assertEquals(0x13C2, extendedEchoReply.identifier());
+        Assert.assertEquals((byte) 0xFF, extendedEchoReply.sequenceNumber());
+        Assert.assertEquals(0b111, extendedEchoReply.state());
+        Assert.assertTrue(extendedEchoReply.isActive());
+        Assert.assertTrue(extendedEchoReply.hasIpv4());
+        Assert.assertTrue(extendedEchoReply.hasIpv6());
 
         Assert.assertArrayEquals(rspBytes, TestUtils.toBytes(packet));
     }

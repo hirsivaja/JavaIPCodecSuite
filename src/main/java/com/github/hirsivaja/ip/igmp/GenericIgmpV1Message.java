@@ -13,7 +13,7 @@ public record GenericIgmpV1Message(IgmpType type, byte code, Ipv4Address groupAd
 
     @Override
     public int length() {
-        return BASE_LEN + 4;
+        return 4;
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {

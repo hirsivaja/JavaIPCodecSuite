@@ -19,10 +19,10 @@ public record MplControlMessage(List<MplSeedInfo> mplSeedInfos) implements Icmpv
 
     @Override
     public int length() {
-        return BASE_LEN + mplSeedInfos.stream().mapToInt(MplSeedInfo::length).sum();
+        return mplSeedInfos.stream().mapToInt(MplSeedInfo::length).sum();
     }
 
-    public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {
+    public static Icmpv6Message decode(ByteBuffer in) {
         List<MplSeedInfo> mplSeedInfos = new ArrayList<>();
         while(in.hasRemaining()) {
             mplSeedInfos.add(MplSeedInfo.decode(in));

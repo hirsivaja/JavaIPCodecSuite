@@ -13,7 +13,7 @@ public record AddressMaskReply(short identifier, short sequenceNumber, int addre
 
     @Override
     public int length() {
-        return BASE_LEN + 8;
+        return 8;
     }
 
     public static IcmpMessage decode(ByteBuffer in) {

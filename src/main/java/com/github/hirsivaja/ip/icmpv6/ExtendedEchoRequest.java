@@ -24,7 +24,7 @@ public record ExtendedEchoRequest(
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + extension.array().length;
+        return 4 + extension.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

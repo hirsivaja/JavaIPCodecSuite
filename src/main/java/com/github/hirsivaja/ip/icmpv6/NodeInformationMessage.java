@@ -24,7 +24,7 @@ public record NodeInformationMessage(
 
     @Override
     public int length() {
-        return BASE_LEN + 12 + data.length();
+        return 12 + data.length();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {

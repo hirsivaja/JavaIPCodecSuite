@@ -24,7 +24,7 @@ public record MulticastListenerReportV2Message(
 
     @Override
     public int length() {
-        int length = BASE_LEN + 4;
+        int length = 4;
         for(MulticastAccessRecord multicastAccessRecord : multicastAccessRecords) {
             length += multicastAccessRecord.getLength();
         }

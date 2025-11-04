@@ -1,8 +1,9 @@
 package com.github.hirsivaja.ip.ipv6.extension;
 
 import com.github.hirsivaja.ip.*;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Header;
 import com.github.hirsivaja.ip.icmpv6.Icmpv6Message;
-import com.github.hirsivaja.ip.icmpv6.Icmpv6Packet;
+import com.github.hirsivaja.ip.icmpv6.Icmpv6Payload;
 import com.github.hirsivaja.ip.icmpv6.mld.MulticastAccessRecord;
 import com.github.hirsivaja.ip.icmpv6.mld.MulticastListenerReportV2Message;
 import com.github.hirsivaja.ip.ipv6.Ipv6Address;
@@ -24,7 +25,6 @@ public class ExtensionHeaderTest {
         IpPacket payload = Ipv6Packet.decode(ByteBuffer.wrap(ipv6Bytes));
 
         Assert.assertEquals(1, ((Ipv6Header) payload.header()).extensionHeaders().size());
-        Assert.assertTrue(Ipv6Packet.isIpv6Packet(ByteBuffer.wrap(ipv6Bytes)));
         Assert.assertArrayEquals(ipv6Bytes, TestUtils.toBytes(payload));
     }
 
@@ -34,12 +34,12 @@ public class ExtensionHeaderTest {
 
         Icmpv6Message message = new MulticastListenerReportV2Message(List.of(new MulticastAccessRecord((byte) 4, new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000002")), List.of(), new byte[0])));
         List<ExtensionHeader> extensionHeaders = List.of(new HopByHopExtension(IpProtocols.ICMPV6, List.of(new GenericDestinationOption(DestinationOptionType.ROUTER_ALERT, new byte[]{0, 0}), new GenericDestinationOption(DestinationOptionType.PAD_N, new byte[]{}))));
-        Ipv6Header header = new Ipv6Header((byte) 0xF8, EcnCodePoint.NO_ECN_NO_ECT, 0, (short) (message.length() + Ipv6Header.calculateExtensionsLength(extensionHeaders)), IpProtocols.HOP_BY_HOP, (byte) 1, new Ipv6Address(IpUtils.parseHexBinary("FE80000000000000021562FFFE6AFEF0")), new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000016")), extensionHeaders);
-        IpPacket payload = new Icmpv6Packet(header, message);
+        Ipv6Header header = new Ipv6Header((byte) 0xF8, EcnCodePoint.NO_ECN_NO_ECT, 0, (short) (Icmpv6Header.HEADER_LEN + message.length() + Ipv6Header.calculateExtensionsLength(extensionHeaders)), IpProtocols.HOP_BY_HOP, (byte) 1, new Ipv6Address(IpUtils.parseHexBinary("FE80000000000000021562FFFE6AFEF0")), new Ipv6Address(IpUtils.parseHexBinary("FF020000000000000000000000000016")), extensionHeaders);
+        Icmpv6Payload payload = new Icmpv6Payload(header, message);
+        Ipv6Packet packet = new Ipv6Packet(header, payload);
 
-        Assert.assertEquals(1, ((Ipv6Header) payload.header()).extensionHeaders().size());
-        Assert.assertTrue(Ipv6Packet.isIpv6Packet(ByteBuffer.wrap(ipv6Bytes)));
-        Assert.assertArrayEquals(ipv6Bytes, TestUtils.toBytes(payload));
+        Assert.assertEquals(1, header.extensionHeaders().size());
+        Assert.assertArrayEquals(ipv6Bytes, TestUtils.toBytes(packet));
     }
 
     @Test
@@ -52,7 +52,6 @@ public class ExtensionHeaderTest {
         Assert.assertEquals(0x12345678, ah.authenticationHeader().spi());
         Assert.assertEquals(0x87654321, ah.authenticationHeader().seqNumber());
         Assert.assertArrayEquals(IpUtils.parseHexBinary("55555555"), ah.authenticationHeader().icv().array());
-        Assert.assertTrue(Ipv6Packet.isIpv6Packet(ByteBuffer.wrap(ipv6Bytes)));
         Assert.assertArrayEquals(ipv6Bytes, TestUtils.toBytes(payload));
     }
 

@@ -26,10 +26,10 @@ public record Ilnpv6LocatorUpdateMessage(byte operation, List<Long> locators, Li
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + locators.size() * 12;
+        return 4 + locators.size() * 12;
     }
 
-    public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {
+    public static Icmpv6Message decode(ByteBuffer in) {
         byte numberOfLocs = in.get();
         byte operation = in.get();
         in.getShort(); // RESERVED

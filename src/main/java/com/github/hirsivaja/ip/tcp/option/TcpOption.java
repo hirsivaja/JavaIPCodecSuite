@@ -25,7 +25,7 @@ public interface TcpOption {
         return switch (optionType) {
             case MAXIMUM_SEGMENT_SIZE -> MaximumSegmentSize.decode(optionBuffer);
             case WINDOW_SCALE -> WindowScale.decode(optionBuffer);
-            case SACK_PERMITTED -> SackPermitted.decode(optionBuffer);
+            case SACK_PERMITTED -> SackPermitted.decode();
             case SACK -> Sack.decode(optionBuffer);
             case TIMESTAMPS -> Timestamps.decode(optionBuffer);
             case QUICK_START_RESPONSE -> QuickStart.decode(optionBuffer);

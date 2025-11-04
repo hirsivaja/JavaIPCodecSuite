@@ -21,7 +21,7 @@ public record HomeAgentAddressDiscoveryReply(short identifier, List<Ipv6Address>
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + homeAgentAddresses.stream().mapToInt(Ipv6Address::length).sum();
+        return 4 + homeAgentAddresses.stream().mapToInt(Ipv6Address::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

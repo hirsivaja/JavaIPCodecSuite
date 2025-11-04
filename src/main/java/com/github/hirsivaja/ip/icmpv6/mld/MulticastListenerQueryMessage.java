@@ -33,7 +33,7 @@ public record MulticastListenerQueryMessage(
 
     @Override
     public int length() {
-        return BASE_LEN + 24 + (sourceAddresses.size() * 16);
+        return 24 + (sourceAddresses.size() * 16);
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Type type, Icmpv6Code code) {

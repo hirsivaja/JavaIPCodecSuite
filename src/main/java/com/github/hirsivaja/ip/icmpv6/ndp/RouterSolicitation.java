@@ -23,7 +23,7 @@ public record RouterSolicitation(List<NdpOption> options) implements Icmpv6Messa
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + options.stream().mapToInt(NdpOption::length).sum();
+        return 4 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

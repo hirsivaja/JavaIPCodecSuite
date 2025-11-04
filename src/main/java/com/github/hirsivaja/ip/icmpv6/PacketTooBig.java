@@ -17,7 +17,7 @@ public record PacketTooBig(Icmpv6Code code, int mtu, ByteArray payload) implemen
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + payload.array().length;
+        return 4 + payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {

@@ -33,7 +33,7 @@ public record RouterAdvertisement(
 
     @Override
     public int length() {
-        return BASE_LEN + 12 + options.stream().mapToInt(NdpOption::length).sum();
+        return 12 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

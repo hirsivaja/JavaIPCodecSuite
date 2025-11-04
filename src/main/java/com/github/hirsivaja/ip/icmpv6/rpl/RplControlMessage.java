@@ -38,7 +38,7 @@ public record RplControlMessage(
     @Override
     public int length() {
         int securityLength = hasSecurity() ? security.length() : 0;
-        return BASE_LEN + securityLength + base.length() + options.stream().mapToInt(RplOption::length).sum();
+        return securityLength + base.length() + options.stream().mapToInt(RplOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {
@@ -69,7 +69,7 @@ public record RplControlMessage(
     }
 
     public byte[] toByteArray(){
-        ByteBuffer out = ByteBuffer.allocate(length() - BASE_LEN);
+        ByteBuffer out = ByteBuffer.allocate(length());
         encode(out);
         byte[] outBytes = new byte[out.rewind().remaining()];
         out.get(outBytes);

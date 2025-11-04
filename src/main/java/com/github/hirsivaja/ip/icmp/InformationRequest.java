@@ -12,7 +12,7 @@ public record InformationRequest(short identifier, short sequenceNumber) impleme
 
     @Override
     public int length() {
-        return BASE_LEN + 4;
+        return 4;
     }
 
     public static IcmpMessage decode(ByteBuffer in) {

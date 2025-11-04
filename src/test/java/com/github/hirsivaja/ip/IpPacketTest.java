@@ -1,7 +1,11 @@
 package com.github.hirsivaja.ip;
 
+import com.github.hirsivaja.ip.ipv4.Ipv4Header;
 import com.github.hirsivaja.ip.ipv4.Ipv4Packet;
+import com.github.hirsivaja.ip.ipv4.Ipv4Payload;
+import com.github.hirsivaja.ip.ipv6.Ipv6Header;
 import com.github.hirsivaja.ip.ipv6.Ipv6Packet;
+import com.github.hirsivaja.ip.ipv6.Ipv6Payload;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,9 +17,7 @@ public class IpPacketTest {
         IpPacket packet = IpPacket.fromBytes(rplBytes);
 
         Assert.assertArrayEquals(rplBytes, packet.toBytes());
-
         IpPacket ipPacketString = IpPacket.fromByteString(rplString);
-
         Assert.assertEquals(rplString, ipPacketString.toByteString());
     }
 
@@ -25,11 +27,9 @@ public class IpPacketTest {
         byte[] genericBytes = IpUtils.parseHexBinary(genericString);
         IpPacket packet = IpPacket.fromBytes(genericBytes);
 
-        Assert.assertTrue(packet instanceof Ipv4Packet.GenericIpv4Packet);
-        
-        Ipv4Packet.GenericIpv4Packet genericPayload = (Ipv4Packet.GenericIpv4Packet) packet;
-
-        Assert.assertEquals((byte) 123, genericPayload.header().protocol().type());
+        Assert.assertTrue(packet instanceof Ipv4Packet);
+        Assert.assertTrue(packet.payload() instanceof Ipv4Payload.Generic);
+        Assert.assertEquals((byte) 123, ((Ipv4Header) packet.header()).protocol().type());
     }
 
     @Test
@@ -38,10 +38,8 @@ public class IpPacketTest {
         byte[] genericBytes = IpUtils.parseHexBinary(genericString);
         IpPacket packet = IpPacket.fromBytes(genericBytes);
 
-        Assert.assertTrue(packet instanceof Ipv6Packet.GenericIpv6Packet);
-        
-        Ipv6Packet.GenericIpv6Packet genericPayload = (Ipv6Packet.GenericIpv6Packet) packet;
-
-        Assert.assertEquals((byte) 123, genericPayload.header().nextHeader().type());
+        Assert.assertTrue(packet instanceof Ipv6Packet);
+        Assert.assertTrue(packet.payload() instanceof Ipv6Payload.Generic);
+        Assert.assertEquals((byte) 123, ((Ipv6Header) packet.header()).nextHeader().type());
     }
 }

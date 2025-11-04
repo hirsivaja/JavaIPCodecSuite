@@ -16,7 +16,7 @@ public record TimeExceeded(Icmpv6Code code, ByteArray payload) implements Icmpv6
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + payload.array().length;
+        return 4 + payload.array().length;
     }
 
     public static Icmpv6Message decode(ByteBuffer in, Icmpv6Code code) {

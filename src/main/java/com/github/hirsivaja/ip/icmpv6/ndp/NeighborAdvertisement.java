@@ -28,7 +28,7 @@ public record NeighborAdvertisement(
 
     @Override
     public int length() {
-        return BASE_LEN + 20 + options.stream().mapToInt(NdpOption::length).sum();
+        return 20 + options.stream().mapToInt(NdpOption::length).sum();
     }
 
     public static Icmpv6Message decode(ByteBuffer in) {

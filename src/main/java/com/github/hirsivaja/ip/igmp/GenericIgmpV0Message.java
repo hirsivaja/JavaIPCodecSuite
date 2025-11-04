@@ -20,7 +20,7 @@ public record GenericIgmpV0Message(
 
     @Override
     public int length() {
-        return BASE_LEN + 16;
+        return 16;
     }
 
     public static IgmpMessage decode(ByteBuffer in, IgmpType type, byte code) {

@@ -54,7 +54,7 @@ public record Ipv4Header(
         dstIp.encode(out);
         options.forEach(option -> option.encode(out));
         int position = out.position();
-        byte[] headerBytes = new byte[HEADER_LEN];
+        byte[] headerBytes = new byte[HEADER_LEN + optionsLength()];
         out.reset().get(headerBytes);
         short checksum = IpUtils.calculateInternetChecksum(headerBytes);
         out.putShort(checksumPosition, checksum);
@@ -137,14 +137,6 @@ public record Ipv4Header(
         in.getShort(); // Checksum
         Ipv4Address srcIp = Ipv4Address.decode(in);
         Ipv4Address dstIp = Ipv4Address.decode(in);
-        in.reset();
-        byte[] headerBytes = new byte[HEADER_LEN];
-        in.get(headerBytes);
-        if(ensureChecksum) {
-            IpUtils.ensureInternetChecksum(headerBytes);
-        } else {
-            IpUtils.verifyInternetChecksum(headerBytes);
-        }
         List<IpOption> options = new ArrayList<>();
         int optionsLength = (ihl - 5) * 4;
         while(optionsLength > 0) {
@@ -154,6 +146,14 @@ public record Ipv4Header(
         }
         if(optionsLength != 0) {
             throw new IllegalArgumentException("Could not decode options for the IPv4 header.");
+        }
+        in.reset();
+        byte[] headerBytes = new byte[HEADER_LEN + (ihl - 5) * 4];
+        in.get(headerBytes);
+        if(ensureChecksum) {
+            IpUtils.ensureInternetChecksum(headerBytes);
+        } else {
+            IpUtils.verifyInternetChecksum(headerBytes);
         }
         return new Ipv4Header(dscp, ecn, len, identification, flags, fragmentOffset, ttl, protocol,
                 srcIp, dstIp, options);

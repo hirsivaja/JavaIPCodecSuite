@@ -20,7 +20,7 @@ public record SackPermitted() implements TcpOption {
         return TcpOptionType.SACK_PERMITTED;
     }
 
-    public static SackPermitted decode(ByteBuffer in){
+    public static SackPermitted decode(){
         return new SackPermitted();
     }
 }

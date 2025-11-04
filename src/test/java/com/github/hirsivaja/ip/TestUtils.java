@@ -24,6 +24,10 @@ public class TestUtils {
                 out = ByteBuffer.allocate(ipHeader.length());
                 ipHeader.encode(out);
             }
+            case IpPayload ipPayload -> {
+                out = ByteBuffer.allocate(ipPayload.length());
+                ipPayload.encode(out);
+            }
             case ExtensionHeader extHeader -> {
                 out = ByteBuffer.allocate(extHeader.length());
                 extHeader.encode(out);
@@ -49,7 +53,7 @@ public class TestUtils {
                 option.encode(out);
             }
             case IgmpMessage message -> {
-                out = ByteBuffer.allocate(message.length() - 4);
+                out = ByteBuffer.allocate(message.length());
                 message.encode(out);
             }
             case ArpPacket packet -> {

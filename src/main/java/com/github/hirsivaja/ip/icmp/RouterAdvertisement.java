@@ -20,7 +20,7 @@ public record RouterAdvertisement(short lifetime, List<Ipv4Address> addresses, L
 
     @Override
     public int length() {
-        return BASE_LEN + 4 + addresses.size() * ADDRESS_ENTRY_SIZE * 4;
+        return 4 + addresses.size() * ADDRESS_ENTRY_SIZE * 4;
     }
 
     public static IcmpMessage decode(ByteBuffer in) {

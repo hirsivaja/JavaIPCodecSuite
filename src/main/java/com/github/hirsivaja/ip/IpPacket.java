@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 public sealed interface IpPacket extends EthernetPayload permits Ipv4Packet, Ipv6Packet {
     Logger logger = Logger.getLogger("IpPacket");
     IpHeader header();
+    IpPayload payload();
 
     @Override
     default byte[] toBytes() {

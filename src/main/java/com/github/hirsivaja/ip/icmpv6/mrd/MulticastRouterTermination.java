@@ -17,7 +17,7 @@ public record MulticastRouterTermination() implements Icmpv6Message {
 
     @Override
     public int length() {
-        return BASE_LEN;
+        return 0;
     }
 
     public static Icmpv6Message decode() {
